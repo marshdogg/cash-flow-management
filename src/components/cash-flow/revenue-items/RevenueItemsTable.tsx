@@ -48,8 +48,7 @@ function formatDate(dateStr: string): string {
   return d.toLocaleDateString("en-US", { month: "short", day: "numeric" });
 }
 
-function getWeekLabel(item: RevenueItem): { label: string; type: "this" | "next" | "later" | "past" } {
-  const now = new Date();
+function getWeekLabel(item: RevenueItem, now: Date): { label: string; type: "this" | "next" | "later" | "past" } {
   const expected = new Date(item.expectedDate + "T00:00:00");
   const diffDays = Math.floor((expected.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
 
@@ -59,10 +58,9 @@ function getWeekLabel(item: RevenueItem): { label: string; type: "this" | "next"
   return { label: formatDate(item.expectedDate), type: "later" };
 }
 
-function isOverdue(item: RevenueItem): boolean {
+function isOverdue(item: RevenueItem, now: Date): boolean {
   if (item.status !== "open") return false;
   const expected = new Date(item.expectedDate + "T00:00:00");
-  const now = new Date();
   return expected.getTime() < now.getTime() - 6 * 24 * 60 * 60 * 1000;
 }
 
@@ -288,19 +286,21 @@ export function RevenueItemsTable({
           </tr>
         </thead>
         <tbody>
-          {items.map((item) => {
+          {(() => {
+            const now = new Date();
+            return items.map((item) => {
             const catColors = REVENUE_CATEGORY_COLORS[item.category];
             const statusColors = REVENUE_STATUS_COLORS[item.status];
             const icon = REVENUE_CATEGORY_ICONS[item.category];
             const isSelected = selectedIds.has(item.id);
-            const weekInfo = getWeekLabel(item);
-            const overdue = isOverdue(item);
+            const weekInfo = getWeekLabel(item, now);
+            const overdue = isOverdue(item, now);
             const isInactive = item.status === "collected" || item.status === "lost" || item.status === "cancelled";
 
             return (
               <tr
                 key={item.id}
-                className="border-b border-[#f4f3f1] transition-colors last:border-b-0 hover:bg-[#fafaf8]"
+                className="border-b border-[#f4f3f1] last:border-b-0 hover:bg-[#fafaf8]"
                 style={isInactive ? { opacity: item.status === "collected" ? 0.7 : 0.6 } : undefined}
               >
                 {!isFom && (
@@ -433,7 +433,8 @@ export function RevenueItemsTable({
                 )}
               </tr>
             );
-          })}
+          });
+          })()}
         </tbody>
       </table>
     </div>
