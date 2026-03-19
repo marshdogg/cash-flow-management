@@ -112,15 +112,24 @@ function CashFlowDashboardInner({
     [periods, view]
   );
 
+  // Prefer ritual-stored bank balance (survives navigation) over API opening balance
+  const effectiveOpeningBalance = useMemo(() => {
+    try {
+      const stored = localStorage.getItem(`ritualBankBalance_${activeFranchiseId}`);
+      if (stored != null) return parseInt(stored) || 0;
+    } catch {}
+    return data?.openingBalance ?? 0;
+  }, [activeFranchiseId, data?.openingBalance]);
+
   const { totalRevenue, totalExpense, projectedBalance } = useMemo(() => {
     const rev = displayPeriods.reduce((s, p) => s + p.revenue, 0);
     const exp = displayPeriods.reduce((s, p) => s + p.expense, 0);
     return {
       totalRevenue: rev,
       totalExpense: exp,
-      projectedBalance: (data?.openingBalance ?? 0) + rev - exp,
+      projectedBalance: effectiveOpeningBalance + rev - exp,
     };
-  }, [displayPeriods, data?.openingBalance]);
+  }, [displayPeriods, effectiveOpeningBalance]);
 
   if (isLoading) {
     return (
@@ -257,7 +266,7 @@ function CashFlowDashboardInner({
       <div className="mb-5 flex items-center justify-between border-b border-[#f3f4f6] pb-5">
         <div className="flex flex-col gap-1">
           <div className="text-[13px] font-semibold uppercase tracking-[0.06em] text-[#6b7280]">
-            Projected Balance
+            {view === "weeks" ? "12-Week" : "3-Month"} Projected Balance
           </div>
           <div
             className={`font-mono text-[36px] font-bold leading-tight tracking-[-0.02em] ${
@@ -350,7 +359,7 @@ function CashFlowDashboardInner({
         <Suspense fallback={<div className="h-[420px]" />}>
           <CashFlowChart
             periods={displayPeriods}
-            openingBalance={data?.openingBalance ?? 0}
+            openingBalance={effectiveOpeningBalance}
             threshold={threshold}
           />
         </Suspense>

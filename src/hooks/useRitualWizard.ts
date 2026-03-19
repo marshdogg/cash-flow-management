@@ -480,11 +480,15 @@ export function useRitualWizard(franchiseId: string) {
     // Keep state in sessionStorage so "Edit This Week" shows previous values.
     // The TTL will naturally expire it for the next week.
 
-    // Persist completion date so dashboard countdown updates immediately
+    // Persist completion date + bank balance so dashboard updates immediately
     try {
       localStorage.setItem(
         `lastRitualDate_${franchiseId}`,
         new Date().toISOString().slice(0, 10)
+      );
+      localStorage.setItem(
+        `ritualBankBalance_${franchiseId}`,
+        String(state.bankBalance ?? 0)
       );
     } catch {}
 
