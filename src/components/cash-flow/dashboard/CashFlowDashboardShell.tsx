@@ -33,7 +33,7 @@ function CashFlowDashboardInner({
   const isFom = userRole === "fom";
   const { selectedFranchise, setSelectedFranchise, franchises } =
     useFranchisePicker(
-      isFom
+      assignedFranchises.length > 0
         ? assignedFranchises
         : [{ id: defaultFranchiseId, name: franchiseName }]
     );
@@ -199,7 +199,7 @@ function CashFlowDashboardInner({
 
           {/* Edit This Week */}
           <Link
-            href={CASH_FLOW_ROUTES.ritual}
+            href={`${CASH_FLOW_ROUTES.ritual}?franchise=${activeFranchiseId}`}
             className="rounded-lg bg-[#8BC34A] px-[18px] py-[11px] text-sm font-semibold text-white min-h-[44px]"
           >
             Edit This Week
@@ -234,7 +234,7 @@ function CashFlowDashboardInner({
                 : `Next ritual due in ${daysLeft} day${daysLeft !== 1 ? "s" : ""}`}
             </span>
             <Link
-              href={CASH_FLOW_ROUTES.ritual}
+              href={`${CASH_FLOW_ROUTES.ritual}?franchise=${activeFranchiseId}`}
               className={`text-[12px] font-bold underline ${
                 isOverdue ? "text-red-700" : "text-[#3d6b14]"
               }`}

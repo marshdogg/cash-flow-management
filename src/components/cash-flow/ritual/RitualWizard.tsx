@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useRitualWizard } from "@/hooks/useRitualWizard";
 import { useRecurringTransactions } from "@/hooks/useRecurringTransactions";
-import { useFranchisePicker } from "@/hooks/useFranchisePicker";
 import { useToast } from "@/hooks/useToast";
 import { cn } from "@/lib/cn";
 import { WelcomeBanner } from "./WelcomeBanner";
@@ -21,7 +20,7 @@ import {
   TOAST_MESSAGES,
   DEFAULT_BUFFER,
 } from "@/constants/cash-flow";
-import type { WizardRecurringExpense, AssignedFranchise } from "@/types/cash-flow";
+import type { WizardRecurringExpense } from "@/types/cash-flow";
 import { track } from "@/lib/analytics";
 
 // ── Helpers ──
@@ -179,7 +178,6 @@ function AccordionSection({
 interface RitualWizardProps {
   franchiseId: string;
   userName: string;
-  assignedFranchises: AssignedFranchise[];
 }
 
 const CATEGORY_ICONS: Record<string, string> = {
@@ -207,16 +205,12 @@ function frequencyLabel(freq: string): string {
 
 // ── Main Component ──
 
-function RitualWizardInner({ franchiseId, userName, assignedFranchises }: RitualWizardProps) {
+function RitualWizardInner({ franchiseId, userName }: RitualWizardProps) {
   const router = useRouter();
   const { showToast } = useToast();
 
-  const { selectedFranchise, setSelectedFranchise, franchises } =
-    useFranchisePicker(assignedFranchises);
-  const activeFranchiseId = selectedFranchise?.id ?? franchiseId;
-
-  const wizard = useRitualWizard(activeFranchiseId);
-  const { transactions } = useRecurringTransactions(activeFranchiseId);
+  const wizard = useRitualWizard(franchiseId);
+  const { transactions } = useRecurringTransactions(franchiseId);
 
   // ── Accordion state (ephemeral — not persisted) ──
   const [activeSection, setActiveSection] = useState(1);
@@ -242,8 +236,8 @@ function RitualWizardInner({ franchiseId, userName, assignedFranchises }: Ritual
 
   // Track ritual start
   useEffect(() => {
-    track("cash_flow_ritual_started", { franchise_id: activeFranchiseId });
-  }, [activeFranchiseId]);
+    track("cash_flow_ritual_started", { franchise_id: franchiseId });
+  }, [franchiseId]);
 
   const handleCompleteRitual = useCallback(async () => {
     try {
@@ -252,7 +246,7 @@ function RitualWizardInner({ franchiseId, userName, assignedFranchises }: Ritual
         (Date.now() - new Date(wizard.state.startedAt).getTime()) / 1000
       );
       track("cash_flow_ritual_completed", {
-        franchise_id: activeFranchiseId,
+        franchise_id: franchiseId,
         duration_seconds: durationSeconds,
       });
       showToast("success", TOAST_MESSAGES.ritualCompleted);
@@ -260,7 +254,7 @@ function RitualWizardInner({ franchiseId, userName, assignedFranchises }: Ritual
     } catch {
       showToast("error", TOAST_MESSAGES.ritualSaveError);
     }
-  }, [wizard, activeFranchiseId, showToast, router]);
+  }, [wizard, franchiseId, showToast, router]);
 
   // ── Accordion handlers ──
 
@@ -339,25 +333,9 @@ function RitualWizardInner({ franchiseId, userName, assignedFranchises }: Ritual
           </Link>
           <div className="h-6 w-px bg-[#e8e8e5]" />
           <div>
-            <div className="flex items-center gap-2">
-              <h1 className="text-[15px] font-extrabold tracking-[-0.02em] text-[#1a1a1a]">
-                Weekly Ritual
-              </h1>
-              {franchises.length > 1 && (
-                <select
-                  value={activeFranchiseId}
-                  onChange={(e) => setSelectedFranchise(e.target.value)}
-                  className="rounded-md border border-neutral-200 px-2 py-1 text-[12px] font-medium text-[#6b7280] focus:border-[#8BC34A] focus:outline-none focus:ring-1 focus:ring-[#8BC34A]"
-                  aria-label="Select franchise"
-                >
-                  {franchises.map((f) => (
-                    <option key={f.id} value={f.id}>
-                      {f.name}
-                    </option>
-                  ))}
-                </select>
-              )}
-            </div>
+            <h1 className="text-[15px] font-extrabold tracking-[-0.02em] text-[#1a1a1a]">
+              Weekly Ritual
+            </h1>
             <span className="text-[11px] font-medium text-[#a0aab4]">
               Cash flow check-in
             </span>
@@ -477,7 +455,7 @@ function RitualWizardInner({ franchiseId, userName, assignedFranchises }: Ritual
                       return wizard.welcomeData.minBalanceThreshold;
                     }
                     try {
-                      const stored = localStorage.getItem(`minBalance_${activeFranchiseId}`);
+                      const stored = localStorage.getItem(`minBalance_${franchiseId}`);
                       if (stored) return parseInt(stored) || DEFAULT_BUFFER;
                     } catch {}
                     return wizard.welcomeData?.minBalanceThreshold ?? DEFAULT_BUFFER;

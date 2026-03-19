@@ -1,22 +1,20 @@
 import { getSession } from "@/lib/session";
 import { RitualWizard } from "@/components/cash-flow/ritual/RitualWizard";
-import type { AssignedFranchise } from "@/types/cash-flow";
 
-export default async function CashFlowRitualPage() {
+interface RitualPageProps {
+  searchParams: { franchise?: string };
+}
+
+export default async function CashFlowRitualPage({ searchParams }: RitualPageProps) {
   const session = await getSession();
 
-  // All roles get assigned franchises for the picker
-  const assignedFranchises: AssignedFranchise[] = [
-    { id: "fr_vancouver", name: "WOW 1 DAY PAINTING — Vancouver" },
-    { id: "fr_calgary", name: "WOW 1 DAY PAINTING — Calgary" },
-    { id: "fr_toronto_east", name: "WOW 1 DAY PAINTING — Toronto East" },
-  ];
+  // Use franchise from URL query param (set by dashboard picker), fall back to session
+  const franchiseId = searchParams.franchise || session.franchiseId;
 
   return (
     <RitualWizard
-      franchiseId={session.franchiseId}
+      franchiseId={franchiseId}
       userName={session.userName}
-      assignedFranchises={assignedFranchises}
     />
   );
 }

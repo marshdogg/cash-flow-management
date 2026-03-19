@@ -1,4 +1,6 @@
 import { NextRequest } from "next/server";
+
+export const dynamic = "force-dynamic";
 import { apiSuccess, apiError, isMockMode } from "@/lib/api-response";
 import { supabase, rowToCamel } from "@/lib/supabase";
 import type { CashFlowDashboardResponse, ChartPeriod } from "@/types/cash-flow";
