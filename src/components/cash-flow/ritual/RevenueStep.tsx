@@ -1,7 +1,21 @@
 "use client";
 
+import { useState } from "react";
 import type { RevenueLineItem, RevenueWeek } from "@/types/cash-flow";
 import { REVENUE_WEEK_OPTIONS } from "@/constants/cash-flow";
+
+type RevenueCategory = "ar" | "sales" | "proposal";
+
+const CATEGORY_OPTIONS: {
+  key: RevenueCategory;
+  color: string;
+  label: string;
+  description: string;
+}[] = [
+  { key: "ar", color: "#5e9422", label: "Accounts Receivable", description: "Outstanding invoices" },
+  { key: "sales", color: "#8BC34A", label: "Sales", description: "Scheduled estimates" },
+  { key: "proposal", color: "#b5d96e", label: "Proposals", description: "Proposals presented" },
+];
 
 interface RevenueStepProps {
   bankBalance: number | null;
@@ -43,6 +57,26 @@ function fmt(n: number): string {
 
 export function RevenueStep(props: RevenueStepProps) {
   const bank = props.bankBalance ?? 0;
+
+  const [activeCategories, setActiveCategories] = useState<Set<RevenueCategory>>(() => {
+    const initial = new Set<RevenueCategory>();
+    if (props.arItems.length > 0) initial.add("ar");
+    if (props.salesItems.length > 0) initial.add("sales");
+    if (props.proposalItems.length > 0) initial.add("proposal");
+    return initial;
+  });
+
+  const [pickerOpen, setPickerOpen] = useState(false);
+
+  const inactiveCategories = CATEGORY_OPTIONS.filter((c) => !activeCategories.has(c.key));
+
+  const activateCategory = (key: RevenueCategory) => {
+    setActiveCategories((prev) => new Set(prev).add(key));
+    setPickerOpen(false);
+    if (key === "ar") props.onAddArItem();
+    else if (key === "sales") props.onAddSalesItem();
+    else if (key === "proposal") props.onAddProposalItem();
+  };
 
   return (
     <>
@@ -97,77 +131,139 @@ export function RevenueStep(props: RevenueStepProps) {
         </div>
 
         {/* Segment 2: AR */}
-        <RevenueSegment
-          color="#5e9422"
-          title="Accounts Receivable"
-          desc="Outstanding invoices — assign the week you expect payment"
-          grossLabel="Gross"
-          grossValue={props.arGross}
-          items={props.arItems}
-          noteHeader="Note / Customer"
-          amountHeader="Amount"
-          weekHeader="Expected Week"
-          addLabel="Add AR item"
-          onAdd={props.onAddArItem}
-          onUpdate={props.onUpdateArItem}
-          onRemove={props.onRemoveArItem}
-          rateLabel="Collection rate"
-          rateValue={props.arCollectionRate}
-          rateMin={50}
-          rateMax={100}
-          onSetRate={props.onSetArRate}
-          resultLabel="Realized →"
-          resultValue={props.arRealized}
-        />
+        {activeCategories.has("ar") && (
+          <RevenueSegment
+            color="#5e9422"
+            title="Accounts Receivable"
+            desc="Outstanding invoices — assign the week you expect payment"
+            grossLabel="Gross"
+            grossValue={props.arGross}
+            items={props.arItems}
+            noteHeader="Note / Customer"
+            amountHeader="Amount"
+            weekHeader="Expected Week"
+            addLabel="Add AR item"
+            onAdd={props.onAddArItem}
+            onUpdate={props.onUpdateArItem}
+            onRemove={props.onRemoveArItem}
+            rateLabel="Collection rate"
+            rateValue={props.arCollectionRate}
+            rateMin={50}
+            rateMax={100}
+            onSetRate={props.onSetArRate}
+            resultLabel="Realized →"
+            resultValue={props.arRealized}
+          />
+        )}
 
         {/* Segment 3: Sales */}
-        <RevenueSegment
-          color="#8BC34A"
-          title="Sales — Scheduled Estimates"
-          desc="Estimates booked — assign to the week of the appointment"
-          grossLabel="Gross"
-          grossValue={props.salesGross}
-          items={props.salesItems}
-          noteHeader="Note / Customer"
-          amountHeader="Estimate Value"
-          weekHeader="Appointment Week"
-          addLabel="Add estimate"
-          onAdd={props.onAddSalesItem}
-          onUpdate={props.onUpdateSalesItem}
-          onRemove={props.onRemoveSalesItem}
-          rateLabel="Cancellation rate"
-          rateValue={props.salesCancellationRate}
-          rateMin={0}
-          rateMax={50}
-          onSetRate={props.onSetSalesRate}
-          resultLabel="Likely →"
-          resultValue={props.salesLikely}
-        />
+        {activeCategories.has("sales") && (
+          <RevenueSegment
+            color="#8BC34A"
+            title="Sales — Scheduled Estimates"
+            desc="Estimates booked — assign to the week of the appointment"
+            grossLabel="Gross"
+            grossValue={props.salesGross}
+            items={props.salesItems}
+            noteHeader="Note / Customer"
+            amountHeader="Estimate Value"
+            weekHeader="Appointment Week"
+            addLabel="Add estimate"
+            onAdd={props.onAddSalesItem}
+            onUpdate={props.onUpdateSalesItem}
+            onRemove={props.onRemoveSalesItem}
+            rateLabel="Cancellation rate"
+            rateValue={props.salesCancellationRate}
+            rateMin={0}
+            rateMax={50}
+            onSetRate={props.onSetSalesRate}
+            resultLabel="Likely →"
+            resultValue={props.salesLikely}
+          />
+        )}
 
         {/* Segment 4: Proposals */}
-        <RevenueSegment
-          color="#b5d96e"
-          colorBorder="#9ecb55"
-          title="Proposals Presented"
-          desc="Proposals out — assign to the week you expect a decision"
-          grossLabel="Gross"
-          grossValue={props.proposalsGross}
-          items={props.proposalItems}
-          noteHeader="Note / Customer"
-          amountHeader="Proposal Value"
-          weekHeader="Decision Week"
-          addLabel="Add proposal"
-          onAdd={props.onAddProposalItem}
-          onUpdate={props.onUpdateProposalItem}
-          onRemove={props.onRemoveProposalItem}
-          rateLabel="Close rate"
-          rateValue={props.proposalsCloseRate}
-          rateMin={10}
-          rateMax={90}
-          onSetRate={props.onSetProposalsRate}
-          resultLabel="Expected →"
-          resultValue={props.proposalsExpected}
-        />
+        {activeCategories.has("proposal") && (
+          <RevenueSegment
+            color="#b5d96e"
+            colorBorder="#9ecb55"
+            title="Proposals Presented"
+            desc="Proposals out — assign to the week you expect a decision"
+            grossLabel="Gross"
+            grossValue={props.proposalsGross}
+            items={props.proposalItems}
+            noteHeader="Note / Customer"
+            amountHeader="Proposal Value"
+            weekHeader="Decision Week"
+            addLabel="Add proposal"
+            onAdd={props.onAddProposalItem}
+            onUpdate={props.onUpdateProposalItem}
+            onRemove={props.onRemoveProposalItem}
+            rateLabel="Close rate"
+            rateValue={props.proposalsCloseRate}
+            rateMin={10}
+            rateMax={90}
+            onSetRate={props.onSetProposalsRate}
+            resultLabel="Expected →"
+            resultValue={props.proposalsExpected}
+          />
+        )}
+
+        {/* Category picker */}
+        {inactiveCategories.length > 0 && (
+          <div>
+            {!pickerOpen ? (
+              <button
+                type="button"
+                onClick={() => setPickerOpen(true)}
+                className="flex w-full items-center gap-2 rounded-xl border-[2px] border-dashed border-[#e8e8e5] bg-transparent px-4 py-3.5 text-sm font-bold text-[#6b7280] transition-all hover:border-[#8BC34A] hover:bg-[#f1f8e9] hover:text-[#3d6b14]"
+              >
+                <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                  <path d="M8 2v12M2 8h12" />
+                </svg>
+                Add Revenue Category
+              </button>
+            ) : (
+              <div className="flex flex-col gap-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-[11px] font-bold uppercase tracking-[0.07em] text-[#a0aab4]">
+                    Choose a category
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setPickerOpen(false)}
+                    className="text-[11px] font-semibold text-[#a0aab4] transition-colors hover:text-[#6b7280]"
+                  >
+                    Cancel
+                  </button>
+                </div>
+                <div className="grid grid-cols-3 gap-2">
+                  {inactiveCategories.map((cat) => (
+                    <button
+                      key={cat.key}
+                      type="button"
+                      onClick={() => activateCategory(cat.key)}
+                      className="flex flex-col items-start gap-1.5 rounded-xl border-[1.5px] border-[#e8e8e5] bg-white px-4 py-3.5 text-left transition-all hover:border-[#8BC34A] hover:bg-[#f1f8e9] hover:shadow-sm"
+                    >
+                      <div className="flex items-center gap-2">
+                        <div
+                          className="h-[9px] w-[9px] rounded-full"
+                          style={{ background: cat.color }}
+                        />
+                        <span className="text-[13px] font-extrabold text-[#1a1a1a]">
+                          {cat.label}
+                        </span>
+                      </div>
+                      <span className="text-[11px] font-medium text-[#a0aab4]">
+                        {cat.description}
+                      </span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
 
         {/* Total bar */}
         <div className="flex items-center justify-between rounded-[10px] bg-gradient-to-br from-[#3d6b14] to-[#6a9e32] px-5 py-4">
