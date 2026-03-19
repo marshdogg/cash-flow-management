@@ -197,6 +197,14 @@ function CashFlowDashboardInner({
             ≡ Manage Recurring
           </Link>
 
+          {/* Revenue Items */}
+          <Link
+            href={CASH_FLOW_ROUTES.revenueItems}
+            className="rounded-lg border-[1.5px] border-[#e5e7eb] bg-white px-[18px] py-[11px] text-sm font-semibold text-[#374151] min-h-[44px]"
+          >
+            ≡ Revenue Items
+          </Link>
+
           {/* Edit This Week */}
           <Link
             href={`${CASH_FLOW_ROUTES.ritual}?franchise=${activeFranchiseId}`}
