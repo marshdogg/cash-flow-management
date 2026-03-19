@@ -131,7 +131,7 @@ function KebabMenu({
     <div className="relative" ref={ref}>
       <button
         onClick={() => setOpen(!open)}
-        className="flex h-7 w-7 min-h-[44px] min-w-[44px] items-center justify-center rounded-md text-[#6b7280] transition-all hover:bg-[#f4f3f1] hover:text-[#1a1a1a]"
+        className="flex h-7 w-7 min-h-[44px] min-w-[44px] items-center justify-center rounded-md text-[#6b7280] transition-colors hover:bg-[#f4f3f1] hover:text-[#1a1a1a]"
         aria-label={`Actions for ${item.note}`}
         aria-haspopup="menu"
         aria-expanded={open}
@@ -143,20 +143,20 @@ function KebabMenu({
         </svg>
       </button>
       {open && (
-        <div ref={menuRef} role="menu" onKeyDown={handleMenuKeyDown} className="absolute right-0 z-50 mt-1 min-w-[172px] rounded-[10px] border-[1.5px] border-[#ebebeb] bg-white p-1.5 shadow-[0_4px_16px_rgba(0,0,0,0.07),0_2px_6px_rgba(0,0,0,0.04)]">
+        <div ref={menuRef} role="menu" onKeyDown={handleMenuKeyDown} className="absolute right-0 z-50 mt-1 min-w-[172px] rounded-[10px] border border-[#e5e7eb] bg-white p-1.5 shadow-[0_2px_12px_rgba(0,0,0,0.05),0_1px_4px_rgba(0,0,0,0.03)]">
           {item.status === "open" && (
             <>
               <button
                 role="menuitem"
                 onClick={() => { onUpdateStatus(item, "collected"); setOpen(false); }}
-                className="flex w-full items-center gap-2 rounded-[7px] px-2.5 py-2 text-[13px] font-semibold text-[#6b7280] transition-all hover:bg-[#f1f8e9] hover:text-[#3d6b14]"
+                className="flex w-full items-center gap-2 rounded-[7px] px-2.5 py-2 text-[13px] font-medium text-[#6b7280] transition-colors hover:bg-[#f1f8e9] hover:text-[#3d6b14]"
               >
                 {item.category === "proposal" ? "🏆 Mark won" : "✅ Mark collected"}
               </button>
               <button
                 role="menuitem"
                 onClick={() => { onEdit(item); setOpen(false); }}
-                className="flex w-full items-center gap-2 rounded-[7px] px-2.5 py-2 text-[13px] font-semibold text-[#6b7280] transition-all hover:bg-[#f4f3f1] hover:text-[#1a1a1a]"
+                className="flex w-full items-center gap-2 rounded-[7px] px-2.5 py-2 text-[13px] font-medium text-[#6b7280] transition-colors hover:bg-[#f4f3f1] hover:text-[#1a1a1a]"
               >
                 ✏️ Edit
               </button>
@@ -164,7 +164,7 @@ function KebabMenu({
               <button
                 role="menuitem"
                 onClick={() => { onUpdateStatus(item, item.category === "proposal" ? "lost" : "cancelled"); setOpen(false); }}
-                className="flex w-full items-center gap-2 rounded-[7px] px-2.5 py-2 text-[13px] font-semibold text-[#6b7280] transition-all hover:bg-[#fef2f2] hover:text-[#ef4444]"
+                className="flex w-full items-center gap-2 rounded-[7px] px-2.5 py-2 text-[13px] font-medium text-[#6b7280] transition-colors hover:bg-[#fef2f2] hover:text-[#ef4444]"
               >
                 {item.category === "proposal" ? "❌ Mark lost" : "❌ Mark cancelled"}
               </button>
@@ -175,7 +175,7 @@ function KebabMenu({
               <button
                 role="menuitem"
                 onClick={() => { onUpdateStatus(item, "open"); setOpen(false); }}
-                className="flex w-full items-center gap-2 rounded-[7px] px-2.5 py-2 text-[13px] font-semibold text-[#6b7280] transition-all hover:bg-[#f4f3f1] hover:text-[#1a1a1a]"
+                className="flex w-full items-center gap-2 rounded-[7px] px-2.5 py-2 text-[13px] font-medium text-[#6b7280] transition-colors hover:bg-[#f4f3f1] hover:text-[#1a1a1a]"
               >
                 ↩️ Reopen
               </button>
@@ -183,7 +183,7 @@ function KebabMenu({
               <button
                 role="menuitem"
                 onClick={() => { onDelete(item); setOpen(false); }}
-                className="flex w-full items-center gap-2 rounded-[7px] px-2.5 py-2 text-[13px] font-semibold text-[#6b7280] transition-all hover:bg-[#fef2f2] hover:text-[#ef4444]"
+                className="flex w-full items-center gap-2 rounded-[7px] px-2.5 py-2 text-[13px] font-medium text-[#6b7280] transition-colors hover:bg-[#fef2f2] hover:text-[#ef4444]"
               >
                 🗑 Delete
               </button>
@@ -224,7 +224,7 @@ export function RevenueItemsTable({
     <div className="overflow-x-auto">
       <table className="w-full border-collapse text-left">
         <thead>
-          <tr className="border-b-[1.5px] border-[#ebebeb] bg-[#f4f3f1]">
+          <tr className="border-b border-[#e5e7eb] bg-[#f4f3f1]">
             {!isFom && (
               <th className="w-11 px-4 py-2.5">
                 <div
@@ -249,7 +249,7 @@ export function RevenueItemsTable({
               <th
                 key={col.field}
                 className={cn(
-                  "cursor-pointer select-none whitespace-nowrap px-4 py-2.5 text-[10px] font-bold uppercase tracking-[0.07em] text-[#6b7280] hover:text-[#6b7280]",
+                  "cursor-pointer select-none whitespace-nowrap px-4 py-2.5 text-[10px] font-semibold uppercase tracking-[0.07em] text-[#6b7280] hover:text-[#6b7280]",
                   col.hideOnMobile && "hidden sm:table-cell"
                 )}
                 onClick={() => onSortChange(col.field)}
@@ -336,7 +336,7 @@ export function RevenueItemsTable({
                       {icon}
                     </div>
                     <div>
-                      <div className="text-[13px] font-bold leading-tight text-[#1a1a1a]">
+                      <div className="text-[13px] font-semibold leading-tight text-[#1a1a1a]">
                         {item.note}
                       </div>
                       <div className="mt-0.5 text-[11px] font-medium text-[#6b7280]">
@@ -351,7 +351,7 @@ export function RevenueItemsTable({
                 {/* Category */}
                 <td className="px-4 py-3.5">
                   <span
-                    className="inline-flex items-center gap-[5px] whitespace-nowrap rounded-full border px-2.5 py-[3px] text-[11px] font-bold"
+                    className="inline-flex items-center gap-[5px] whitespace-nowrap rounded-full border px-2.5 py-[3px] text-[11px] font-semibold"
                     style={{
                       background: catColors.bg,
                       borderColor: catColors.border,
@@ -373,7 +373,7 @@ export function RevenueItemsTable({
                 </td>
                 {/* Adjusted Amount */}
                 <td className="hidden whitespace-nowrap px-4 py-3.5 sm:table-cell">
-                  <div className="font-mono text-[13px] font-bold text-[#3d6b14]">
+                  <div className="font-mono text-[13px] font-semibold text-[#4a7a18]">
                     {item.adjustedAmount > 0 ? formatCurrency(item.adjustedAmount) : "—"}
                   </div>
                   <div className="mt-0.5 text-[10px] font-semibold text-[#6b7280]">
@@ -389,14 +389,14 @@ export function RevenueItemsTable({
                 <td className="whitespace-nowrap px-4 py-3.5">
                   <span
                     className={cn(
-                      "inline-flex items-center gap-1 rounded-md border px-2 py-1 text-[11px] font-bold",
+                      "inline-flex items-center gap-1 rounded-md border px-2 py-1 text-[11px] font-semibold",
                       WEEK_CHIP_STYLES[weekInfo.type]
                     )}
                   >
                     {WEEK_EMOJI[weekInfo.type]} {weekInfo.label}
                   </span>
                   {overdue && (
-                    <span className="ml-1.5 inline-flex items-center gap-0.5 rounded border border-[#fde68a] bg-[#fffbeb] px-1.5 py-0.5 text-[10px] font-bold text-[#92400e]">
+                    <span className="ml-1.5 inline-flex items-center gap-0.5 rounded border border-[#fde68a] bg-[#fffbeb] px-1.5 py-0.5 text-[10px] font-semibold text-[#92400e]">
                       ⚠ Overdue
                     </span>
                   )}
@@ -404,7 +404,7 @@ export function RevenueItemsTable({
                 {/* Status */}
                 <td className="px-4 py-3.5">
                   <span
-                    className="inline-flex items-center gap-[5px] whitespace-nowrap rounded-full border px-2.5 py-1 text-[11px] font-bold"
+                    className="inline-flex items-center gap-[5px] whitespace-nowrap rounded-full border px-2.5 py-1 text-[11px] font-semibold"
                     style={{
                       background: statusColors.bg,
                       borderColor: statusColors.border,

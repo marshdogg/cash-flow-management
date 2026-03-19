@@ -262,7 +262,7 @@ function RevenueItemsInner({
       {/* Page Header */}
       <div className="fade-up mb-5 flex items-start justify-between" style={{ animationDelay: "0.05s" }}>
         <div>
-          <h1 className="text-[22px] font-extrabold tracking-[-0.03em] text-[#1a1a1a]">
+          <h1 className="text-[22px] font-bold tracking-[-0.03em] text-[#1a1a1a]">
             Revenue Items
           </h1>
           <p className="mt-0.5 text-[13px] font-medium text-[#6b7280]">
@@ -284,14 +284,14 @@ function RevenueItemsInner({
         <div className="flex items-center gap-2.5">
           <button
             onClick={handleCreate}
-            className="flex items-center gap-[7px] rounded-[9px] bg-[#5a8c1f] px-4 py-[9px] text-[13px] font-bold text-white shadow-[0_1px_3px_rgba(90,140,31,0.3)] transition-all hover:bg-[#4a7a18]"
+            className="flex items-center gap-[7px] rounded-[9px] bg-[#5a8c1f] px-4 py-[9px] text-[13px] font-semibold text-white transition-colors hover:bg-[#4a7a18]"
           >
             <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><path d="M8 2v12M2 8h12" /></svg>
             Add Item
           </button>
           <Link
             href={CASH_FLOW_ROUTES.ritual}
-            className="flex items-center gap-[7px] rounded-[9px] border-[1.5px] border-[#ebebeb] bg-white px-4 py-[9px] text-[13px] font-bold text-[#6b7280] transition-all hover:border-[#c5e49a] hover:bg-[#f1f8e9] hover:text-[#3d6b14]"
+            className="flex items-center gap-[7px] rounded-[9px] border border-[#e5e7eb] bg-white px-4 py-[9px] text-[13px] font-medium text-[#6b7280] transition-colors hover:border-[#c5e49a] hover:bg-[#f9fdf5] hover:text-[#4a7a18]"
           >
             <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><rect x="2" y="2" width="12" height="12" rx="2" /><path d="M2 6h12" /><path d="M5 2v4" /><path d="M11 2v4" /></svg>
             Weekly Ritual
@@ -301,7 +301,7 @@ function RevenueItemsInner({
 
       {/* Table Card */}
       <div
-        className="fade-up overflow-hidden rounded-[14px] bg-white shadow-[0_4px_16px_rgba(0,0,0,0.07),0_2px_6px_rgba(0,0,0,0.04)]"
+        className="fade-up overflow-hidden rounded-[14px] bg-white shadow-[0_2px_12px_rgba(0,0,0,0.05),0_1px_4px_rgba(0,0,0,0.03)]"
         style={{ animationDelay: "0.15s" }}
       >
         {/* Toolbar */}
@@ -369,7 +369,7 @@ function RevenueItemsInner({
                   key={tab.key}
                   onClick={() => setWeekFilter(tab.key)}
                   className={cn(
-                    "whitespace-nowrap rounded-md px-2.5 py-[5px] text-[11px] font-bold transition-all",
+                    "whitespace-nowrap rounded-md px-2.5 py-[5px] text-[11px] font-semibold transition-colors",
                     weekFilter === tab.key
                       ? "bg-white text-[#1a1a1a] shadow-[0_1px_3px_rgba(0,0,0,0.06)]"
                       : "text-[#6b7280] hover:text-[#6b7280]"
@@ -381,7 +381,7 @@ function RevenueItemsInner({
             </div>
 
             {/* Search */}
-            <div className="flex items-center gap-2 rounded-[9px] border-[1.5px] border-[#ebebeb] bg-[#f4f3f1] px-3 py-[7px] transition-all focus-within:border-[#8BC34A] focus-within:bg-white focus-within:shadow-[0_0_0_3px_rgba(139,195,74,0.1)]">
+            <div className="flex items-center gap-2 rounded-[9px] border border-[#e5e7eb] bg-[#f4f3f1] px-3 py-[7px] transition-colors focus-within:border-[#8BC34A] focus-within:bg-white">
               <svg
                 width="13"
                 height="13"
@@ -434,7 +434,7 @@ function RevenueItemsInner({
         ) : (
           <div className="min-h-[200px] px-8 py-14 text-center">
             <div className="text-[36px]">📋</div>
-            <h3 className="mt-3 text-[16px] font-extrabold tracking-[-0.02em] text-[#1a1a1a]">
+            <h3 className="mt-3 text-[16px] font-bold tracking-[-0.02em] text-[#1a1a1a]">
               {items.length === 0 ? "No revenue items yet" : "No items match your filters"}
             </h3>
             <p className="mt-1.5 text-[13px] font-medium text-[#6b7280]">
@@ -445,7 +445,7 @@ function RevenueItemsInner({
             {items.length === 0 && !isCreating && (
               <button
                 onClick={handleCreate}
-                className="mt-4 inline-flex items-center gap-[7px] rounded-[9px] bg-[#5a8c1f] px-5 py-2.5 text-[13px] font-bold text-white transition-all hover:bg-[#4a7a18]"
+                className="mt-4 inline-flex items-center gap-[7px] rounded-[9px] bg-[#5a8c1f] px-5 py-2.5 text-[13px] font-semibold text-white transition-colors hover:bg-[#4a7a18]"
               >
                 <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><path d="M8 2v12M2 8h12" /></svg>
                 Add your first item
@@ -467,13 +467,13 @@ function RevenueItemsInner({
               </span>
               <button
                 onClick={handleBulkCollect}
-                className="flex items-center gap-[5px] rounded-[7px] border-[1.5px] border-[#ebebeb] bg-white px-3 py-1.5 text-[12px] font-semibold text-[#6b7280] transition-all hover:border-[#c5e49a] hover:text-[#3d6b14]"
+                className="flex items-center gap-[5px] rounded-[7px] border border-[#e5e7eb] bg-white px-3 py-1.5 text-[12px] font-medium text-[#6b7280] transition-colors hover:border-[#c5e49a] hover:text-[#3d6b14]"
               >
                 ✅ Mark collected
               </button>
               <button
                 onClick={handleBulkDelete}
-                className="flex items-center gap-[5px] rounded-[7px] border-[1.5px] border-[#ebebeb] bg-white px-3 py-1.5 text-[12px] font-semibold text-[#6b7280] transition-all hover:border-[#fecaca] hover:text-[#ef4444]"
+                className="flex items-center gap-[5px] rounded-[7px] border border-[#e5e7eb] bg-white px-3 py-1.5 text-[12px] font-medium text-[#6b7280] transition-colors hover:border-[#fecaca] hover:text-[#ef4444]"
               >
                 🗑 Delete
               </button>
@@ -682,13 +682,13 @@ function InlineCreateRow({
   };
 
   return (
-    <div className="border-b border-[#c5e49a] bg-[#f8fdf2] px-4 py-3" onKeyDown={handleKeyDown}>
+    <div className="border-b border-[#d4e8b8] bg-[#fafdf6] px-4 py-3" onKeyDown={handleKeyDown}>
       <div className="flex items-center gap-2.5">
         <select
           value={category}
           onChange={(e) => setCategory(e.target.value as RevenueCategory)}
           aria-label="Category"
-          className="h-9 rounded-md border border-[#c5e49a] bg-white px-2 text-[12px] font-semibold text-[#3d6b14] focus:outline-none focus:ring-2 focus:ring-[#8BC34A]"
+          className="h-9 rounded-md border border-[#d4e8b8] bg-white px-2 text-[12px] font-medium text-[#3d6b14] focus:outline-none focus:ring-2 focus:ring-[#8BC34A]"
         >
           <option value="ar">AR</option>
           <option value="sales">Sales</option>
@@ -736,13 +736,13 @@ function InlineCreateRow({
         <button
           onClick={handleSubmit}
           disabled={submitting}
-          className="h-9 rounded-md bg-[#5a8c1f] px-4 text-[12px] font-bold text-white transition-all hover:bg-[#4a7a18] disabled:opacity-50"
+          className="h-9 rounded-md bg-[#5a8c1f] px-4 text-[12px] font-semibold text-white transition-colors hover:bg-[#4a7a18] disabled:opacity-50"
         >
           {submitting ? "Adding..." : "Add"}
         </button>
         <button
           onClick={onCancel}
-          className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-md text-[#6b7280] transition-all hover:bg-[#f4f3f1] hover:text-[#1a1a1a]"
+          className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-md text-[#6b7280] transition-colors hover:bg-[#f4f3f1] hover:text-[#1a1a1a]"
           aria-label="Cancel"
         >
           <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
@@ -772,10 +772,10 @@ function FilterPill({
     <button
       onClick={onClick}
       className={cn(
-        "flex items-center gap-[5px] rounded-full border-[1.5px] px-3 py-1 text-[12px] font-semibold transition-all",
+        "flex items-center gap-[5px] rounded-full border px-3 py-1 text-[12px] font-medium transition-colors",
         active
-          ? "border-[#5a8c1f] bg-[#5a8c1f] text-white shadow-[0_1px_4px_rgba(90,140,31,0.3)]"
-          : "border-[#ebebeb] text-[#6b7280] hover:border-[#c5e49a] hover:bg-[#f1f8e9] hover:text-[#3d6b14]"
+          ? "border-[#5a8c1f] bg-[#5a8c1f] text-white"
+          : "border-[#e5e7eb] text-[#6b7280] hover:border-[#c5e49a] hover:bg-[#f9fdf5] hover:text-[#3d6b14]"
       )}
     >
       {dotColor && !active && (
