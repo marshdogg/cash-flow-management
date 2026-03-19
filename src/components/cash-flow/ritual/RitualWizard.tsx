@@ -316,7 +316,7 @@ function RitualWizardInner({ franchiseId, userName }: RitualWizardProps) {
   ];
 
   return (
-    <div className="flex min-h-screen flex-col bg-[#f7f6f3]">
+    <div className="flex flex-col bg-[#f7f6f3]">
       {/* Topbar */}
       <div className="sticky top-0 z-[100] flex h-[60px] items-center justify-between border-b border-[#e8e8e5] bg-white px-8 shadow-[0_1px_3px_rgba(0,0,0,0.06)]">
         <div className="flex items-center gap-4">
