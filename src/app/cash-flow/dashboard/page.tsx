@@ -8,16 +8,12 @@ export default async function CashFlowDashboardPage() {
   const cashFlowRole: CashFlowUserRole =
     session.role === "fom" ? "fom" : "franchise_partner";
 
-  // FOM gets assigned franchises; FP gets their own
-  const assignedFranchises: AssignedFranchise[] =
-    cashFlowRole === "fom"
-      ? [
-          // In production, fetched from franchise assignment API
-          { id: "fr_toronto_east", name: "WOW 1 DAY PAINTING — Toronto East" },
-          { id: "fr_toronto_west", name: "WOW 1 DAY PAINTING — Toronto West" },
-          { id: "fr_vancouver", name: "WOW 1 DAY PAINTING — Vancouver" },
-        ]
-      : [];
+  // All roles get assigned franchises for the picker
+  const assignedFranchises: AssignedFranchise[] = [
+    { id: "fr_vancouver", name: "WOW 1 DAY PAINTING — Vancouver" },
+    { id: "fr_calgary", name: "WOW 1 DAY PAINTING — Calgary" },
+    { id: "fr_toronto_east", name: "WOW 1 DAY PAINTING — Toronto East" },
+  ];
 
   return (
     <CashFlowDashboardShell

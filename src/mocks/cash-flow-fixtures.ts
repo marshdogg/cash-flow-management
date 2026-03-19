@@ -284,6 +284,7 @@ export const mockDashboardResponse: CashFlowDashboardResponse = {
   openingBalance: MOCK_OPENING,
   periods: mockPeriods,
   threshold: 5000,
+  lastRitualDate: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10),
   summary: {
     totalRevenue: mockTotalRevenue,
     totalExpense: mockTotalExpense,
@@ -340,6 +341,7 @@ export const mockEmptyDashboardResponse: CashFlowDashboardResponse = {
   openingBalance: 0,
   periods: [],
   threshold: 5000,
+  lastRitualDate: null,
   summary: { totalRevenue: 0, totalExpense: 0, projectedBalance: 0 },
 };
 
