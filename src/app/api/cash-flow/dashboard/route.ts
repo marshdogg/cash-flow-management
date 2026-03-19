@@ -15,7 +15,12 @@ export async function GET(request: NextRequest) {
     const { mockDashboardResponse } = await import(
       "@/mocks/cash-flow-fixtures"
     );
-    return apiSuccess<CashFlowDashboardResponse>(mockDashboardResponse, {
+    // Add a mock lastRitualDate (5 days ago)
+    const mockWithRitualDate: CashFlowDashboardResponse = {
+      ...mockDashboardResponse,
+      lastRitualDate: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10),
+    };
+    return apiSuccess<CashFlowDashboardResponse>(mockWithRitualDate, {
       franchiseId,
     });
   }
@@ -51,6 +56,11 @@ export async function GET(request: NextRequest) {
   const threshold = settingsRow?.min_balance ?? DEFAULT_BUFFER;
 
   const snapshots = (snapRows ?? []).map((r) => rowToCamel<Record<string, number | string>>(r));
+
+  // Get the most recent snapshot's completed_at as lastRitualDate
+  const lastRitualDate = snapshots.length > 0
+    ? String(snapshots[snapshots.length - 1].completedAt).slice(0, 10)
+    : null;
 
   // Build periods from snapshots
   const periods: ChartPeriod[] = snapshots.map((s, i) => {
@@ -107,6 +117,7 @@ export async function GET(request: NextRequest) {
         openingBalance: 0,
         periods: [],
         threshold,
+        lastRitualDate: null,
         summary: { totalRevenue: 0, totalExpense: 0, projectedBalance: 0 },
       },
       { franchiseId }
@@ -122,6 +133,7 @@ export async function GET(request: NextRequest) {
       openingBalance,
       periods,
       threshold: DEFAULT_BUFFER,
+      lastRitualDate,
       summary: {
         totalRevenue,
         totalExpense,

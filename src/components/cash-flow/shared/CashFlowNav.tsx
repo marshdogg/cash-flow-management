@@ -22,7 +22,7 @@ const NAV_ITEMS = [
     label: "Weekly Ritual",
     href: CASH_FLOW_ROUTES.ritual,
     icon: RefreshCw,
-    roles: ["franchise_partner"] as CashFlowUserRole[],
+    roles: ["franchise_partner", "fom"] as CashFlowUserRole[],
   },
   {
     label: "Recurring Transactions",

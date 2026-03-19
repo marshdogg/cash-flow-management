@@ -1,4 +1,14 @@
-import { format, isToday, isYesterday, differenceInMinutes } from "date-fns";
+import {
+  format,
+  isToday,
+  isYesterday,
+  differenceInMinutes,
+  startOfWeek,
+  endOfWeek,
+  subWeeks,
+  differenceInCalendarDays,
+  addDays,
+} from "date-fns";
 
 /**
  * Format a date for display in the dashboard.
@@ -37,4 +47,48 @@ export function formatTaskDue(dueDate: string, daysOverdue: number, isOverdue: b
     return `${daysOverdue}d overdue`;
   }
   return "Due today";
+}
+
+// ============================================
+// Week Selector Utilities
+// ============================================
+
+export interface WeekOption {
+  weekStart: string; // YYYY-MM-DD
+  weekEnd: string;   // YYYY-MM-DD
+  label: string;     // "Week of Mar 16 – Mar 22"
+  isCurrent: boolean;
+}
+
+/**
+ * Generate week options for current + N past weeks (Monday-based).
+ */
+export function generateWeekOptions(pastWeeks: number): WeekOption[] {
+  const today = new Date();
+  const options: WeekOption[] = [];
+
+  for (let i = 0; i <= pastWeeks; i++) {
+    const refDate = subWeeks(today, i);
+    const ws = startOfWeek(refDate, { weekStartsOn: 1 });
+    const we = endOfWeek(refDate, { weekStartsOn: 1 });
+
+    options.push({
+      weekStart: format(ws, "yyyy-MM-dd"),
+      weekEnd: format(we, "yyyy-MM-dd"),
+      label: `Week of ${format(ws, "MMM d")} – ${format(we, "MMM d")}`,
+      isCurrent: i === 0,
+    });
+  }
+
+  return options;
+}
+
+/**
+ * Days until next ritual is due (7 days after last ritual).
+ * Positive = upcoming, zero/negative = overdue.
+ */
+export function daysUntilNextRitual(lastRitualDate: string | null): number | null {
+  if (!lastRitualDate) return null;
+  const nextDue = addDays(new Date(lastRitualDate), 7);
+  return differenceInCalendarDays(nextDue, new Date());
 }

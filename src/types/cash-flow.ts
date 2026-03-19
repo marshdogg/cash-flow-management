@@ -162,6 +162,7 @@ export interface CashFlowDashboardResponse {
   openingBalance: number;
   periods: ChartPeriod[];
   threshold: number;
+  lastRitualDate: string | null;
   summary: {
     totalRevenue: number;
     totalExpense: number;
@@ -363,6 +364,9 @@ export interface RitualWizardState {
   salesCancellationRate: number;
   proposalItems: RevenueLineItem[];
   proposalsCloseRate: number;
+  // Week
+  weekStart: string;
+  weekEnd: string;
   // Meta
   startedAt: string;
   expiresAt: string;

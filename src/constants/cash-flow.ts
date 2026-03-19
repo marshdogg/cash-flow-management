@@ -250,6 +250,7 @@ export const WIZARD_STEPS = [
 ] as const;
 
 export const WIZARD_TOTAL_STEPS = 6;
+export const WEEK_SELECTOR_PAST_WEEKS = 4;
 export const WIZARD_STATE_KEY = "cash-flow-ritual-state-v3";
 export const WIZARD_TTL_MS = 24 * 60 * 60 * 1000; // 24 hours
 

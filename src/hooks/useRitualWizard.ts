@@ -19,6 +19,7 @@ import {
   DEFAULT_SALES_CANCELLATION_RATE,
   DEFAULT_PROPOSALS_CLOSE_RATE,
 } from "@/constants/cash-flow";
+import { startOfWeek, endOfWeek, format } from "date-fns";
 
 // ============================================
 // Actions
@@ -53,6 +54,8 @@ type WizardAction =
   | { type: "UPDATE_PROPOSAL_ITEM"; id: string; updates: Partial<RevenueLineItem> }
   | { type: "REMOVE_PROPOSAL_ITEM"; id: string }
   | { type: "SET_PROPOSALS_CLOSE_RATE"; rate: number }
+  // Week
+  | { type: "SET_WEEK"; weekStart: string; weekEnd: string }
   // Reset
   | { type: "RESET" };
 
@@ -145,6 +148,9 @@ function wizardReducer(
     case "SET_PROPOSALS_CLOSE_RATE":
       return { ...state, proposalsCloseRate: action.rate };
 
+    case "SET_WEEK":
+      return { ...state, weekStart: action.weekStart, weekEnd: action.weekEnd };
+
     case "RESET":
       return createFreshState();
 
@@ -159,6 +165,8 @@ function wizardReducer(
 
 function createFreshState(): RitualWizardState {
   const now = new Date();
+  const ws = startOfWeek(now, { weekStartsOn: 1 });
+  const we = endOfWeek(now, { weekStartsOn: 1 });
   return {
     currentStep: 1,
     bankBalance: null,
@@ -171,6 +179,8 @@ function createFreshState(): RitualWizardState {
     salesCancellationRate: DEFAULT_SALES_CANCELLATION_RATE,
     proposalItems: [],
     proposalsCloseRate: DEFAULT_PROPOSALS_CLOSE_RATE,
+    weekStart: format(ws, "yyyy-MM-dd"),
+    weekEnd: format(we, "yyyy-MM-dd"),
     startedAt: now.toISOString(),
     expiresAt: new Date(now.getTime() + WIZARD_TTL_MS).toISOString(),
   };
@@ -194,6 +204,15 @@ function loadSavedState(): RitualWizardState | null {
     if (!("arItems" in state) || !("recurringExpenses" in state)) {
       sessionStorage.removeItem(WIZARD_STATE_KEY);
       return null;
+    }
+
+    // Migrate: add weekStart/weekEnd if missing (older saved states)
+    if (!state.weekStart) {
+      const ref = new Date(state.startedAt);
+      const ws = startOfWeek(ref, { weekStartsOn: 1 });
+      const we = endOfWeek(ref, { weekStartsOn: 1 });
+      state.weekStart = format(ws, "yyyy-MM-dd");
+      state.weekEnd = format(we, "yyyy-MM-dd");
     }
 
     return state as RitualWizardState;
@@ -278,6 +297,12 @@ export function useRitualWizard(franchiseId: string) {
   const prevStep = useCallback(() => {
     dispatch({ type: "GO_TO_STEP", step: state.currentStep - 1 });
   }, [state.currentStep]);
+
+  // ── Week ──
+
+  const setWeek = useCallback((weekStart: string, weekEnd: string) => {
+    dispatch({ type: "SET_WEEK", weekStart, weekEnd });
+  }, []);
 
   // ── Step 2: Bank Balance ──
 
@@ -410,17 +435,11 @@ export function useRitualWizard(franchiseId: string) {
   // ── Complete Ritual ──
 
   const completeRitual = useCallback(async (): Promise<CompleteRitualResponse> => {
-    const now = new Date();
-    const weekStart = now.toISOString().slice(0, 10);
-    const weekEndDate = new Date(now);
-    weekEndDate.setDate(weekEndDate.getDate() + 6);
-    const weekEnd = weekEndDate.toISOString().slice(0, 10);
-
     const request: CompleteRitualRequest = {
       franchiseId,
       completedBy: "usr_001", // TODO: inject from session
-      weekStart,
-      weekEnd,
+      weekStart: state.weekStart,
+      weekEnd: state.weekEnd,
       bankBalance: state.bankBalance ?? 0,
       accountsPayable: state.accountsPayable ?? 0,
       recurringExpenses: state.recurringExpenses.map((e) => ({
@@ -477,6 +496,8 @@ export function useRitualWizard(franchiseId: string) {
     state,
     isResuming,
     welcomeData,
+    // Week
+    setWeek,
     // Navigation
     goToStep,
     nextStep,

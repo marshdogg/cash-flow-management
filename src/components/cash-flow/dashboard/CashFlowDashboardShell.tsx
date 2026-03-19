@@ -12,6 +12,7 @@ const CashFlowChart = lazy(() =>
 import { updateSettings } from "@/lib/cash-flow/cash-flow-api";
 import { CASH_FLOW_ROUTES } from "@/constants/cash-flow";
 import { formatCurrency } from "@/lib/cash-flow/format-utils";
+import { daysUntilNextRitual } from "@/lib/date-utils";
 import type { CashFlowUserRole, AssignedFranchise } from "@/types/cash-flow";
 
 interface CashFlowDashboardShellProps {
@@ -83,7 +84,7 @@ function CashFlowDashboardInner({
   }, [threshold, activeFranchiseId]);
 
   const displayName =
-    isFom && franchises.length > 0
+    franchises.length > 1
       ? franchises.find((f) => f.id === activeFranchiseId)?.name ?? franchiseName
       : data?.franchiseName || franchiseName;
 
@@ -145,7 +146,7 @@ function CashFlowDashboardInner({
       <div className="mb-6 flex items-start justify-between">
         <div>
           <h2 className="text-[24px] font-bold text-[#111827]">Cash Flow</h2>
-          {isFom && franchises.length > 0 ? (
+          {franchises.length > 1 ? (
             <select
               value={activeFranchiseId}
               onChange={(e) => setSelectedFranchise(e.target.value)}
@@ -205,6 +206,36 @@ function CashFlowDashboardInner({
           </Link>
         </div>
       </div>
+
+      {/* Ritual Countdown Badge */}
+      {data?.lastRitualDate != null && (() => {
+        const daysLeft = daysUntilNextRitual(data.lastRitualDate);
+        if (daysLeft === null) return null;
+        const isOverdue = daysLeft <= 0;
+        return (
+          <div
+            className={`mb-4 flex items-center justify-between rounded-lg border px-4 py-2.5 text-[13px] font-semibold ${
+              isOverdue
+                ? "border-red-200 bg-red-50 text-red-700"
+                : "border-[#c5e49a] bg-[#f1f8e9] text-[#3d6b14]"
+            }`}
+          >
+            <span>
+              {isOverdue
+                ? `Ritual overdue by ${Math.abs(daysLeft)} day${Math.abs(daysLeft) !== 1 ? "s" : ""}`
+                : `Next ritual due in ${daysLeft} day${daysLeft !== 1 ? "s" : ""}`}
+            </span>
+            <Link
+              href={CASH_FLOW_ROUTES.ritual}
+              className={`text-[12px] font-bold underline ${
+                isOverdue ? "text-red-700" : "text-[#3d6b14]"
+              }`}
+            >
+              Start Ritual
+            </Link>
+          </div>
+        );
+      })()}
 
       {/* Hero: Projected Balance */}
       <div className="mb-5 flex items-center justify-between border-b border-[#f3f4f6] pb-5">
