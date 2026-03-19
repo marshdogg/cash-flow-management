@@ -5,7 +5,14 @@ import type {
   RevenueItem,
   RevenueItemsResponse,
   UpdateRevenueItemRequest,
+  CreateRevenueItemRequest,
+  RevenueCategory,
 } from "@/types/cash-flow";
+import {
+  DEFAULT_AR_COLLECTION_RATE,
+  DEFAULT_SALES_CANCELLATION_RATE,
+  DEFAULT_PROPOSALS_CLOSE_RATE,
+} from "@/constants/cash-flow";
 
 // ============================================
 // GET — Fetch all revenue items
@@ -53,6 +60,82 @@ export async function GET(request: NextRequest) {
   };
 
   return apiSuccess<RevenueItemsResponse>({ items, meta }, { franchiseId: franchise });
+}
+
+// ============================================
+// POST — Create a revenue item
+// ============================================
+
+function getAdjustmentRate(category: RevenueCategory): number {
+  switch (category) {
+    case "ar":
+      return DEFAULT_AR_COLLECTION_RATE;
+    case "sales":
+      return 100 - DEFAULT_SALES_CANCELLATION_RATE;
+    case "proposal":
+      return DEFAULT_PROPOSALS_CLOSE_RATE;
+  }
+}
+
+export async function POST(request: NextRequest) {
+  let body: { franchiseId: string } & CreateRevenueItemRequest;
+  try {
+    body = await request.json();
+  } catch {
+    return apiError("Invalid JSON body", 400);
+  }
+
+  const { franchiseId, note, category, grossAmount, expectedDate, week } = body;
+  if (!franchiseId) return apiError("franchiseId is required", 400);
+  if (!note?.trim()) return apiError("note is required", 400);
+  if (!category) return apiError("category is required", 400);
+  if (!grossAmount || grossAmount <= 0) return apiError("grossAmount must be positive", 400);
+  if (!expectedDate) return apiError("expectedDate is required", 400);
+  if (!week) return apiError("week is required", 400);
+
+  const adjustmentRate = getAdjustmentRate(category);
+  const adjustedAmount = Math.round(grossAmount * (adjustmentRate / 100) * 100) / 100;
+  const now = new Date().toISOString();
+
+  const newItem: RevenueItem = {
+    id: crypto.randomUUID(),
+    franchiseId,
+    note: note.trim(),
+    category,
+    grossAmount,
+    adjustedAmount,
+    adjustmentRate,
+    week,
+    expectedDate,
+    status: "open",
+    ritualDate: now.split("T")[0],
+    createdAt: now,
+    updatedAt: now,
+  };
+
+  if (isMockMode()) {
+    return apiSuccess(newItem);
+  }
+
+  const { error } = await supabase.from("revenue_items").insert({
+    id: newItem.id,
+    franchise_id: newItem.franchiseId,
+    note: newItem.note,
+    category: newItem.category,
+    gross_amount: newItem.grossAmount,
+    adjusted_amount: newItem.adjustedAmount,
+    adjustment_rate: newItem.adjustmentRate,
+    week: newItem.week,
+    expected_date: newItem.expectedDate,
+    status: newItem.status,
+    ritual_date: newItem.ritualDate,
+    created_at: newItem.createdAt,
+    updated_at: newItem.updatedAt,
+  });
+
+  if (error) return apiError(error.message, 500);
+
+  return apiSuccess(newItem);
 }
 
 // ============================================

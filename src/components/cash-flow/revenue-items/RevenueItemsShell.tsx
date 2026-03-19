@@ -21,6 +21,7 @@ import type {
   RevenueItemSortField,
   RevenueWeek,
   SortDirection,
+  CreateRevenueItemRequest,
 } from "@/types/cash-flow";
 import { REVENUE_WEEK_OPTIONS } from "@/constants/cash-flow";
 
@@ -60,7 +61,7 @@ function RevenueItemsInner({
     );
   const activeFranchiseId = selectedFranchise?.id ?? defaultFranchiseId;
 
-  const { items, meta, isLoading, error, updateItem, deleteItems } =
+  const { items, meta, isLoading, error, createItem, updateItem, deleteItems } =
     useRevenueItems(activeFranchiseId);
 
   const [categoryFilter, setCategoryFilter] = useState<CategoryFilter>("all");
@@ -73,6 +74,7 @@ function RevenueItemsInner({
     direction: "asc",
   });
   const [editingItem, setEditingItem] = useState<RevenueItem | null>(null);
+  const [isCreating, setIsCreating] = useState(false);
 
   // Filter
   const filteredItems = useMemo(() => {
@@ -203,6 +205,24 @@ function RevenueItemsInner({
     setSelectedIds(new Set());
   }, [selectedIds, deleteItems]);
 
+  const handleCreate = useCallback(() => {
+    setIsCreating(true);
+  }, []);
+
+  const handleCreateSubmit = useCallback(
+    async (data: { note: string; grossAmount: number; expectedDate: string; week: RevenueWeek; category?: RevenueCategory }) => {
+      await createItem({
+        note: data.note,
+        grossAmount: data.grossAmount,
+        expectedDate: data.expectedDate,
+        week: data.week,
+        category: data.category!,
+      });
+      setIsCreating(false);
+    },
+    [createItem]
+  );
+
   if (isLoading) {
     return (
       <div className="mx-auto max-w-[1400px]">
@@ -257,6 +277,13 @@ function RevenueItemsInner({
           )}
         </div>
         <div className="flex items-center gap-2.5">
+          <button
+            onClick={handleCreate}
+            className="flex items-center gap-[7px] rounded-[9px] border-[1.5px] border-[#ebebeb] bg-white px-4 py-[9px] text-[13px] font-bold text-[#6b7280] transition-all hover:border-[#c5e49a] hover:bg-[#f1f8e9] hover:text-[#3d6b14]"
+          >
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><path d="M8 2v12M2 8h12" /></svg>
+            Add Item
+          </button>
           <Link
             href={CASH_FLOW_ROUTES.ritual}
             className="flex items-center gap-[7px] rounded-[9px] border-[1.5px] border-[#ebebeb] bg-white px-4 py-[9px] text-[13px] font-bold text-[#6b7280] transition-all hover:border-[#c5e49a] hover:bg-[#f1f8e9] hover:text-[#3d6b14]"
@@ -439,6 +466,15 @@ function RevenueItemsInner({
           onClose={() => setEditingItem(null)}
         />
       )}
+
+      {/* Create Modal */}
+      {isCreating && (
+        <RevenueItemEditModal
+          item={null}
+          onSubmit={handleCreateSubmit}
+          onClose={() => setIsCreating(false)}
+        />
+      )}
     </div>
   );
 }
@@ -448,14 +484,16 @@ function RevenueItemEditModal({
   onSubmit,
   onClose,
 }: {
-  item: RevenueItem;
-  onSubmit: (data: { note: string; grossAmount: number; expectedDate: string; week: RevenueWeek }) => void;
+  item: RevenueItem | null;
+  onSubmit: (data: { note: string; grossAmount: number; expectedDate: string; week: RevenueWeek; category?: RevenueCategory }) => void;
   onClose: () => void;
 }) {
-  const [note, setNote] = useState(item.note);
-  const [grossAmount, setGrossAmount] = useState(item.grossAmount.toString());
-  const [expectedDate, setExpectedDate] = useState(item.expectedDate.split("T")[0]);
-  const [week, setWeek] = useState<RevenueWeek>(item.week);
+  const isCreateMode = item === null;
+  const [note, setNote] = useState(item?.note ?? "");
+  const [grossAmount, setGrossAmount] = useState(item?.grossAmount.toString() ?? "");
+  const [expectedDate, setExpectedDate] = useState(item?.expectedDate.split("T")[0] ?? "");
+  const [week, setWeek] = useState<RevenueWeek>(item?.week ?? "w0");
+  const [category, setCategory] = useState<RevenueCategory>("ar");
   const [errors, setErrors] = useState<Record<string, string>>({});
   const focusTrapRef = useFocusTrap(true);
 
@@ -468,7 +506,13 @@ function RevenueItemEditModal({
     if (!expectedDate) newErrors.expectedDate = "Enter a valid date";
     setErrors(newErrors);
     if (Object.keys(newErrors).length > 0) return;
-    onSubmit({ note: note.trim(), grossAmount: num, expectedDate, week });
+    onSubmit({
+      note: note.trim(),
+      grossAmount: num,
+      expectedDate,
+      week,
+      ...(isCreateMode ? { category } : {}),
+    });
   };
 
   return (
@@ -481,13 +525,32 @@ function RevenueItemEditModal({
       <div className="fixed inset-0 bg-black/50" onClick={onClose} aria-hidden="true" />
       <div ref={focusTrapRef} className="relative z-10 w-full max-w-[440px] rounded-lg bg-white shadow-lg">
         <div className="flex items-center justify-between border-b border-neutral-200 px-6 py-5">
-          <h2 className="text-lg font-bold text-neutral-800">Edit Revenue Item</h2>
+          <h2 className="text-lg font-bold text-neutral-800">
+            {isCreateMode ? "New Revenue Item" : "Edit Revenue Item"}
+          </h2>
           <button onClick={onClose} className="text-xl text-neutral-400 hover:text-neutral-600" aria-label="Close">
             ×
           </button>
         </div>
         <form onSubmit={handleSubmit}>
           <div className="space-y-4 px-6 py-6">
+            {isCreateMode && (
+              <div>
+                <label htmlFor="edit-category" className="mb-1.5 block text-[13px] font-semibold text-neutral-500">
+                  Category <span className="text-danger-600">*</span>
+                </label>
+                <select
+                  id="edit-category"
+                  value={category}
+                  onChange={(e) => setCategory(e.target.value as RevenueCategory)}
+                  className="block w-full rounded-md border border-neutral-200 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#2c3e6b]"
+                >
+                  <option value="ar">AR (Accounts Receivable)</option>
+                  <option value="sales">Sales</option>
+                  <option value="proposal">Proposal</option>
+                </select>
+              </div>
+            )}
             <div>
               <label htmlFor="edit-note" className="mb-1.5 block text-[13px] font-semibold text-neutral-500">
                 Note <span className="text-danger-600">*</span>
@@ -568,7 +631,7 @@ function RevenueItemEditModal({
               type="submit"
               className="rounded-md bg-primary-500 px-[18px] py-2.5 text-[13.5px] font-semibold text-white hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
             >
-              Save
+              {isCreateMode ? "Create" : "Save"}
             </button>
           </div>
         </form>

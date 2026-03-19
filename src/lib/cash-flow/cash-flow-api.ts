@@ -10,7 +10,9 @@ import type {
   RecurringTransaction,
   BulkAction,
   RevenueItemsResponse,
+  RevenueItem,
   UpdateRevenueItemRequest,
+  CreateRevenueItemRequest,
 } from "@/types/cash-flow";
 import { CASH_FLOW_API_ROUTES } from "@/constants/cash-flow";
 
@@ -180,6 +182,16 @@ export function fetchRevenueItems(
     `${CASH_FLOW_API_ROUTES.revenueItems}?franchise=${franchiseId}`,
     options
   );
+}
+
+export function createRevenueItem(
+  franchiseId: string,
+  data: CreateRevenueItemRequest
+): Promise<RevenueItem> {
+  return apiFetch<RevenueItem>(CASH_FLOW_API_ROUTES.revenueItems, {
+    method: "POST",
+    body: JSON.stringify({ ...data, franchiseId }),
+  });
 }
 
 export function updateRevenueItem(

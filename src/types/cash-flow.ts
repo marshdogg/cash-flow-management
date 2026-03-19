@@ -471,4 +471,12 @@ export interface UpdateRevenueItemRequest {
   week?: RevenueWeek;
 }
 
+export interface CreateRevenueItemRequest {
+  note: string;
+  category: RevenueCategory;
+  grossAmount: number;
+  expectedDate: string;
+  week: RevenueWeek;
+}
+
 export type RevenueBulkAction = "collect" | "delete";
