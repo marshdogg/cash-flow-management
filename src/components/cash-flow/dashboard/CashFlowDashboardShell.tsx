@@ -208,8 +208,16 @@ function CashFlowDashboardInner({
       </div>
 
       {/* Ritual Countdown Badge */}
-      {data?.lastRitualDate != null && (() => {
-        const daysLeft = daysUntilNextRitual(data.lastRitualDate);
+      {(() => {
+        // Use the more recent of API date vs locally-stored completion date
+        const apiDate = data?.lastRitualDate ?? null;
+        let storedDate: string | null = null;
+        try { storedDate = localStorage.getItem(`lastRitualDate_${activeFranchiseId}`); } catch {}
+        const effectiveDate = apiDate && storedDate
+          ? (apiDate > storedDate ? apiDate : storedDate)
+          : storedDate ?? apiDate;
+        if (!effectiveDate) return null;
+        const daysLeft = daysUntilNextRitual(effectiveDate);
         if (daysLeft === null) return null;
         const isOverdue = daysLeft <= 0;
         return (
