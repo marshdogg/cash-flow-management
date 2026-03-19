@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useState, useMemo, useCallback } from "react";
+import { Suspense, useState, useMemo, useCallback, useRef, useEffect } from "react";
 import Link from "next/link";
 import { cn } from "@/lib/cn";
 import { useFocusTrap } from "@/hooks/useFocusTrap";
@@ -36,8 +36,7 @@ type CategoryFilter = "all" | RevenueCategory;
 type StatusFilter = "all" | "open" | "collected" | "lost";
 type WeekFilter = "all" | "this" | "next" | "future";
 
-function getItemWeekBucket(item: RevenueItem): "past" | "this" | "next" | "future" {
-  const now = new Date();
+function getItemWeekBucket(item: RevenueItem, now: Date): "past" | "this" | "next" | "future" {
   const expected = new Date(item.expectedDate + "T00:00:00");
   const diffDays = Math.floor((expected.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
   if (diffDays < -6) return "past";
@@ -68,6 +67,12 @@ function RevenueItemsInner({
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
   const [weekFilter, setWeekFilter] = useState<WeekFilter>("all");
   const [searchQuery, setSearchQuery] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
+
+  useEffect(() => {
+    const id = setTimeout(() => setDebouncedSearch(searchQuery), 200);
+    return () => clearTimeout(id);
+  }, [searchQuery]);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [sort, setSort] = useState<{ field: RevenueItemSortField; direction: SortDirection }>({
     field: "expectedDate",
@@ -75,9 +80,11 @@ function RevenueItemsInner({
   });
   const [editingItem, setEditingItem] = useState<RevenueItem | null>(null);
   const [isCreating, setIsCreating] = useState(false);
+  const [createDefaults, setCreateDefaults] = useState<{ category: RevenueCategory; week: RevenueWeek }>({ category: "ar", week: "w0" });
 
   // Filter
   const filteredItems = useMemo(() => {
+    const now = new Date();
     let filtered = items;
 
     if (categoryFilter !== "all") {
@@ -95,21 +102,21 @@ function RevenueItemsInner({
     if (weekFilter !== "all") {
       if (weekFilter === "future") {
         filtered = filtered.filter((i) => {
-          const bucket = getItemWeekBucket(i);
+          const bucket = getItemWeekBucket(i, now);
           return bucket === "future" || bucket === "next";
         });
       } else {
-        filtered = filtered.filter((i) => getItemWeekBucket(i) === weekFilter);
+        filtered = filtered.filter((i) => getItemWeekBucket(i, now) === weekFilter);
       }
     }
 
-    if (searchQuery.trim()) {
-      const q = searchQuery.toLowerCase();
+    if (debouncedSearch.trim()) {
+      const q = debouncedSearch.toLowerCase();
       filtered = filtered.filter((i) => i.note.toLowerCase().includes(q));
     }
 
     return filtered;
-  }, [items, categoryFilter, statusFilter, weekFilter, searchQuery]);
+  }, [items, categoryFilter, statusFilter, weekFilter, debouncedSearch]);
 
   // Sort
   const sortedItems = useMemo(() => {
@@ -206,18 +213,16 @@ function RevenueItemsInner({
   }, [selectedIds, deleteItems]);
 
   const handleCreate = useCallback(() => {
+    setCreateDefaults({
+      category: categoryFilter !== "all" ? categoryFilter : "ar",
+      week: weekFilter === "next" ? "w1" : "w0",
+    });
     setIsCreating(true);
-  }, []);
+  }, [categoryFilter, weekFilter]);
 
   const handleCreateSubmit = useCallback(
-    async (data: { note: string; grossAmount: number; expectedDate: string; week: RevenueWeek; category?: RevenueCategory }) => {
-      await createItem({
-        note: data.note,
-        grossAmount: data.grossAmount,
-        expectedDate: data.expectedDate,
-        week: data.week,
-        category: data.category!,
-      });
+    async (data: CreateRevenueItemRequest) => {
+      await createItem(data);
       setIsCreating(false);
     },
     [createItem]
@@ -279,7 +284,7 @@ function RevenueItemsInner({
         <div className="flex items-center gap-2.5">
           <button
             onClick={handleCreate}
-            className="flex items-center gap-[7px] rounded-[9px] border-[1.5px] border-[#ebebeb] bg-white px-4 py-[9px] text-[13px] font-bold text-[#6b7280] transition-all hover:border-[#c5e49a] hover:bg-[#f1f8e9] hover:text-[#3d6b14]"
+            className="flex items-center gap-[7px] rounded-[9px] bg-[#5a8c1f] px-4 py-[9px] text-[13px] font-bold text-white shadow-[0_1px_3px_rgba(90,140,31,0.3)] transition-all hover:bg-[#4a7a18]"
           >
             <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><path d="M8 2v12M2 8h12" /></svg>
             Add Item
@@ -288,7 +293,7 @@ function RevenueItemsInner({
             href={CASH_FLOW_ROUTES.ritual}
             className="flex items-center gap-[7px] rounded-[9px] border-[1.5px] border-[#ebebeb] bg-white px-4 py-[9px] text-[13px] font-bold text-[#6b7280] transition-all hover:border-[#c5e49a] hover:bg-[#f1f8e9] hover:text-[#3d6b14]"
           >
-            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><path d="M8 2v12M2 8h12" /><circle cx="8" cy="8" r="6.5" /></svg>
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><rect x="2" y="2" width="12" height="12" rx="2" /><path d="M2 6h12" /><path d="M5 2v4" /><path d="M11 2v4" /></svg>
             Weekly Ritual
           </Link>
         </div>
@@ -402,6 +407,16 @@ function RevenueItemsInner({
           </div>
         </div>
 
+        {/* Inline Create Row */}
+        {isCreating && (
+          <InlineCreateRow
+            defaultCategory={createDefaults.category}
+            defaultWeek={createDefaults.week}
+            onSubmit={handleCreateSubmit}
+            onCancel={() => setIsCreating(false)}
+          />
+        )}
+
         {/* Table */}
         {sortedItems.length > 0 ? (
           <RevenueItemsTable
@@ -424,17 +439,26 @@ function RevenueItemsInner({
             </h3>
             <p className="mt-1.5 text-[13px] font-medium text-[#6b7280]">
               {items.length === 0
-                ? "Complete a weekly ritual to populate revenue items."
+                ? "Add an item directly or complete a weekly ritual to get started."
                 : "Try adjusting your filters or search query."}
             </p>
+            {items.length === 0 && !isCreating && (
+              <button
+                onClick={handleCreate}
+                className="mt-4 inline-flex items-center gap-[7px] rounded-[9px] bg-[#5a8c1f] px-5 py-2.5 text-[13px] font-bold text-white transition-all hover:bg-[#4a7a18]"
+              >
+                <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><path d="M8 2v12M2 8h12" /></svg>
+                Add your first item
+              </button>
+            )}
           </div>
         )}
 
         {/* Footer */}
         <div className="flex items-center justify-between border-t border-[#f4f3f1] bg-[#f4f3f1] px-5 py-3">
           <div className="text-[12px] font-medium text-[#6b7280]">
-            Showing <strong className="text-[#6b7280]">{sortedItems.length}</strong> of{" "}
-            <strong className="text-[#6b7280]">{items.length}</strong> items
+            Showing <strong className="text-[#1a1a1a]">{sortedItems.length}</strong> of{" "}
+            <strong className="text-[#1a1a1a]">{items.length}</strong> items
           </div>
           {selectedIds.size > 0 && (
             <div className="flex items-center gap-2">
@@ -467,14 +491,6 @@ function RevenueItemsInner({
         />
       )}
 
-      {/* Create Modal */}
-      {isCreating && (
-        <RevenueItemEditModal
-          item={null}
-          onSubmit={handleCreateSubmit}
-          onClose={() => setIsCreating(false)}
-        />
-      )}
     </div>
   );
 }
@@ -484,20 +500,19 @@ function RevenueItemEditModal({
   onSubmit,
   onClose,
 }: {
-  item: RevenueItem | null;
-  onSubmit: (data: { note: string; grossAmount: number; expectedDate: string; week: RevenueWeek; category?: RevenueCategory }) => void;
+  item: RevenueItem;
+  onSubmit: (data: { note: string; grossAmount: number; expectedDate: string; week: RevenueWeek }) => void | Promise<void>;
   onClose: () => void;
 }) {
-  const isCreateMode = item === null;
-  const [note, setNote] = useState(item?.note ?? "");
-  const [grossAmount, setGrossAmount] = useState(item?.grossAmount.toString() ?? "");
-  const [expectedDate, setExpectedDate] = useState(item?.expectedDate.split("T")[0] ?? "");
-  const [week, setWeek] = useState<RevenueWeek>(item?.week ?? "w0");
-  const [category, setCategory] = useState<RevenueCategory>("ar");
+  const [note, setNote] = useState(item.note);
+  const [grossAmount, setGrossAmount] = useState(item.grossAmount.toString());
+  const [expectedDate, setExpectedDate] = useState(item.expectedDate.split("T")[0]);
+  const [week, setWeek] = useState<RevenueWeek>(item.week);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [submitting, setSubmitting] = useState(false);
   const focusTrapRef = useFocusTrap(true);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const newErrors: Record<string, string> = {};
     if (!note.trim()) newErrors.note = "Note is required";
@@ -506,13 +521,12 @@ function RevenueItemEditModal({
     if (!expectedDate) newErrors.expectedDate = "Enter a valid date";
     setErrors(newErrors);
     if (Object.keys(newErrors).length > 0) return;
-    onSubmit({
-      note: note.trim(),
-      grossAmount: num,
-      expectedDate,
-      week,
-      ...(isCreateMode ? { category } : {}),
-    });
+    setSubmitting(true);
+    try {
+      await onSubmit({ note: note.trim(), grossAmount: num, expectedDate, week });
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -525,32 +539,15 @@ function RevenueItemEditModal({
       <div className="fixed inset-0 bg-black/50" onClick={onClose} aria-hidden="true" />
       <div ref={focusTrapRef} className="relative z-10 w-full max-w-[440px] rounded-lg bg-white shadow-lg">
         <div className="flex items-center justify-between border-b border-neutral-200 px-6 py-5">
-          <h2 className="text-lg font-bold text-neutral-800">
-            {isCreateMode ? "New Revenue Item" : "Edit Revenue Item"}
-          </h2>
-          <button onClick={onClose} className="text-xl text-neutral-400 hover:text-neutral-600" aria-label="Close">
-            ×
+          <h2 className="text-lg font-bold text-neutral-800">Edit Revenue Item</h2>
+          <button onClick={onClose} className="flex h-8 w-8 items-center justify-center rounded-md text-neutral-400 transition-colors hover:bg-neutral-100 hover:text-neutral-600" aria-label="Close">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+              <path d="M4 4l8 8M12 4l-8 8" />
+            </svg>
           </button>
         </div>
         <form onSubmit={handleSubmit}>
           <div className="space-y-4 px-6 py-6">
-            {isCreateMode && (
-              <div>
-                <label htmlFor="edit-category" className="mb-1.5 block text-[13px] font-semibold text-neutral-500">
-                  Category <span className="text-danger-600">*</span>
-                </label>
-                <select
-                  id="edit-category"
-                  value={category}
-                  onChange={(e) => setCategory(e.target.value as RevenueCategory)}
-                  className="block w-full rounded-md border border-neutral-200 px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#2c3e6b]"
-                >
-                  <option value="ar">AR (Accounts Receivable)</option>
-                  <option value="sales">Sales</option>
-                  <option value="proposal">Proposal</option>
-                </select>
-              </div>
-            )}
             <div>
               <label htmlFor="edit-note" className="mb-1.5 block text-[13px] font-semibold text-neutral-500">
                 Note <span className="text-danger-600">*</span>
@@ -629,13 +626,133 @@ function RevenueItemEditModal({
             </button>
             <button
               type="submit"
-              className="rounded-md bg-primary-500 px-[18px] py-2.5 text-[13.5px] font-semibold text-white hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
+              disabled={submitting}
+              className="rounded-md bg-primary-500 px-[18px] py-2.5 text-[13.5px] font-semibold text-white hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:opacity-50"
             >
-              {isCreateMode ? "Create" : "Save"}
+              {submitting ? "Saving..." : "Save"}
             </button>
           </div>
         </form>
       </div>
+    </div>
+  );
+}
+
+function InlineCreateRow({
+  defaultCategory,
+  defaultWeek,
+  onSubmit,
+  onCancel,
+}: {
+  defaultCategory: RevenueCategory;
+  defaultWeek: RevenueWeek;
+  onSubmit: (data: CreateRevenueItemRequest) => void;
+  onCancel: () => void;
+}) {
+  const [category, setCategory] = useState<RevenueCategory>(defaultCategory);
+  const [note, setNote] = useState("");
+  const [grossAmount, setGrossAmount] = useState("");
+  const [expectedDate, setExpectedDate] = useState("");
+  const [week, setWeek] = useState<RevenueWeek>(defaultWeek);
+  const [error, setError] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const noteRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    noteRef.current?.focus();
+  }, []);
+
+  const handleSubmit = async () => {
+    const amount = parseFloat(grossAmount);
+    if (!note.trim()) { setError("Note is required"); noteRef.current?.focus(); return; }
+    if (isNaN(amount) || amount <= 0) { setError("Enter a valid amount"); return; }
+    if (!expectedDate) { setError("Enter a date"); return; }
+    setError("");
+    setSubmitting(true);
+    try {
+      await onSubmit({ note: note.trim(), category, grossAmount: amount, expectedDate, week });
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") { e.preventDefault(); handleSubmit(); }
+    if (e.key === "Escape") { onCancel(); }
+  };
+
+  return (
+    <div className="border-b border-[#c5e49a] bg-[#f8fdf2] px-4 py-3" onKeyDown={handleKeyDown}>
+      <div className="flex items-center gap-2.5">
+        <select
+          value={category}
+          onChange={(e) => setCategory(e.target.value as RevenueCategory)}
+          aria-label="Category"
+          className="h-9 rounded-md border border-[#c5e49a] bg-white px-2 text-[12px] font-semibold text-[#3d6b14] focus:outline-none focus:ring-2 focus:ring-[#8BC34A]"
+        >
+          <option value="ar">AR</option>
+          <option value="sales">Sales</option>
+          <option value="proposal">Proposal</option>
+        </select>
+        <input
+          ref={noteRef}
+          type="text"
+          placeholder="Item description..."
+          value={note}
+          onChange={(e) => setNote(e.target.value)}
+          aria-label="Note"
+          className="h-9 min-w-0 flex-1 rounded-md border border-neutral-200 px-3 text-[13px] font-medium text-[#1a1a1a] placeholder:text-[#9ca3af] focus:border-[#8BC34A] focus:outline-none focus:ring-2 focus:ring-[#8BC34A]"
+        />
+        <div className="relative">
+          <span className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 text-[12px] font-semibold text-[#6b7280]">$</span>
+          <input
+            type="number"
+            step="0.01"
+            min="0.01"
+            placeholder="0.00"
+            value={grossAmount}
+            onChange={(e) => setGrossAmount(e.target.value)}
+            aria-label="Gross amount"
+            className="h-9 w-[110px] rounded-md border border-neutral-200 pl-6 pr-2 text-[13px] font-medium tabular-nums text-[#1a1a1a] placeholder:text-[#9ca3af] focus:border-[#8BC34A] focus:outline-none focus:ring-2 focus:ring-[#8BC34A]"
+          />
+        </div>
+        <input
+          type="date"
+          value={expectedDate}
+          onChange={(e) => setExpectedDate(e.target.value)}
+          aria-label="Expected date"
+          className="h-9 rounded-md border border-neutral-200 px-2.5 text-[12px] font-medium text-[#1a1a1a] focus:border-[#8BC34A] focus:outline-none focus:ring-2 focus:ring-[#8BC34A]"
+        />
+        <select
+          value={week}
+          onChange={(e) => setWeek(e.target.value as RevenueWeek)}
+          aria-label="Week"
+          className="h-9 rounded-md border border-neutral-200 bg-white px-2 text-[12px] font-medium text-[#6b7280] focus:border-[#8BC34A] focus:outline-none focus:ring-2 focus:ring-[#8BC34A]"
+        >
+          {REVENUE_WEEK_OPTIONS.map((opt) => (
+            <option key={opt.value} value={opt.value}>{opt.label}</option>
+          ))}
+        </select>
+        <button
+          onClick={handleSubmit}
+          disabled={submitting}
+          className="h-9 rounded-md bg-[#5a8c1f] px-4 text-[12px] font-bold text-white transition-all hover:bg-[#4a7a18] disabled:opacity-50"
+        >
+          {submitting ? "Adding..." : "Add"}
+        </button>
+        <button
+          onClick={onCancel}
+          className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-md text-[#6b7280] transition-all hover:bg-[#f4f3f1] hover:text-[#1a1a1a]"
+          aria-label="Cancel"
+        >
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+            <path d="M4 4l8 8M12 4l-8 8" />
+          </svg>
+        </button>
+      </div>
+      {error && (
+        <p className="mt-1.5 text-[12px] font-medium text-danger-600">{error}</p>
+      )}
     </div>
   );
 }
