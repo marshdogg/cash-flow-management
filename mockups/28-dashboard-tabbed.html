@@ -1,0 +1,1910 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WOW OS - Dashboard</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #f9fafb;
+      min-height: 100vh;
+    }
+    
+    /* ========================================
+       LAYOUT
+       ======================================== */
+    
+    .page-layout {
+      display: flex;
+      min-height: 100vh;
+    }
+    
+    /* Sidebar */
+    .sidebar {
+      width: 240px;
+      background: white;
+      border-right: 1px solid #e5e7eb;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100vh;
+      z-index: 100;
+      transition: transform 0.3s ease;
+    }
+    
+    .logo {
+      width: 48px;
+      height: 48px;
+      background: #8BC34A;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 700;
+      font-size: 14px;
+      margin-bottom: 32px;
+      text-decoration: none;
+    }
+    
+    .logo:hover {
+      background: #7cb342;
+    }
+    
+    /* Navigation */
+    nav {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    
+    .nav-item {
+      padding: 10px 12px;
+      border-radius: 6px;
+      font-size: 14px;
+      color: #374151;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      transition: all 0.15s ease;
+    }
+    
+    .nav-item:hover { 
+      background: #f3f4f6; 
+      color: #111827;
+    }
+    
+    .nav-item.active { 
+      color: #8BC34A; 
+      background: #f0f9e8; 
+      font-weight: 500; 
+    }
+    
+    .nav-icon { 
+      font-size: 16px; 
+      width: 20px; 
+      text-align: center; 
+    }
+    
+    .nav-badge {
+      margin-left: auto;
+      background: #dc2626;
+      color: white;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 2px 6px;
+      border-radius: 10px;
+    }
+    
+    .nav-external {
+      font-size: 10px;
+      color: #9ca3af;
+      margin-left: auto;
+    }
+    
+    .sidebar-footer {
+      margin-top: auto;
+      padding-top: 16px;
+      border-top: 1px solid #e5e7eb;
+    }
+    
+    .settings-link {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: 6px;
+      font-size: 14px;
+      color: #374151;
+      text-decoration: none;
+      margin-bottom: 12px;
+    }
+    
+    .settings-link:hover {
+      background: #f3f4f6;
+    }
+    
+    .franchise-selector {
+      padding: 10px 12px;
+      border-radius: 6px;
+      background: #f0f9e8;
+      cursor: pointer;
+      margin-bottom: 8px;
+    }
+    
+    .franchise-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: #8BC34A;
+    }
+    
+    .franchise-label {
+      font-size: 11px;
+      color: #6b7280;
+    }
+    
+    .user-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 12px;
+    }
+    
+    .user-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: #e5e7eb;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 600;
+      color: #374151;
+    }
+    
+    .user-info { flex: 1; }
+    .user-name { font-size: 13px; color: #374151; font-weight: 500; }
+    .user-role { font-size: 11px; color: #9ca3af; }
+    
+    /* Main content */
+    .main {
+      flex: 1;
+      margin-left: 240px;
+      padding: 24px 32px;
+      background: #f9fafb;
+      min-height: 100vh;
+    }
+    
+    /* Mobile nav toggle */
+    .mobile-nav-toggle {
+      display: none;
+      position: fixed;
+      top: 16px;
+      left: 16px;
+      z-index: 200;
+      width: 44px;
+      height: 44px;
+      border: none;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      font-size: 20px;
+      cursor: pointer;
+    }
+    
+    .sidebar-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 90;
+    }
+    
+    /* ========================================
+       HEADER
+       ======================================== */
+    
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+    
+    .header-left h1 {
+      font-size: 24px;
+      font-weight: 700;
+      color: #111827;
+    }
+    
+    .header-subtitle {
+      font-size: 13px;
+      color: #6b7280;
+      margin-top: 4px;
+    }
+    
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    
+    .last-update {
+      font-size: 12px;
+      color: #9ca3af;
+    }
+    
+    .btn-refresh {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 16px;
+      border: 1px solid #8BC34A;
+      border-radius: 20px;
+      background: white;
+      color: #8BC34A;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    
+    .btn-refresh:hover {
+      background: #f0f9e8;
+    }
+    
+    .btn-refresh:focus-visible {
+      outline: 2px solid #8BC34A;
+      outline-offset: 2px;
+    }
+    
+    .btn-refresh.loading {
+      pointer-events: none;
+      opacity: 0.7;
+    }
+    
+    .btn-refresh .spinner {
+      display: none;
+      width: 14px;
+      height: 14px;
+      border: 2px solid #8BC34A;
+      border-top-color: transparent;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    
+    .btn-refresh.loading .spinner {
+      display: inline-block;
+    }
+    
+    .btn-refresh.loading .refresh-icon {
+      display: none;
+    }
+    
+    .btn-refresh.success {
+      border-color: #16a34a;
+      color: #16a34a;
+      background: #f0fdf4;
+    }
+    
+    .btn-refresh.error {
+      border-color: #dc2626;
+      color: #dc2626;
+      background: #fef2f2;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    
+    /* ========================================
+       DASHBOARD TABS
+       ======================================== */
+    
+    .dashboard-tabs {
+      display: flex;
+      gap: 0;
+      border-bottom: 1px solid #e5e7eb;
+      margin-bottom: 24px;
+    }
+    
+    .dashboard-tab {
+      padding: 14px 24px;
+      font-size: 14px;
+      font-weight: 500;
+      color: #6b7280;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -1px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.15s ease;
+      background: none;
+      border-top: none;
+      border-left: none;
+      border-right: none;
+    }
+    
+    .dashboard-tab:hover { 
+      color: #374151; 
+    }
+    
+    .dashboard-tab.active {
+      color: #8BC34A;
+      border-bottom-color: #8BC34A;
+    }
+    
+    .dashboard-tab:focus-visible {
+      outline: 2px solid #8BC34A;
+      outline-offset: -2px;
+    }
+    
+    .tab-badge {
+      background: #fef2f2;
+      color: #dc2626;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 2px 6px;
+      border-radius: 10px;
+    }
+    
+    /* Tab content */
+    .tab-content {
+      display: none;
+    }
+    
+    .tab-content.active {
+      display: block;
+    }
+    
+    /* ========================================
+       PERIOD SELECTOR
+       ======================================== */
+    
+    .period-selector {
+      display: flex;
+      gap: 4px;
+      background: #f3f4f6;
+      padding: 4px;
+      border-radius: 8px;
+      margin-bottom: 24px;
+      width: fit-content;
+    }
+    
+    .period-btn {
+      padding: 8px 16px;
+      border: none;
+      background: transparent;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 500;
+      color: #6b7280;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    
+    .period-btn:hover {
+      color: #374151;
+    }
+    
+    .period-btn.active {
+      background: white;
+      color: #111827;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    }
+    
+    .period-btn:focus-visible {
+      outline: 2px solid #8BC34A;
+      outline-offset: 2px;
+    }
+    
+    /* ========================================
+       KPI CARDS
+       ======================================== */
+    
+    .top-kpis {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    
+    .kpi-card {
+      background: white;
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      padding: 20px;
+      position: relative;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    
+    .kpi-card:hover {
+      border-color: #8BC34A;
+      box-shadow: 0 4px 12px rgba(139, 195, 74, 0.15);
+    }
+    
+    .kpi-card:focus-visible {
+      outline: 2px solid #8BC34A;
+      outline-offset: 2px;
+    }
+    
+    .kpi-card.highlight {
+      border-color: #8BC34A;
+      background: linear-gradient(135deg, #f0f9e8 0%, white 100%);
+    }
+    
+    .kpi-card.alert {
+      border-color: #fca5a5;
+      background: linear-gradient(135deg, #fef2f2 0%, white 100%);
+    }
+    
+    .kpi-label {
+      font-size: 12px;
+      font-weight: 500;
+      color: #6b7280;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+    }
+    
+    .kpi-value {
+      font-size: 28px;
+      font-weight: 700;
+      color: #111827;
+    }
+    
+    .kpi-value.green { color: #16a34a; }
+    .kpi-value.red { color: #dc2626; }
+    
+    .kpi-target {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 8px;
+    }
+    
+    .kpi-target-label {
+      font-size: 12px;
+      color: #6b7280;
+    }
+    
+    .kpi-progress {
+      flex: 1;
+      height: 6px;
+      background: #e5e7eb;
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    
+    .kpi-progress-bar {
+      height: 100%;
+      border-radius: 3px;
+      background: #8BC34A;
+      transition: width 0.3s ease;
+    }
+    
+    .kpi-progress-bar.over { background: #16a34a; }
+    .kpi-progress-bar.under { background: #f59e0b; }
+    .kpi-progress-bar.danger { background: #dc2626; }
+    
+    .kpi-percent {
+      font-size: 12px;
+      font-weight: 600;
+      color: #16a34a;
+    }
+    
+    .kpi-percent.under { color: #f59e0b; }
+    .kpi-percent.danger { color: #dc2626; }
+    
+    .kpi-trend {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    
+    .kpi-trend.up { color: #16a34a; }
+    .kpi-trend.down { color: #dc2626; }
+    
+    /* ========================================
+       SECTION CARDS
+       ======================================== */
+    
+    .section-card {
+      background: white;
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      overflow: hidden;
+      margin-bottom: 24px;
+    }
+    
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 20px;
+      border-bottom: 1px solid #e5e7eb;
+    }
+    
+    .section-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: #111827;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .section-link {
+      font-size: 13px;
+      color: #8BC34A;
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.15s ease;
+    }
+    
+    .section-link:hover {
+      color: #7cb342;
+      text-decoration: underline;
+    }
+    
+    .section-link:focus-visible {
+      outline: 2px solid #8BC34A;
+      outline-offset: 2px;
+    }
+    
+    .section-body {
+      padding: 20px;
+    }
+    
+    /* ========================================
+       DASHBOARD GRID
+       ======================================== */
+    
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 24px;
+    }
+    
+    .dashboard-grid.equal {
+      grid-template-columns: 1fr 1fr;
+    }
+    
+    /* ========================================
+       FOCUS LIST
+       ======================================== */
+    
+    .focus-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    
+    .focus-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px;
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      text-decoration: none;
+      color: inherit;
+    }
+    
+    .focus-item:hover {
+      border-color: #8BC34A;
+      background: #f0f9e8;
+    }
+    
+    .focus-item:focus-visible {
+      outline: 2px solid #8BC34A;
+      outline-offset: 2px;
+    }
+    
+    .focus-item.urgent {
+      background: #fef2f2;
+      border-color: #fca5a5;
+    }
+    
+    .focus-item.urgent:hover {
+      background: #fee2e2;
+    }
+    
+    .focus-item.warning {
+      background: #fffbeb;
+      border-color: #fcd34d;
+    }
+    
+    .focus-item.warning:hover {
+      background: #fef3c7;
+    }
+    
+    .focus-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      background: white;
+      border: 1px solid #e5e7eb;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+    }
+    
+    .focus-item.urgent .focus-icon {
+      background: #fecaca;
+      border-color: #fca5a5;
+    }
+    
+    .focus-info { flex: 1; }
+    .focus-title { font-size: 14px; font-weight: 600; color: #111827; }
+    .focus-detail { font-size: 12px; color: #6b7280; }
+    
+    .focus-count {
+      font-size: 24px;
+      font-weight: 700;
+      color: #111827;
+    }
+    
+    .focus-count.red { color: #dc2626; }
+    .focus-count.amber { color: #f59e0b; }
+    
+    /* ========================================
+       FOCUS SECTION DIVIDER
+       ======================================== */
+
+    .focus-section-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 8px;
+      margin-bottom: -4px;
+    }
+
+    .focus-section-label span {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #9ca3af;
+      white-space: nowrap;
+    }
+
+    .focus-section-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: #e5e7eb;
+    }
+
+    /* ========================================
+       TASK ITEMS IN FOCUS
+       ======================================== */
+
+    .task-focus-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 12px;
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .task-focus-item:hover {
+      border-color: #8BC34A;
+      background: #f0f9e8;
+    }
+
+    .task-focus-item.overdue {
+      border-left: 3px solid #dc2626;
+    }
+
+    .task-focus-item.due-today {
+      border-left: 3px solid #f59e0b;
+    }
+
+    .task-checkbox {
+      width: 20px;
+      height: 20px;
+      border: 2px solid #d1d5db;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.15s;
+      flex-shrink: 0;
+    }
+
+    .task-checkbox:hover {
+      border-color: #8BC34A;
+      background: #f0f9e8;
+    }
+
+    .task-focus-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .task-focus-title {
+      font-size: 13px;
+      font-weight: 500;
+      color: #111827;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .task-focus-meta {
+      font-size: 11px;
+      color: #6b7280;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 2px;
+    }
+
+    .task-type-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-size: 11px;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    .task-type-badge.call { background: #dbeafe; color: #1d4ed8; }
+    .task-type-badge.email { background: #f3e8ff; color: #7c3aed; }
+    .task-type-badge.todo { background: #f3f4f6; color: #374151; }
+    .task-type-badge.followup { background: #fef3c7; color: #b45309; }
+
+    .task-due-label {
+      font-size: 11px;
+      font-weight: 500;
+    }
+
+    .task-due-label.overdue { color: #dc2626; }
+    .task-due-label.today { color: #f59e0b; }
+
+    /* ========================================
+       STATS GRID
+       ======================================== */
+    
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+    
+    .stat-item {
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      padding: 16px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    
+    .stat-item:hover {
+      border-color: #8BC34A;
+    }
+    
+    .stat-item.alert {
+      background: #fef2f2;
+      border-color: #fca5a5;
+    }
+    
+    .stat-item.success {
+      background: #f0fdf4;
+      border-color: #86efac;
+    }
+    
+    .stat-label {
+      font-size: 12px;
+      color: #6b7280;
+      margin-bottom: 4px;
+    }
+    
+    .stat-value {
+      font-size: 22px;
+      font-weight: 700;
+      color: #111827;
+    }
+    
+    .stat-value.red { color: #dc2626; }
+    .stat-value.green { color: #16a34a; }
+    
+    .stat-change {
+      font-size: 12px;
+      font-weight: 500;
+      margin-top: 4px;
+    }
+    
+    .stat-change.up { color: #16a34a; }
+    .stat-change.down { color: #dc2626; }
+    .stat-change.flat { color: #6b7280; }
+    
+    .stat-subtitle {
+      font-size: 11px;
+      color: #9ca3af;
+      margin-top: 4px;
+    }
+    
+    /* ========================================
+       FUNNEL MINI
+       ======================================== */
+    
+    .funnel-mini {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .funnel-stage {
+      flex: 1;
+      text-align: center;
+      padding: 12px 8px;
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      position: relative;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    
+    .funnel-stage:hover {
+      border-color: #8BC34A;
+      background: #f0f9e8;
+    }
+    
+    .funnel-stage::after {
+      content: '→';
+      position: absolute;
+      right: -14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #d1d5db;
+      font-size: 14px;
+    }
+    
+    .funnel-stage:last-child::after { display: none; }
+    
+    .funnel-stage-label {
+      font-size: 11px;
+      color: #6b7280;
+      margin-bottom: 4px;
+    }
+    
+    .funnel-stage-value {
+      font-size: 20px;
+      font-weight: 700;
+      color: #111827;
+    }
+    
+    .funnel-stage-change {
+      font-size: 11px;
+      font-weight: 500;
+      margin-top: 2px;
+    }
+    
+    .funnel-stage-change.up { color: #16a34a; }
+    .funnel-stage-change.down { color: #dc2626; }
+    
+    /* ========================================
+       TEAM ROWS
+       ======================================== */
+    
+    .team-row {
+      display: flex;
+      align-items: center;
+      padding: 12px 0;
+      border-bottom: 1px solid #f3f4f6;
+      cursor: pointer;
+      margin: 0 -20px;
+      padding-left: 20px;
+      padding-right: 20px;
+      transition: background 0.15s ease;
+      text-decoration: none;
+      color: inherit;
+    }
+    
+    .team-row:hover {
+      background: #f9fafb;
+    }
+    
+    .team-row:last-child { border-bottom: none; }
+    
+    .team-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 600;
+      margin-right: 12px;
+    }
+    
+    .team-avatar.pink { background: #fce7f3; color: #be185d; }
+    .team-avatar.amber { background: #fef3c7; color: #b45309; }
+    .team-avatar.blue { background: #dbeafe; color: #1d4ed8; }
+    .team-avatar.cyan { background: #e0f2fe; color: #0369a1; }
+    
+    .team-info { flex: 1; }
+    .team-name { font-size: 14px; font-weight: 500; color: #111827; }
+    .team-role { font-size: 12px; color: #6b7280; }
+    
+    .team-stat { text-align: right; }
+    .team-stat-value { font-size: 16px; font-weight: 700; }
+    .team-stat-value.green { color: #16a34a; }
+    .team-stat-value.red { color: #dc2626; }
+    .team-stat-label { font-size: 11px; color: #6b7280; }
+    
+    /* ========================================
+       GP BREAKDOWN
+       ======================================== */
+    
+    .gp-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+    }
+    
+    .gp-label { font-size: 13px; color: #6b7280; }
+    .gp-value { font-size: 13px; font-weight: 600; color: #111827; }
+    .gp-value.negative { color: #dc2626; }
+    
+    .gp-divider {
+      height: 1px;
+      background: #e5e7eb;
+      margin: 8px 0;
+    }
+    
+    .gp-total .gp-label { color: #111827; font-weight: 600; }
+    
+    /* ========================================
+       TOAST NOTIFICATIONS
+       ======================================== */
+    
+    .toast-container {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 2000;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    
+    .toast {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 20px;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+      min-width: 300px;
+      animation: toast-in 0.3s ease;
+    }
+    
+    @keyframes toast-in {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .toast.success { border-left: 4px solid #16a34a; }
+    .toast.error { border-left: 4px solid #dc2626; }
+    .toast.warning { border-left: 4px solid #f59e0b; }
+    
+    .toast-icon { font-size: 20px; }
+    .toast-content { flex: 1; }
+    .toast-title { font-weight: 600; color: #111827; }
+    .toast-message { font-size: 13px; color: #6b7280; }
+    
+    .toast-close {
+      background: none;
+      border: none;
+      color: #9ca3af;
+      cursor: pointer;
+      padding: 4px;
+      font-size: 18px;
+    }
+    
+    /* ========================================
+       RESPONSIVE BREAKPOINTS
+       ======================================== */
+    
+    @media (max-width: 1024px) {
+      .sidebar {
+        transform: translateX(-100%);
+      }
+      
+      .sidebar.open {
+        transform: translateX(0);
+      }
+      
+      .sidebar-overlay.open {
+        display: block;
+      }
+      
+      .mobile-nav-toggle {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      
+      .main {
+        margin-left: 0;
+        padding: 80px 24px 24px;
+      }
+      
+      .top-kpis {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      
+      .dashboard-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .dashboard-grid.equal {
+        grid-template-columns: 1fr;
+      }
+    }
+    
+    @media (max-width: 640px) {
+      .top-kpis {
+        grid-template-columns: 1fr;
+      }
+      
+      .period-selector {
+        width: 100%;
+      }
+      
+      .period-btn {
+        flex: 1;
+        text-align: center;
+      }
+      
+      .funnel-mini {
+        flex-direction: column;
+      }
+      
+      .funnel-stage {
+        width: 100%;
+      }
+      
+      .funnel-stage::after {
+        display: none;
+      }
+      
+      .header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+      }
+      
+      .header-actions {
+        width: 100%;
+        justify-content: space-between;
+      }
+      
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Mobile nav toggle -->
+  <button class="mobile-nav-toggle" onclick="toggleSidebar()" aria-label="Toggle navigation">
+    ☰
+  </button>
+  
+  <!-- Sidebar overlay for mobile -->
+  <div class="sidebar-overlay" onclick="toggleSidebar()"></div>
+  
+  <div class="page-layout">
+    <!-- ==================== SIDEBAR ==================== -->
+    <aside class="sidebar" role="navigation" aria-label="Main navigation">
+      <a href="28-dashboard-tabbed.html" class="logo" title="WOW OS Home">WOW</a>
+      
+      <nav>
+        <a href="28-dashboard-tabbed.html" class="nav-item active">
+          <span class="nav-icon">📊</span> Dashboard
+        </a>
+        <a href="08-funnel-cards.html" class="nav-item">
+          <span class="nav-icon">📈</span> Funnel
+        </a>
+        <a href="29-customers-list.html" class="nav-item">
+          <span class="nav-icon">👥</span> Customers
+        </a>
+        <a href="30-projects-list.html" class="nav-item">
+          <span class="nav-icon">🎨</span> Projects
+        </a>
+        <a href="27-calendar.html" class="nav-item">
+          <span class="nav-icon">📅</span> Calendar
+        </a>
+        <a href="42-tasks-list.html" class="nav-item">
+          <span class="nav-icon">☑️</span> Tasks
+          <span class="nav-badge">3</span>
+        </a>
+        <a href="15-technicians-list.html" class="nav-item">
+          <span class="nav-icon">👷</span> Technicians
+        </a>
+        <a href="https://app.paintscout.com" target="_blank" rel="noopener" class="nav-item">
+          <span class="nav-icon">📋</span> PaintScout
+          <span class="nav-external">↗</span>
+        </a>
+        <a href="11-customer-care-kanban.html" class="nav-item">
+          <span class="nav-icon">🛠️</span> Customer Care
+          <span class="nav-badge">3</span>
+        </a>
+      </nav>
+      
+      <div class="sidebar-footer">
+        <a href="26-franchise-settings.html" class="settings-link">
+          <span>⚙️</span> Settings
+        </a>
+        <div class="franchise-selector">
+          <div class="franchise-label">Franchise</div>
+          <div class="franchise-name">W1D Test Franchise 1</div>
+        </div>
+        <div class="user-row">
+          <div class="user-avatar">MB</div>
+          <div class="user-info">
+            <div class="user-name">Marshall Behrns</div>
+            <div class="user-role">Franchise Partner</div>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ==================== MAIN CONTENT ==================== -->
+    <main class="main">
+      <div class="header">
+        <div class="header-left">
+          <h1>Dashboard</h1>
+          <div class="header-subtitle" id="header-subtitle">January 2026 · W1D Test Franchise 1</div>
+        </div>
+        <div class="header-actions">
+          <span class="last-update" id="last-update">Last update: 07:46 PM</span>
+          <button class="btn-refresh" onclick="refreshDashboard()" aria-label="Refresh dashboard data">
+            <span class="spinner"></span>
+            <span class="refresh-icon">↻</span>
+            <span class="refresh-text">Refresh</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Dashboard Tabs -->
+      <div class="dashboard-tabs" role="tablist">
+        <button class="dashboard-tab active" role="tab" aria-selected="true" data-tab="overview" onclick="switchTab('overview')">
+          📊 Overview
+        </button>
+        <button class="dashboard-tab" role="tab" aria-selected="false" data-tab="sales" onclick="switchTab('sales')">
+          📈 Sales
+        </button>
+        <button class="dashboard-tab" role="tab" aria-selected="false" data-tab="profitability" onclick="switchTab('profitability')">
+          💰 Profitability
+        </button>
+      </div>
+
+      <!-- Period Selector -->
+      <div class="period-selector" role="group" aria-label="Time period">
+        <button class="period-btn" data-period="today" onclick="setPeriod('today')">Today</button>
+        <button class="period-btn" data-period="week" onclick="setPeriod('week')">This Week</button>
+        <button class="period-btn active" data-period="month" onclick="setPeriod('month')">This Month</button>
+        <button class="period-btn" data-period="ytd" onclick="setPeriod('ytd')">YTD</button>
+      </div>
+
+      <!-- ==================== TAB 1: OVERVIEW ==================== -->
+      <div id="tab-overview" class="tab-content active" role="tabpanel">
+        <!-- Top KPIs -->
+        <div class="top-kpis">
+          <div class="kpi-card highlight" tabindex="0" onclick="navigateTo('30-projects-list.html?status=completed')" role="button" aria-label="Revenue MTD: $148,240, 99% of target">
+            <span class="kpi-trend up">↑ 12%</span>
+            <div class="kpi-label">Revenue MTD</div>
+            <div class="kpi-value">$148,240</div>
+            <div class="kpi-target">
+              <span class="kpi-target-label">vs $150K target</span>
+              <div class="kpi-progress">
+                <div class="kpi-progress-bar" style="width: 99%;"></div>
+              </div>
+              <span class="kpi-percent">99%</span>
+            </div>
+          </div>
+          
+          <div class="kpi-card" tabindex="0" onclick="navigateTo('30-projects-list.html?view=profitability')" role="button" aria-label="Gross Profit: $72,450, 48.9% margin">
+            <span class="kpi-trend up">↑ 8%</span>
+            <div class="kpi-label">Gross Profit</div>
+            <div class="kpi-value">$72,450</div>
+            <div class="kpi-target">
+              <span class="kpi-target-label">48.9% margin</span>
+              <div class="kpi-progress">
+                <div class="kpi-progress-bar under" style="width: 98%;"></div>
+              </div>
+              <span class="kpi-percent under">vs 50%</span>
+            </div>
+          </div>
+          
+          <div class="kpi-card" tabindex="0" onclick="navigateTo('08-funnel-cards.html')" role="button" aria-label="Close Rate: 52%, exceeds 50% target">
+            <span class="kpi-trend up">↑ 4%</span>
+            <div class="kpi-label">Close Rate</div>
+            <div class="kpi-value green">52%</div>
+            <div class="kpi-target">
+              <span class="kpi-target-label">vs 50% target</span>
+              <div class="kpi-progress">
+                <div class="kpi-progress-bar over" style="width: 100%;"></div>
+              </div>
+              <span class="kpi-percent">104%</span>
+            </div>
+          </div>
+          
+          <div class="kpi-card alert" tabindex="0" onclick="navigateTo('11-customer-care-kanban.html')" role="button" aria-label="Callback Rate: 6.2%, over 5% threshold - needs attention">
+            <span class="kpi-trend down">↑ 1.2%</span>
+            <div class="kpi-label">Callback Rate</div>
+            <div class="kpi-value red">6.2%</div>
+            <div class="kpi-target">
+              <span class="kpi-target-label">Threshold: 5%</span>
+              <div class="kpi-progress">
+                <div class="kpi-progress-bar danger" style="width: 100%;"></div>
+              </div>
+              <span class="kpi-percent danger">Over</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="dashboard-grid">
+          <div>
+            <!-- Today's Focus -->
+            <div class="section-card">
+              <div class="section-header">
+                <div class="section-title">📋 Today's Focus</div>
+                <a href="42-tasks-list.html" class="section-link">All Tasks →</a>
+              </div>
+              <div class="section-body">
+                <div class="focus-list">
+
+                  <!-- === Operations Focus === -->
+                  <a href="08-funnel-cards.html?filter=qual-call-needed" class="focus-item urgent">
+                    <div class="focus-icon">📞</div>
+                    <div class="focus-info">
+                      <div class="focus-title">Qualification Call Needed</div>
+                      <div class="focus-detail">Estimates within 24hrs, no call logged</div>
+                    </div>
+                    <div class="focus-count red">2</div>
+                  </a>
+                  <a href="27-calendar.html?view=day" class="focus-item">
+                    <div class="focus-icon">📦</div>
+                    <div class="focus-info">
+                      <div class="focus-title">Estimates Scheduled</div>
+                      <div class="focus-detail">Sarah (2), Michael (1)</div>
+                    </div>
+                    <div class="focus-count">3</div>
+                  </a>
+                  <a href="08-funnel-cards.html?filter=follow-up" class="focus-item warning">
+                    <div class="focus-icon">⏰</div>
+                    <div class="focus-info">
+                      <div class="focus-title">Follow-ups Due</div>
+                      <div class="focus-detail">Estimates awaiting response</div>
+                    </div>
+                    <div class="focus-count">4</div>
+                  </a>
+                  <a href="30-projects-list.html?status=in-progress" class="focus-item">
+                    <div class="focus-icon">🎨</div>
+                    <div class="focus-info">
+                      <div class="focus-title">Projects In Progress</div>
+                      <div class="focus-detail">Garcia, Bradley</div>
+                    </div>
+                    <div class="focus-count">2</div>
+                  </a>
+                  <a href="11-customer-care-kanban.html?filter=urgent" class="focus-item urgent">
+                    <div class="focus-icon">🛠️</div>
+                    <div class="focus-info">
+                      <div class="focus-title">Cases Needing Attention</div>
+                      <div class="focus-detail">1 SLA at risk</div>
+                    </div>
+                    <div class="focus-count red">3</div>
+                  </a>
+
+                  <!-- === Tasks Section === -->
+                  <div class="focus-section-label">
+                    <span>☑️ My Tasks</span>
+                  </div>
+
+                  <!-- Overdue tasks -->
+                  <a href="42-tasks-list.html?filter=overdue" class="task-focus-item overdue">
+                    <div class="task-checkbox" onclick="event.preventDefault(); event.stopPropagation(); this.classList.toggle('checked'); this.innerHTML = this.classList.contains('checked') ? '✓' : '';"></div>
+                    <div class="task-focus-info">
+                      <div class="task-focus-title">
+                        📞 Follow up call — Margaret Wilson estimate
+                      </div>
+                      <div class="task-focus-meta">
+                        <span class="task-type-badge call">Call</span>
+                        <span class="task-due-label overdue">4 days overdue</span>
+                        <span>· Wilson Interior Repaint</span>
+                      </div>
+                    </div>
+                  </a>
+
+                  <a href="42-tasks-list.html?filter=overdue" class="task-focus-item overdue">
+                    <div class="task-checkbox" onclick="event.preventDefault(); event.stopPropagation(); this.classList.toggle('checked'); this.innerHTML = this.classList.contains('checked') ? '✓' : '';"></div>
+                    <div class="task-focus-info">
+                      <div class="task-focus-title">
+                        ✉️ Send revised proposal to Thompson family
+                      </div>
+                      <div class="task-focus-meta">
+                        <span class="task-type-badge email">Email</span>
+                        <span class="task-due-label overdue">2 days overdue</span>
+                        <span>· Robert Thompson</span>
+                      </div>
+                    </div>
+                  </a>
+
+                  <a href="42-tasks-list.html?filter=overdue" class="task-focus-item overdue">
+                    <div class="task-checkbox" onclick="event.preventDefault(); event.stopPropagation(); this.classList.toggle('checked'); this.innerHTML = this.classList.contains('checked') ? '✓' : '';"></div>
+                    <div class="task-focus-info">
+                      <div class="task-focus-title">
+                        ☑️ Order Sherwin-Williams paint for Garcia project
+                      </div>
+                      <div class="task-focus-meta">
+                        <span class="task-type-badge todo">To-do</span>
+                        <span class="task-due-label overdue">1 day overdue</span>
+                        <span>· Garcia Exterior</span>
+                      </div>
+                    </div>
+                  </a>
+
+                  <!-- Due today tasks -->
+                  <a href="42-tasks-list.html?filter=due-today" class="task-focus-item due-today">
+                    <div class="task-checkbox" onclick="event.preventDefault(); event.stopPropagation(); this.classList.toggle('checked'); this.innerHTML = this.classList.contains('checked') ? '✓' : '';"></div>
+                    <div class="task-focus-info">
+                      <div class="task-focus-title">
+                        📞 Qualification call — new lead from website
+                      </div>
+                      <div class="task-focus-meta">
+                        <span class="task-type-badge call">Call</span>
+                        <span class="task-due-label today">Due today · 2:00 PM</span>
+                        <span>· Chen Kitchen Repaint</span>
+                      </div>
+                    </div>
+                  </a>
+
+                  <a href="42-tasks-list.html?filter=due-today" class="task-focus-item due-today">
+                    <div class="task-checkbox" onclick="event.preventDefault(); event.stopPropagation(); this.classList.toggle('checked'); this.innerHTML = this.classList.contains('checked') ? '✓' : '';"></div>
+                    <div class="task-focus-info">
+                      <div class="task-focus-title">
+                        🔄 Post-job follow-up — Patel residence
+                      </div>
+                      <div class="task-focus-meta">
+                        <span class="task-type-badge followup">Follow-up</span>
+                        <span class="task-due-label today">Due today · 4:00 PM</span>
+                        <span>· Patel Interior</span>
+                      </div>
+                    </div>
+                  </a>
+
+                  <a href="42-tasks-list.html?filter=due-today" class="task-focus-item due-today">
+                    <div class="task-checkbox" onclick="event.preventDefault(); event.stopPropagation(); this.classList.toggle('checked'); this.innerHTML = this.classList.contains('checked') ? '✓' : '';"></div>
+                    <div class="task-focus-info">
+                      <div class="task-focus-title">
+                        ☑️ Confirm crew availability for Monday jobs
+                      </div>
+                      <div class="task-focus-meta">
+                        <span class="task-type-badge todo">To-do</span>
+                        <span class="task-due-label today">Due today · 5:00 PM</span>
+                      </div>
+                    </div>
+                  </a>
+
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <!-- Quick Stats -->
+            <div class="section-card">
+              <div class="section-header">
+                <div class="section-title">⚡ Quick Stats</div>
+              </div>
+              <div class="section-body">
+                <div class="stats-grid">
+                  <div class="stat-item success" onclick="navigateTo('30-projects-list.html?status=completed')">
+                    <div class="stat-label">Completed Jobs</div>
+                    <div class="stat-value">18</div>
+                    <div class="stat-change up">↑ 20% vs LM</div>
+                  </div>
+                  <div class="stat-item" onclick="navigateTo('08-funnel-cards.html')">
+                    <div class="stat-label">In Pipeline</div>
+                    <div class="stat-value">23</div>
+                    <div class="stat-subtitle">$194K value</div>
+                  </div>
+                  <div class="stat-item" onclick="navigateTo('29-customers-list.html?filter=collected')">
+                    <div class="stat-label">Collected</div>
+                    <div class="stat-value green">$142.8K</div>
+                    <div class="stat-subtitle">96.4% rate</div>
+                  </div>
+                  <div class="stat-item alert" onclick="navigateTo('29-customers-list.html?filter=outstanding')">
+                    <div class="stat-label">Outstanding</div>
+                    <div class="stat-value red">$5,390</div>
+                    <div class="stat-subtitle">3 invoices</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================== TAB 2: SALES ==================== -->
+      <div id="tab-sales" class="tab-content" role="tabpanel">
+        <!-- Funnel -->
+        <div class="section-card">
+          <div class="section-header">
+            <div class="section-title">📈 Sales Pipeline</div>
+            <a href="08-funnel-cards.html" class="section-link">View Funnel →</a>
+          </div>
+          <div class="section-body">
+            <div class="funnel-mini">
+              <div class="funnel-stage" onclick="navigateTo('08-funnel-cards.html?stage=new')">
+                <div class="funnel-stage-label">New Deals</div>
+                <div class="funnel-stage-value">23</div>
+                <div class="funnel-stage-change down">↓ 12%</div>
+              </div>
+              <div class="funnel-stage" onclick="navigateTo('08-funnel-cards.html?stage=scheduled')">
+                <div class="funnel-stage-label">Scheduled</div>
+                <div class="funnel-stage-value">18</div>
+                <div class="funnel-stage-change up">↑ 5%</div>
+              </div>
+              <div class="funnel-stage" onclick="navigateTo('08-funnel-cards.html?stage=sent')">
+                <div class="funnel-stage-label">Sent</div>
+                <div class="funnel-stage-value">14</div>
+                <div class="funnel-stage-change up">↑ 8%</div>
+              </div>
+              <div class="funnel-stage" onclick="navigateTo('08-funnel-cards.html?stage=won')">
+                <div class="funnel-stage-label">Won</div>
+                <div class="funnel-stage-value">11</div>
+                <div class="funnel-stage-change up">↑ 22%</div>
+              </div>
+              <div class="funnel-stage" onclick="navigateTo('08-funnel-cards.html?stage=booked')">
+                <div class="funnel-stage-label">Booked</div>
+                <div class="funnel-stage-value">9</div>
+                <div class="funnel-stage-change up">↑ 15%</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="dashboard-grid equal">
+          <div>
+            <!-- Sales Metrics -->
+            <div class="section-card">
+              <div class="section-header">
+                <div class="section-title">📊 Sales Metrics</div>
+              </div>
+              <div class="section-body">
+                <div class="stats-grid">
+                  <div class="stat-item success">
+                    <div class="stat-label">Close Rate</div>
+                    <div class="stat-value green">52%</div>
+                    <div class="stat-change up">↑ 4% vs last month</div>
+                  </div>
+                  <div class="stat-item">
+                    <div class="stat-label">Avg Estimate Value</div>
+                    <div class="stat-value">$8,420</div>
+                    <div class="stat-change up">↑ 12% vs target</div>
+                  </div>
+                  <div class="stat-item">
+                    <div class="stat-label">Pipeline Value</div>
+                    <div class="stat-value">$194K</div>
+                    <div class="stat-subtitle">23 active deals</div>
+                  </div>
+                  <div class="stat-item">
+                    <div class="stat-label">Cancellation Rate</div>
+                    <div class="stat-value">3.2%</div>
+                    <div class="stat-change flat">= No change</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <!-- Estimator Performance -->
+            <div class="section-card">
+              <div class="section-header">
+                <div class="section-title">👥 Estimator Performance</div>
+                <a href="15-technicians-list.html?role=estimator" class="section-link">View All →</a>
+              </div>
+              <div class="section-body" style="padding-top: 12px; padding-bottom: 12px;">
+                <a href="18-estimator-profile.html?id=sarah" class="team-row">
+                  <div class="team-avatar pink">SJ</div>
+                  <div class="team-info">
+                    <div class="team-name">Sarah Johnson</div>
+                    <div class="team-role">12 estimates this month</div>
+                  </div>
+                  <div class="team-stat">
+                    <div class="team-stat-value green">58%</div>
+                    <div class="team-stat-label">Close Rate</div>
+                  </div>
+                </a>
+                <a href="18-estimator-profile.html?id=michael" class="team-row">
+                  <div class="team-avatar amber">MW</div>
+                  <div class="team-info">
+                    <div class="team-name">Michael Williams</div>
+                    <div class="team-role">9 estimates this month</div>
+                  </div>
+                  <div class="team-stat">
+                    <div class="team-stat-value">46%</div>
+                    <div class="team-stat-label">Close Rate</div>
+                  </div>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================== TAB 3: PROFITABILITY ==================== -->
+      <div id="tab-profitability" class="tab-content" role="tabpanel">
+        <!-- Top KPIs -->
+        <div class="top-kpis">
+          <div class="kpi-card highlight" tabindex="0" onclick="navigateTo('30-projects-list.html?status=completed')">
+            <span class="kpi-trend up">↑ 15%</span>
+            <div class="kpi-label">Revenue</div>
+            <div class="kpi-value">$148,240</div>
+            <div class="kpi-target">
+              <span class="kpi-target-label">vs $150K target</span>
+              <div class="kpi-progress">
+                <div class="kpi-progress-bar" style="width: 99%;"></div>
+              </div>
+              <span class="kpi-percent">99%</span>
+            </div>
+          </div>
+          
+          <div class="kpi-card" tabindex="0">
+            <span class="kpi-trend up">↑ 8%</span>
+            <div class="kpi-label">Gross Profit</div>
+            <div class="kpi-value">$72,450</div>
+            <div class="kpi-target">
+              <span class="kpi-target-label">vs $75K target</span>
+              <div class="kpi-progress">
+                <div class="kpi-progress-bar under" style="width: 97%;"></div>
+              </div>
+              <span class="kpi-percent under">97%</span>
+            </div>
+          </div>
+          
+          <div class="kpi-card" tabindex="0">
+            <span class="kpi-trend down">↓ 1.1%</span>
+            <div class="kpi-label">GP Margin</div>
+            <div class="kpi-value">48.9%</div>
+            <div class="kpi-target">
+              <span class="kpi-target-label">vs 50% target</span>
+              <div class="kpi-progress">
+                <div class="kpi-progress-bar under" style="width: 98%;"></div>
+              </div>
+              <span class="kpi-percent under">98%</span>
+            </div>
+          </div>
+          
+          <div class="kpi-card" tabindex="0">
+            <span class="kpi-trend up">↑ 2.3%</span>
+            <div class="kpi-label">Labor Overage</div>
+            <div class="kpi-value">4.2%</div>
+            <div class="kpi-target">
+              <span class="kpi-target-label">Watch: 5%</span>
+              <div class="kpi-progress">
+                <div class="kpi-progress-bar" style="width: 84%;"></div>
+              </div>
+              <span class="kpi-percent">84%</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="dashboard-grid equal">
+          <div>
+            <!-- P&L Summary -->
+            <div class="section-card">
+              <div class="section-header">
+                <div class="section-title">💰 Jobs Profit & Loss Summary</div>
+                <a href="30-projects-list.html?view=profitability" class="section-link">View Details →</a>
+              </div>
+              <div class="section-body">
+                <div class="gp-row">
+                  <span class="gp-label">Total Revenue</span>
+                  <span class="gp-value">$148,240</span>
+                </div>
+                <div class="gp-row">
+                  <span class="gp-label">Labor Costs</span>
+                  <span class="gp-value negative">($52,180)</span>
+                </div>
+                <div class="gp-row">
+                  <span class="gp-label">Materials</span>
+                  <span class="gp-value negative">($18,640)</span>
+                </div>
+                <div class="gp-row">
+                  <span class="gp-label">Sundry (2%)</span>
+                  <span class="gp-value negative">($2,965)</span>
+                </div>
+                <div class="gp-divider"></div>
+                <div class="gp-row gp-total">
+                  <span class="gp-label">Gross Profit</span>
+                  <span class="gp-value">$72,450</span>
+                </div>
+                <div class="gp-row">
+                  <span class="gp-label">Royalties (11%)</span>
+                  <span class="gp-value negative">($16,306)</span>
+                </div>
+                <div class="gp-divider"></div>
+                <div class="gp-row gp-total">
+                  <span class="gp-label">Adjusted GP</span>
+                  <span class="gp-value">$56,144</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <!-- Collections -->
+            <div class="section-card">
+              <div class="section-header">
+                <div class="section-title">💵 Collections</div>
+              </div>
+              <div class="section-body">
+                <div class="stats-grid">
+                  <div class="stat-item">
+                    <div class="stat-label">Invoiced</div>
+                    <div class="stat-value">$148,240</div>
+                    <div class="stat-subtitle">18 invoices</div>
+                  </div>
+                  <div class="stat-item success">
+                    <div class="stat-label">Collected</div>
+                    <div class="stat-value green">$142,850</div>
+                    <div class="stat-subtitle">96.4% rate</div>
+                  </div>
+                  <div class="stat-item alert" onclick="navigateTo('29-customers-list.html?filter=outstanding')">
+                    <div class="stat-label">Outstanding</div>
+                    <div class="stat-value red">$5,390</div>
+                    <div class="stat-subtitle">3 invoices</div>
+                  </div>
+                  <div class="stat-item">
+                    <div class="stat-label">Avg Days to Pay</div>
+                    <div class="stat-value">12</div>
+                    <div class="stat-change down">↓ 3 days</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Toast container -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <!-- ==================== JAVASCRIPT ==================== -->
+  <script>
+    // ========================================
+    // TAB SWITCHING
+    // ========================================
+    function switchTab(tabName) {
+      // Update tab buttons
+      document.querySelectorAll('.dashboard-tab').forEach(tab => {
+        const isActive = tab.dataset.tab === tabName;
+        tab.classList.toggle('active', isActive);
+        tab.setAttribute('aria-selected', isActive);
+      });
+      
+      // Update tab content
+      document.querySelectorAll('.tab-content').forEach(content => {
+        content.classList.remove('active');
+      });
+      
+      const targetContent = document.getElementById(`tab-${tabName}`);
+      if (targetContent) {
+        targetContent.classList.add('active');
+      }
+      
+      // Update URL without reload (for bookmarking)
+      const url = new URL(window.location);
+      url.searchParams.set('tab', tabName);
+      window.history.replaceState({}, '', url);
+    }
+    
+    // ========================================
+    // PERIOD SELECTOR
+    // ========================================
+    function setPeriod(period) {
+      // Update button states
+      document.querySelectorAll('.period-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.period === period);
+      });
+      
+      // Update header subtitle with date range
+      const subtitle = document.getElementById('header-subtitle');
+      const ranges = {
+        today: 'January 18, 2026',
+        week: 'Jan 13-19, 2026',
+        month: 'January 2026',
+        ytd: '2026 Year to Date'
+      };
+      subtitle.textContent = `${ranges[period]} · W1D Test Franchise 1`;
+      
+      // Show loading state briefly to indicate data refresh
+      showToast('info', 'Loading', `Loading ${ranges[period]} data...`);
+      
+      // Update URL
+      const url = new URL(window.location);
+      url.searchParams.set('period', period);
+      window.history.replaceState({}, '', url);
+    }
+    
+    // ========================================
+    // REFRESH BUTTON
+    // ========================================
+    function refreshDashboard() {
+      const btn = document.querySelector('.btn-refresh');
+      const textSpan = btn.querySelector('.refresh-text');
+      
+      // Set loading state
+      btn.classList.add('loading');
+      textSpan.textContent = 'Refreshing...';
+      
+      // Simulate API call
+      setTimeout(() => {
+        btn.classList.remove('loading');
+        btn.classList.add('success');
+        textSpan.textContent = 'Updated';
+        
+        // Update timestamp
+        const now = new Date();
+        const timeStr = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+        document.getElementById('last-update').textContent = `Last update: ${timeStr}`;
+        
+        showToast('success', 'Dashboard Updated', 'All data has been refreshed.');
+        
+        // Reset button after 2 seconds
+        setTimeout(() => {
+          btn.classList.remove('success');
+          textSpan.textContent = 'Refresh';
+        }, 2000);
+      }, 1500);
+    }
+    
+    // ========================================
+    // NAVIGATION
+    // ========================================
+    function navigateTo(url) {
+      window.location.href = url;
+    }
+    
+    // ========================================
+    // MOBILE SIDEBAR
+    // ========================================
+    function toggleSidebar() {
+      document.querySelector('.sidebar').classList.toggle('open');
+      document.querySelector('.sidebar-overlay').classList.toggle('open');
+    }
+    
+    // Close sidebar when clicking outside on mobile
+    document.addEventListener('click', (e) => {
+      const sidebar = document.querySelector('.sidebar');
+      const toggle = document.querySelector('.mobile-nav-toggle');
+      
+      if (window.innerWidth <= 1024 && 
+          sidebar.classList.contains('open') && 
+          !sidebar.contains(e.target) && 
+          !toggle.contains(e.target)) {
+        toggleSidebar();
+      }
+    });
+    
+    // ========================================
+    // TOAST NOTIFICATIONS
+    // ========================================
+    function showToast(type, title, message, duration = 4000) {
+      const container = document.getElementById('toast-container');
+      
+      const icons = {
+        success: '✅',
+        error: '❌',
+        warning: '⚠',
+        info: 'ℹ️'
+      };
+      
+      const toast = document.createElement('div');
+      toast.className = `toast ${type}`;
+      toast.innerHTML = `
+        <span class="toast-icon">${icons[type]}</span>
+        <div class="toast-content">
+          <div class="toast-title">${title}</div>
+          <div class="toast-message">${message}</div>
+        </div>
+        <button class="toast-close" onclick="this.parentElement.remove()" aria-label="Dismiss">×</button>
+      `;
+      
+      container.appendChild(toast);
+      
+      // Auto-remove after duration
+      setTimeout(() => {
+        toast.style.animation = 'toast-in 0.3s ease reverse';
+        setTimeout(() => toast.remove(), 300);
+      }, duration);
+    }
+    
+    // ========================================
+    // KEYBOARD NAVIGATION
+    // ========================================
+    document.addEventListener('keydown', (e) => {
+      // Tab navigation with arrow keys
+      if (e.target.classList.contains('dashboard-tab')) {
+        const tabs = Array.from(document.querySelectorAll('.dashboard-tab'));
+        const currentIndex = tabs.indexOf(e.target);
+        
+        if (e.key === 'ArrowRight' && currentIndex < tabs.length - 1) {
+          tabs[currentIndex + 1].focus();
+        } else if (e.key === 'ArrowLeft' && currentIndex > 0) {
+          tabs[currentIndex - 1].focus();
+        } else if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          e.target.click();
+        }
+      }
+      
+      // KPI card Enter key
+      if (e.target.classList.contains('kpi-card') && (e.key === 'Enter' || e.key === ' ')) {
+        e.preventDefault();
+        e.target.click();
+      }
+    });
+    
+    // ========================================
+    // INIT ON PAGE LOAD
+    // ========================================
+    document.addEventListener('DOMContentLoaded', () => {
+      // Check URL params for initial state
+      const params = new URLSearchParams(window.location.search);
+      
+      const tab = params.get('tab');
+      if (tab) {
+        switchTab(tab);
+      }
+      
+      const period = params.get('period');
+      if (period) {
+        setPeriod(period);
+      }
+    });
+  </script>
+</body>
+</html>

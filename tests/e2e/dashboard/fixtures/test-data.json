@@ -1,0 +1,35 @@
+{
+  "franchisePartner": {
+    "userId": "usr_test_fp",
+    "franchiseId": "fr_test_001",
+    "viewingFranchiseId": "fr_test_001",
+    "role": "franchise_partner",
+    "userName": "Test FP User",
+    "franchiseName": "WOW 1 DAY PAINTING — Test Franchise Alpha"
+  },
+  "estimator": {
+    "userId": "usr_test_est",
+    "franchiseId": "fr_test_001",
+    "viewingFranchiseId": "fr_test_001",
+    "role": "estimator",
+    "userName": "Test Estimator",
+    "franchiseName": "WOW 1 DAY PAINTING — Test Franchise Alpha"
+  },
+  "projectManager": {
+    "userId": "usr_test_pm",
+    "franchiseId": "fr_test_001",
+    "viewingFranchiseId": "fr_test_001",
+    "role": "project_manager",
+    "userName": "Test PM",
+    "franchiseName": "WOW 1 DAY PAINTING — Test Franchise Alpha"
+  },
+  "fom": {
+    "userId": "usr_test_fom",
+    "franchiseId": "fr_test_hq",
+    "viewingFranchiseId": "fr_test_001",
+    "role": "fom",
+    "userName": "Test FOM",
+    "franchiseName": "WOW 1 DAY PAINTING — Test Franchise Alpha"
+  },
+  "longFranchiseName": "WOW 1 DAY PAINTING — Greater Toronto Area East Metropolitan Region Extended"
+}
