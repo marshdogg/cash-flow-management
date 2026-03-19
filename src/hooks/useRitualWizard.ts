@@ -458,8 +458,8 @@ export function useRitualWizard(franchiseId: string) {
     const json = await res.json();
     const result: CompleteRitualResponse = json.data ?? json;
 
-    clearState();
-    dispatch({ type: "RESET" });
+    // Keep state in sessionStorage so "Edit This Week" shows previous values.
+    // The TTL will naturally expire it for the next week.
 
     return result;
   }, [franchiseId, state]);
