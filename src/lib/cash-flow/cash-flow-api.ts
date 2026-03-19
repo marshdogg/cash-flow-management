@@ -198,3 +198,17 @@ export function deleteRevenueItems(ids: string[]): Promise<void> {
     body: JSON.stringify({ ids }),
   });
 }
+
+// ============================================
+// Settings
+// ============================================
+
+export function updateSettings(
+  franchiseId: string,
+  minBalance: number
+): Promise<{ minBalance: number }> {
+  return apiFetch<{ minBalance: number }>(CASH_FLOW_API_ROUTES.settings, {
+    method: "PUT",
+    body: JSON.stringify({ franchiseId, minBalance }),
+  });
+}

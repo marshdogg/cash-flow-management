@@ -17,6 +17,7 @@ import { SkeletonCard } from "@/components/cash-flow/shared/SkeletonCard";
 import {
   CASH_FLOW_ROUTES,
   TOAST_MESSAGES,
+  DEFAULT_BUFFER,
 } from "@/constants/cash-flow";
 import type { WizardRecurringExpense } from "@/types/cash-flow";
 import { track } from "@/lib/analytics";
@@ -440,6 +441,7 @@ function RitualWizardInner({ franchiseId, userName }: RitualWizardProps) {
                   oneOffExpenses={wizard.state.oneOffExpenses}
                   totalOneOffExpenses={wizard.totalOneOffExpenses}
                   projectedWeekEndBalance={wizard.projectedWeekEndBalance}
+                  threshold={wizard.welcomeData?.minBalanceThreshold ?? DEFAULT_BUFFER}
                 />
               )}
             </AccordionSection>

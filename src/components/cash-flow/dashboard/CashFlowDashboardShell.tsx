@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useState, useCallback, useEffect, useMemo, lazy } from "react";
+import { Suspense, useState, useCallback, useEffect, useMemo, useRef, lazy } from "react";
 import Link from "next/link";
 import { useCashFlowDashboard } from "@/hooks/useCashFlowDashboard";
 import { useFranchisePicker } from "@/hooks/useFranchisePicker";
@@ -9,6 +9,7 @@ import { SkeletonCard } from "@/components/cash-flow/shared/SkeletonCard";
 const CashFlowChart = lazy(() =>
   import("./CashFlowChart").then((m) => ({ default: m.CashFlowChart }))
 );
+import { updateSettings } from "@/lib/cash-flow/cash-flow-api";
 import { CASH_FLOW_ROUTES } from "@/constants/cash-flow";
 import { formatCurrency } from "@/lib/cash-flow/format-utils";
 import type { CashFlowUserRole, AssignedFranchise } from "@/types/cash-flow";
@@ -56,6 +57,26 @@ function CashFlowDashboardInner({
     },
     []
   );
+
+  // Debounced save: persist threshold 800ms after last keystroke
+  const saveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  useEffect(() => {
+    // Skip on initial sync from server data
+    if (data?.threshold != null && threshold === data.threshold) return;
+    if (threshold <= 0) return;
+
+    if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
+
+    saveTimerRef.current = setTimeout(() => {
+      updateSettings(activeFranchiseId, threshold).catch(() => {
+        // Non-critical — threshold still works locally
+      });
+    }, 800);
+
+    return () => {
+      if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
+    };
+  }, [threshold, activeFranchiseId, data?.threshold]);
 
   const displayName =
     isFom && franchises.length > 0

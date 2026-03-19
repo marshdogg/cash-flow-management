@@ -29,6 +29,7 @@ export async function GET(request: NextRequest) {
       previousCashPosition: 85300,
       recurringExpenseChanges: 2,
       oneOffExpensesFlagged: 3,
+      minBalanceThreshold: DEFAULT_BUFFER,
     });
   }
 
@@ -42,6 +43,15 @@ export async function GET(request: NextRequest) {
 
   if (snapError) return apiError(snapError.message, 500);
 
+  // Fetch franchise threshold setting
+  const { data: settingsRow } = await supabase
+    .from("franchise_settings")
+    .select("min_balance")
+    .eq("franchise_id", franchise)
+    .maybeSingle();
+
+  const minBalanceThreshold = settingsRow?.min_balance ?? DEFAULT_BUFFER;
+
   const latest = snapRows?.[0] ? rowToCamel<WeeklySnapshot>(snapRows[0]) : null;
   const previous = snapRows?.[1] ? rowToCamel<WeeklySnapshot>(snapRows[1]) : null;
 
@@ -52,6 +62,7 @@ export async function GET(request: NextRequest) {
     previousCashPosition: previous?.bankBalance ?? null,
     recurringExpenseChanges: 0,
     oneOffExpensesFlagged: 0,
+    minBalanceThreshold,
   });
 }
 
@@ -92,10 +103,19 @@ export async function POST(request: NextRequest) {
   const totalProjectedRevenue = body.bankBalance + arRealized + salesLikely + proposalsExpected;
   const projectedBalance = totalProjectedRevenue - totalRecurring - totalOneOff;
 
+  // Fetch franchise threshold for health status
+  const { data: postSettingsRow } = await supabase
+    .from("franchise_settings")
+    .select("min_balance")
+    .eq("franchise_id", franchiseId)
+    .maybeSingle();
+
+  const minBalance = postSettingsRow?.min_balance ?? DEFAULT_BUFFER;
+
   const healthStatus: HealthStatus =
-    projectedBalance >= DEFAULT_BUFFER * 2
+    projectedBalance >= minBalance * 2
       ? "healthy"
-      : projectedBalance >= DEFAULT_BUFFER
+      : projectedBalance >= minBalance
         ? "caution"
         : "critical";
 

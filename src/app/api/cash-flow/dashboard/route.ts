@@ -41,6 +41,15 @@ export async function GET(request: NextRequest) {
 
   const openingBalance = balRow?.amount ?? 0;
 
+  // Fetch franchise threshold setting
+  const { data: settingsRow } = await supabase
+    .from("franchise_settings")
+    .select("min_balance")
+    .eq("franchise_id", franchiseId)
+    .maybeSingle();
+
+  const threshold = settingsRow?.min_balance ?? DEFAULT_BUFFER;
+
   const snapshots = (snapRows ?? []).map((r) => rowToCamel<Record<string, number | string>>(r));
 
   // Build periods from snapshots
@@ -97,7 +106,7 @@ export async function GET(request: NextRequest) {
         franchiseName: "",
         openingBalance: 0,
         periods: [],
-        threshold: DEFAULT_BUFFER,
+        threshold,
         summary: { totalRevenue: 0, totalExpense: 0, projectedBalance: 0 },
       },
       { franchiseId }

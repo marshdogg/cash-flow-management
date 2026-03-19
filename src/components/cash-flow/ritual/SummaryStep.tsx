@@ -5,7 +5,7 @@ import type {
   WizardOneOffExpense,
   RevenueLineItem,
 } from "@/types/cash-flow";
-import { REVENUE_WEEK_OPTIONS, DEFAULT_BUFFER } from "@/constants/cash-flow";
+import { REVENUE_WEEK_OPTIONS } from "@/constants/cash-flow";
 
 interface SummaryStepProps {
   bankBalance: number;
@@ -28,6 +28,7 @@ interface SummaryStepProps {
   totalOneOffExpenses: number;
   // Totals
   projectedWeekEndBalance: number;
+  threshold: number;
 }
 
 function fmt(n: number): string {
@@ -40,7 +41,7 @@ function weekLabel(week: string): string {
 }
 
 export function SummaryStep(props: SummaryStepProps) {
-  const isHealthy = props.projectedWeekEndBalance >= DEFAULT_BUFFER;
+  const isHealthy = props.projectedWeekEndBalance >= props.threshold;
 
   return (
     <>
@@ -131,8 +132,8 @@ export function SummaryStep(props: SummaryStepProps) {
             style={{ color: isHealthy ? "#3d6b14" : "#ef4444" }}
           >
             {isHealthy
-              ? `Projected balance is above your minimum threshold of ${fmt(DEFAULT_BUFFER)}. Cash position looks healthy.`
-              : `Projected balance is below your minimum threshold of ${fmt(DEFAULT_BUFFER)}. Review your expenses or follow up on outstanding AR.`}
+              ? `Projected balance is above your minimum threshold of ${fmt(props.threshold)}. Cash position looks healthy.`
+              : `Projected balance is below your minimum threshold of ${fmt(props.threshold)}. Review your expenses or follow up on outstanding AR.`}
           </p>
         </div>
       </div>

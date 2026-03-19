@@ -344,6 +344,7 @@ export interface RitualWelcomeData {
   previousCashPosition: number | null;
   recurringExpenseChanges: number;
   oneOffExpensesFlagged: number;
+  minBalanceThreshold: number;
 }
 
 export interface RitualWizardState {

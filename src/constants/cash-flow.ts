@@ -420,6 +420,7 @@ export const CASH_FLOW_API_ROUTES = {
   ar: "/api/cash-flow/ar",
   ap: "/api/cash-flow/ap",
   revenueItems: "/api/cash-flow/revenue-items",
+  settings: "/api/cash-flow/settings",
 } as const;
 
 // ============================================
