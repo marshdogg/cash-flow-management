@@ -63,37 +63,24 @@ function CashFlowDashboardInner({
     }
   }, [activeFranchiseId, data?.threshold]);
 
+  // Track the last saved value so we know when the input is dirty
+  const [savedThreshold, setSavedThreshold] = useState(threshold);
+  const isDirty = threshold !== savedThreshold && threshold > 0;
+
   const handleThresholdInput = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const raw = e.target.value.replace(/[^0-9]/g, "");
-      const val = parseInt(raw) || 0;
-      setThreshold(val);
-      // Persist to localStorage immediately for cross-navigation persistence
-      try { localStorage.setItem(`minBalance_${activeFranchiseId}`, String(val)); } catch {}
+      setThreshold(parseInt(raw) || 0);
     },
-    [activeFranchiseId]
+    []
   );
 
-  // Debounced save to API: persist threshold 800ms after last keystroke
-  const saveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  useEffect(() => {
+  const handleSaveThreshold = useCallback(() => {
     if (threshold <= 0) return;
-    // Skip if matches server value (initial load, no user edit)
-    const stored = getStoredThreshold(activeFranchiseId);
-    if (!stored && data?.threshold != null && threshold === data.threshold) return;
-
-    if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
-
-    saveTimerRef.current = setTimeout(() => {
-      updateSettings(activeFranchiseId, threshold).catch(() => {
-        // Non-critical — threshold persists via localStorage
-      });
-    }, 800);
-
-    return () => {
-      if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
-    };
-  }, [threshold, activeFranchiseId, data?.threshold]);
+    try { localStorage.setItem(`minBalance_${activeFranchiseId}`, String(threshold)); } catch {}
+    setSavedThreshold(threshold);
+    updateSettings(activeFranchiseId, threshold).catch(() => {});
+  }, [threshold, activeFranchiseId]);
 
   const displayName =
     isFom && franchises.length > 0
@@ -284,17 +271,29 @@ function CashFlowDashboardInner({
             </div>
             Min Balance
           </div>
-          <div className="flex overflow-hidden rounded-lg border-[1.5px] border-[#e5e7eb] bg-white">
-            <div className="border-r-[1.5px] border-[#e5e7eb] bg-[#f9fafb] px-2.5 py-[7px] font-mono text-[15px] font-semibold text-[#374151]">
-              $
+          <div className="flex items-center gap-2">
+            <div className="flex overflow-hidden rounded-lg border-[1.5px] border-[#e5e7eb] bg-white">
+              <div className="border-r-[1.5px] border-[#e5e7eb] bg-[#f9fafb] px-2.5 py-[7px] font-mono text-[15px] font-semibold text-[#374151]">
+                $
+              </div>
+              <input
+                type="text"
+                value={threshold.toLocaleString()}
+                onChange={handleThresholdInput}
+                onKeyDown={(e) => { if (e.key === "Enter") handleSaveThreshold(); }}
+                aria-label="Minimum balance threshold"
+                className="w-[110px] bg-white px-3 py-[7px] font-mono text-[15px] font-semibold text-[#111827] outline-none"
+              />
             </div>
-            <input
-              type="text"
-              value={threshold.toLocaleString()}
-              onChange={handleThresholdInput}
-              aria-label="Minimum balance threshold"
-              className="w-[110px] bg-white px-3 py-[7px] font-mono text-[15px] font-semibold text-[#111827] outline-none"
-            />
+            {isDirty && (
+              <button
+                type="button"
+                onClick={handleSaveThreshold}
+                className="rounded-lg bg-[#8BC34A] px-3 py-[7px] text-[13px] font-semibold text-white transition-all hover:bg-[#7ab33e] active:scale-95"
+              >
+                Set
+              </button>
+            )}
           </div>
         </div>
       </div>

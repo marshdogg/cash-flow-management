@@ -441,7 +441,18 @@ function RitualWizardInner({ franchiseId, userName }: RitualWizardProps) {
                   oneOffExpenses={wizard.state.oneOffExpenses}
                   totalOneOffExpenses={wizard.totalOneOffExpenses}
                   projectedWeekEndBalance={wizard.projectedWeekEndBalance}
-                  threshold={wizard.welcomeData?.minBalanceThreshold ?? DEFAULT_BUFFER}
+                  threshold={(() => {
+                    // Prefer API value, then localStorage (set on dashboard), then default
+                    if (wizard.welcomeData?.minBalanceThreshold != null
+                        && wizard.welcomeData.minBalanceThreshold !== DEFAULT_BUFFER) {
+                      return wizard.welcomeData.minBalanceThreshold;
+                    }
+                    try {
+                      const stored = localStorage.getItem(`minBalance_${franchiseId}`);
+                      if (stored) return parseInt(stored) || DEFAULT_BUFFER;
+                    } catch {}
+                    return wizard.welcomeData?.minBalanceThreshold ?? DEFAULT_BUFFER;
+                  })()}
                 />
               )}
             </AccordionSection>
