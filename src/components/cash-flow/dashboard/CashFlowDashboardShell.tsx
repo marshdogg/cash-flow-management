@@ -41,35 +41,52 @@ function CashFlowDashboardInner({
   const { data, error, isLoading } = useCashFlowDashboard(activeFranchiseId);
 
   const [view, setView] = useState<ViewMode>("weeks");
-  const [threshold, setThreshold] = useState<number>(data?.threshold ?? 5000);
 
-  // Sync threshold when franchise data changes (e.g. FOM switches franchise)
+  // Read threshold from localStorage (survives navigation), fallback to server, then default
+  const getStoredThreshold = (fid: string): number | null => {
+    try {
+      const v = localStorage.getItem(`minBalance_${fid}`);
+      return v ? parseInt(v) || null : null;
+    } catch { return null; }
+  };
+
+  const [threshold, setThreshold] = useState<number>(
+    () => getStoredThreshold(activeFranchiseId) ?? data?.threshold ?? 5000
+  );
+
+  // Sync threshold only when franchise changes (FOM picker), not on every SWR refetch
+  const prevFranchiseRef = useRef(activeFranchiseId);
   useEffect(() => {
-    if (data?.threshold != null) {
-      setThreshold(data.threshold);
+    if (activeFranchiseId !== prevFranchiseRef.current) {
+      prevFranchiseRef.current = activeFranchiseId;
+      setThreshold(getStoredThreshold(activeFranchiseId) ?? data?.threshold ?? 5000);
     }
-  }, [data?.threshold]);
+  }, [activeFranchiseId, data?.threshold]);
 
   const handleThresholdInput = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const raw = e.target.value.replace(/[^0-9]/g, "");
-      setThreshold(parseInt(raw) || 0);
+      const val = parseInt(raw) || 0;
+      setThreshold(val);
+      // Persist to localStorage immediately for cross-navigation persistence
+      try { localStorage.setItem(`minBalance_${activeFranchiseId}`, String(val)); } catch {}
     },
-    []
+    [activeFranchiseId]
   );
 
-  // Debounced save: persist threshold 800ms after last keystroke
+  // Debounced save to API: persist threshold 800ms after last keystroke
   const saveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   useEffect(() => {
-    // Skip on initial sync from server data
-    if (data?.threshold != null && threshold === data.threshold) return;
     if (threshold <= 0) return;
+    // Skip if matches server value (initial load, no user edit)
+    const stored = getStoredThreshold(activeFranchiseId);
+    if (!stored && data?.threshold != null && threshold === data.threshold) return;
 
     if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
 
     saveTimerRef.current = setTimeout(() => {
       updateSettings(activeFranchiseId, threshold).catch(() => {
-        // Non-critical — threshold still works locally
+        // Non-critical — threshold persists via localStorage
       });
     }, 800);
 
