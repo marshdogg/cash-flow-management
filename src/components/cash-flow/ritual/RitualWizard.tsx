@@ -447,8 +447,13 @@ function RitualWizardInner({ franchiseId, userName }: RitualWizardProps) {
         </div>
       </div>
 
-      {/* Sticky submit footer */}
-      <div className="sticky bottom-0 z-50 border-t-[2px] border-[#c5e49a] bg-[#fafff5] px-8 py-5 shadow-[0_-4px_16px_rgba(0,0,0,0.08)]">
+      {/* Sticky submit footer — only visible once user reaches Summary */}
+      <div className={cn(
+        "sticky bottom-0 z-50 border-t-[2px] border-[#c5e49a] bg-[#fafff5] px-8 py-5 shadow-[0_-4px_16px_rgba(0,0,0,0.08)] transition-all duration-300",
+        activeSection === 5
+          ? "translate-y-0 opacity-100"
+          : "pointer-events-none translate-y-full opacity-0"
+      )}>
         <div className="mx-auto flex max-w-[920px] items-center justify-between">
           <div className="flex items-center gap-2 text-[13px] font-semibold text-[#6a9e32]">
             <div className="h-2 w-2 animate-pulse rounded-full bg-[#8BC34A]" />
