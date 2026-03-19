@@ -5,11 +5,13 @@ import { useRef, useCallback } from "react";
 import type {
   RevenueItemsResponse,
   UpdateRevenueItemRequest,
+  CreateRevenueItemRequest,
 } from "@/types/cash-flow";
 import {
   fetchRevenueItems,
   updateRevenueItem,
   deleteRevenueItems,
+  createRevenueItem,
 } from "@/lib/cash-flow/cash-flow-api";
 import { CASH_FLOW_DEDUPING_INTERVAL } from "@/constants/cash-flow";
 
@@ -50,6 +52,14 @@ export function useRevenueItems(franchiseId: string) {
       }
     );
 
+  const handleCreate = useCallback(
+    async (data: CreateRevenueItemRequest) => {
+      await createRevenueItem(franchiseId, data);
+      await mutate();
+    },
+    [franchiseId, mutate]
+  );
+
   const handleUpdate = useCallback(
     async (itemId: string, request: UpdateRevenueItemRequest) => {
       await updateRevenueItem(itemId, request);
@@ -81,6 +91,7 @@ export function useRevenueItems(franchiseId: string) {
     isLoading,
     error,
     mutate,
+    createItem: handleCreate,
     updateItem: handleUpdate,
     deleteItems: handleDelete,
   };
