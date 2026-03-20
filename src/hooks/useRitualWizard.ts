@@ -1,6 +1,7 @@
 "use client";
 
 import { useReducer, useCallback, useEffect, useRef, useState } from "react";
+import { mutate as globalMutate } from "swr";
 import type {
   RitualWizardState,
   RitualWelcomeData,
@@ -491,6 +492,9 @@ export function useRitualWizard(franchiseId: string) {
         String(state.bankBalance ?? 0)
       );
     } catch {}
+
+    // Force SWR to refetch dashboard data so chart reflects new bank balance
+    globalMutate(["cash-flow-dashboard", franchiseId]);
 
     return result;
   }, [franchiseId, state]);
