@@ -29,13 +29,8 @@ export function WelcomeBanner({ userName, welcomeData }: WelcomeBannerProps) {
   return (
     <div className="bg-[#f1f8e9] px-8 py-6">
       <div className="flex items-center justify-between gap-5">
-        <div>
-          <div className="text-xl font-bold tracking-[-0.02em] text-[#1a1a1a]">
-            Good morning, {firstName}
-          </div>
-          <div className="mt-1 text-[13px] font-medium text-[#6b7280]">
-            Let&apos;s get a clear picture of where your cash stands this week.
-          </div>
+        <div className="text-xl font-bold tracking-[-0.02em] text-[#1a1a1a]">
+          Let&apos;s get a clear picture of your current cashflow situation.
         </div>
 
         {/* Last ritual badge */}
