@@ -152,7 +152,7 @@ function CashFlowDashboardInner({
   return (
     <div className="rounded-xl bg-white p-[32px_40px] shadow-[0_1px_3px_rgba(0,0,0,0.07),0_1px_2px_rgba(0,0,0,0.04)]">
       {/* Card Header */}
-      <div className="mb-5 flex items-start justify-between">
+      <div className="mb-5 flex items-center justify-between">
         <div>
           <h2 className="text-[22px] font-bold tracking-[-0.03em] text-[#1a1a1a]">Cash Flow</h2>
           {franchises.length > 1 ? (
@@ -169,7 +169,7 @@ function CashFlowDashboardInner({
               ))}
             </select>
           ) : (
-            <p className="mt-1 text-sm text-[#6b7280]">{displayName}</p>
+            <p className="mt-0.5 text-[13px] font-medium text-[#6b7280]">{displayName}</p>
           )}
         </div>
 
@@ -178,9 +178,9 @@ function CashFlowDashboardInner({
           <div className="flex gap-0.5 rounded-lg bg-[#f3f4f6] p-[3px]">
             <button
               onClick={() => setView("weeks")}
-              className={`rounded-md px-4 py-[10px] text-sm font-semibold transition-all ${
+              className={`rounded-md px-3.5 py-1.5 text-[13px] font-semibold transition-colors ${
                 view === "weeks"
-                  ? "bg-white text-[#1a1a1a] shadow-[0_1px_3px_rgba(0,0,0,0.1)]"
+                  ? "bg-white text-[#1a1a1a] shadow-[0_1px_3px_rgba(0,0,0,0.08)]"
                   : "text-[#6b7280]"
               }`}
             >
@@ -188,9 +188,9 @@ function CashFlowDashboardInner({
             </button>
             <button
               onClick={() => setView("months")}
-              className={`rounded-md px-4 py-[10px] text-sm font-semibold transition-all ${
+              className={`rounded-md px-3.5 py-1.5 text-[13px] font-semibold transition-colors ${
                 view === "months"
-                  ? "bg-white text-[#1a1a1a] shadow-[0_1px_3px_rgba(0,0,0,0.1)]"
+                  ? "bg-white text-[#1a1a1a] shadow-[0_1px_3px_rgba(0,0,0,0.08)]"
                   : "text-[#6b7280]"
               }`}
             >
@@ -198,26 +198,10 @@ function CashFlowDashboardInner({
             </button>
           </div>
 
-          {/* Manage Recurring */}
-          <Link
-            href={CASH_FLOW_ROUTES.recurring}
-            className="rounded-lg border border-[#e5e7eb] bg-white px-[18px] py-[11px] text-sm font-semibold text-[#374151] min-h-[44px]"
-          >
-            ≡ Manage Recurring
-          </Link>
-
-          {/* Revenue Items */}
-          <Link
-            href={CASH_FLOW_ROUTES.revenueItems}
-            className="rounded-lg border border-[#e5e7eb] bg-white px-[18px] py-[11px] text-sm font-semibold text-[#374151] min-h-[44px]"
-          >
-            ≡ Revenue Items
-          </Link>
-
           {/* Edit This Week */}
           <Link
             href={`${CASH_FLOW_ROUTES.ritual}?franchise=${activeFranchiseId}`}
-            className="rounded-lg bg-[#8BC34A] px-[18px] py-[11px] text-sm font-semibold text-white min-h-[44px]"
+            className="rounded-[9px] bg-[#8BC34A] px-[18px] py-2 text-[13px] font-bold text-white shadow-sm transition-colors hover:bg-[#6a9e32]"
           >
             Edit This Week
           </Link>
@@ -264,14 +248,14 @@ function CashFlowDashboardInner({
 
       {displayPeriods.length > 0 ? (
         <>
-          {/* Hero: Projected Balance */}
-          <div className="mb-5 flex items-center justify-between border-b border-[#f3f4f6] pb-5">
-            <div className="flex flex-col gap-1">
-              <div className="text-[13px] font-semibold uppercase tracking-[0.07em] text-[#6b7280]">
+          {/* Metric + Threshold row */}
+          <div className="mb-6 flex items-end justify-between">
+            <div>
+              <div className="text-[12px] font-semibold uppercase tracking-[0.07em] text-[#6b7280]">
                 {view === "weeks" ? "12-Week" : "3-Month"} Projected Balance
               </div>
               <div
-                className={`font-mono tabular-nums text-[36px] font-bold leading-tight tracking-[-0.02em] ${
+                className={`mt-1 font-mono tabular-nums text-[32px] font-bold leading-none tracking-[-0.02em] ${
                   projectedBalance >= threshold
                     ? "text-[#16a34a]"
                     : "text-[#dc2626]"
@@ -279,80 +263,38 @@ function CashFlowDashboardInner({
               >
                 {formatCurrency(projectedBalance)}
               </div>
-              <div className="text-[13px] font-medium text-[#6b7280]">
+              <div className="mt-1.5 text-[12px] font-medium text-[#6b7280]">
                 {projectedBalance >= threshold
                   ? "Above minimum"
                   : "⚠ Below minimum threshold"}
               </div>
             </div>
 
-            <div className="flex flex-col gap-1.5 text-right">
-              <div className="flex items-center justify-end gap-4">
-                <span className="font-mono tabular-nums text-[16px] font-semibold text-[#16a34a]">
-                  +{formatCurrency(totalRevenue)} in
-                </span>
-                <span className="font-mono tabular-nums text-[16px] font-semibold text-[#dc2626]">
-                  -{formatCurrency(totalExpense)} out
-                </span>
-              </div>
-              <div className="text-[13px] font-medium text-[#6b7280]">
-                {view === "weeks" ? "Next 12 weeks" : "Next 3 months"}
-              </div>
-            </div>
-          </div>
-
-          {/* Chart Controls */}
-          <div className="mb-5 flex items-center justify-between">
-            {/* Legend */}
-            <div className="flex items-center gap-5">
-              <div className="flex items-center gap-2 text-sm font-medium text-[#6b7280]">
-                <div className="h-3 w-3 rounded-[3px] bg-[#3b82f6]" />
-                Bank Balance
-              </div>
-              <div className="flex items-center gap-2 text-sm font-medium text-[#6b7280]">
-                <div className="h-3 w-3 rounded-[3px] bg-[#3b82f6] opacity-35" />
-                Projected
-              </div>
-              <div className="flex items-center gap-2 text-sm font-medium text-[#6b7280]">
-                <div className="h-3 w-3 rounded-[3px] bg-[#ef4444]" />
-                Below Minimum
-              </div>
-            </div>
-
-            {/* Threshold */}
-            <div className="flex items-center gap-3">
-              <div className="flex items-center gap-2 text-sm font-medium text-[#6b7280]">
-                <div className="flex gap-0.5">
-                  <div className="h-0.5 w-2 rounded-sm bg-[#f97316]" />
-                  <div className="h-0.5 w-2 rounded-sm bg-[#f97316]" />
-                  <div className="h-0.5 w-2 rounded-sm bg-[#f97316]" />
+            {/* Threshold control */}
+            <div className="flex items-center gap-2.5">
+              <span className="text-[12px] font-semibold text-[#6b7280]">Min Balance</span>
+              <div className="flex overflow-hidden rounded-lg border border-[#e5e7eb]">
+                <div className="border-r border-[#e5e7eb] bg-[#f9fafb] px-2 py-[5px] font-mono text-[13px] font-semibold text-[#374151]">
+                  $
                 </div>
-                Min Balance
+                <input
+                  type="text"
+                  value={threshold.toLocaleString()}
+                  onChange={handleThresholdInput}
+                  onKeyDown={(e) => { if (e.key === "Enter") handleSaveThreshold(); }}
+                  aria-label="Minimum balance threshold"
+                  className="w-[90px] bg-white px-2.5 py-[5px] font-mono text-[13px] font-semibold text-[#1a1a1a] outline-none"
+                />
               </div>
-              <div className="flex items-center gap-2">
-                <div className="flex overflow-hidden rounded-lg border border-[#e5e7eb] bg-white">
-                  <div className="border-r border-[#e5e7eb] bg-[#f9fafb] px-2.5 py-[7px] font-mono text-[15px] font-semibold text-[#374151]">
-                    $
-                  </div>
-                  <input
-                    type="text"
-                    value={threshold.toLocaleString()}
-                    onChange={handleThresholdInput}
-                    onKeyDown={(e) => { if (e.key === "Enter") handleSaveThreshold(); }}
-                    aria-label="Minimum balance threshold"
-                    className="w-[110px] bg-white px-3 py-[7px] font-mono text-[15px] font-semibold text-[#1a1a1a] outline-none"
-                  />
-                </div>
-                {isDirty && (
-                  <button
-                    type="button"
-                    onClick={handleSaveThreshold}
-                    className="rounded-lg bg-[#8BC34A] px-3 py-[7px] text-[13px] font-semibold text-white transition-all hover:bg-[#7ab33e] active:scale-95"
-                  >
-                    Set
-                  </button>
-                )}
-              </div>
+              {isDirty && (
+                <button
+                  type="button"
+                  onClick={handleSaveThreshold}
+                  className="rounded-lg bg-[#8BC34A] px-2.5 py-[5px] text-[12px] font-semibold text-white transition-colors hover:bg-[#7ab33e]"
+                >
+                  Set
+                </button>
+              )}
             </div>
           </div>
 
@@ -364,6 +306,30 @@ function CashFlowDashboardInner({
               threshold={threshold}
             />
           </Suspense>
+
+          {/* Legend — below chart */}
+          <div className="mt-3 flex items-center justify-center gap-5">
+            <div className="flex items-center gap-1.5 text-[11px] font-medium text-[#6b7280]">
+              <div className="h-2.5 w-2.5 rounded-[2px] bg-[#3b82f6]" />
+              Actual
+            </div>
+            <div className="flex items-center gap-1.5 text-[11px] font-medium text-[#6b7280]">
+              <div className="h-2.5 w-2.5 rounded-[2px] bg-[#3b82f6] opacity-35" />
+              Projected
+            </div>
+            <div className="flex items-center gap-1.5 text-[11px] font-medium text-[#6b7280]">
+              <div className="h-2.5 w-2.5 rounded-[2px] bg-[#ef4444]" />
+              Below Min
+            </div>
+            <div className="flex items-center gap-1.5 text-[11px] font-medium text-[#6b7280]">
+              <div className="flex gap-0.5">
+                <div className="h-0.5 w-1.5 rounded-sm bg-[#f97316]" />
+                <div className="h-0.5 w-1.5 rounded-sm bg-[#f97316]" />
+                <div className="h-0.5 w-1.5 rounded-sm bg-[#f97316]" />
+              </div>
+              Min Balance
+            </div>
+          </div>
         </>
       ) : (
         /* First-Use Getting Started */

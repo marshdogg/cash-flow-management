@@ -221,28 +221,12 @@ export function CashFlowChart({
       const belowThreshold = runBal < threshold;
       const alpha = projected ? 0.35 : 1.0;
 
-      // Current week highlight background
+      // Current week — subtle bottom accent line only
       if (d.current) {
         ctx.save();
         ctx.fillStyle = "#8BC34A";
-        ctx.globalAlpha = 0.08;
-        roundRectFill(
-          ctx,
-          bx - 8,
-          PAD_TOP - 4,
-          barW + 16,
-          H - PAD_TOP - PAD_BOTTOM + 8,
-          [6, 6, 6, 6]
-        );
-        ctx.restore();
-
-        // Current week border
-        ctx.save();
-        ctx.strokeStyle = "#8BC34A";
-        ctx.globalAlpha = 0.3;
-        ctx.lineWidth = 1.5;
-        roundRect(ctx, bx - 8, PAD_TOP - 4, barW + 16, H - PAD_TOP - PAD_BOTTOM + 8, 6);
-        ctx.stroke();
+        ctx.globalAlpha = 0.5;
+        roundRectFill(ctx, bx - 4, H - PAD_BOTTOM, barW + 8, 3, [0, 0, 2, 2]);
         ctx.restore();
       }
 
@@ -277,15 +261,16 @@ export function CashFlowChart({
       });
     });
 
-    // "NOW" marker for current week
+    // "NOW" marker for current week — small, quiet
     const currentIdx = periods.findIndex((p) => p.current);
     if (currentIdx >= 0) {
       const cx = PAD_H + currentIdx * groupW + groupW / 2;
       ctx.save();
       ctx.fillStyle = "#8BC34A";
-      ctx.font = "700 11px 'DM Sans', sans-serif";
+      ctx.globalAlpha = 0.7;
+      ctx.font = "700 9px 'DM Sans', sans-serif";
       ctx.textAlign = "center";
-      ctx.fillText("THIS WEEK", cx, PAD_TOP - 16);
+      ctx.fillText("NOW", cx, PAD_TOP - 10);
       ctx.restore();
     }
 
