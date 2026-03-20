@@ -179,7 +179,7 @@ export function CashFlowChart({
     if (threshY > PAD_TOP && threshY < H - PAD_BOTTOM) {
       ctx.save();
       ctx.strokeStyle = "#f97316";
-      ctx.lineWidth = 1.5;
+      ctx.lineWidth = 1;
       ctx.setLineDash([5, 4]);
       ctx.beginPath();
       ctx.moveTo(PAD_H, threshY);
@@ -189,21 +189,21 @@ export function CashFlowChart({
 
       // Threshold badge
       const badgeTxt = "$" + threshold.toLocaleString();
-      ctx.font = "700 12px 'DM Mono', monospace";
+      ctx.font = "600 11px 'DM Mono', monospace";
       const tw = ctx.measureText(badgeTxt).width;
       const bx = W - PAD_H - tw - 16;
-      const by = threshY - 14;
-      const bh = 20;
+      const by = threshY - 13;
+      const bh = 19;
       const bw = tw + 14;
       const br = 4;
       ctx.fillStyle = "#fff7ed";
       ctx.strokeStyle = "#f97316";
-      ctx.lineWidth = 1.5;
+      ctx.lineWidth = 1;
       roundRect(ctx, bx, by, bw, bh, br);
       ctx.fill();
       ctx.stroke();
       ctx.fillStyle = "#ea580c";
-      ctx.fillText(badgeTxt, bx + 7, by + 14);
+      ctx.fillText(badgeTxt, bx + 7, by + 13);
       ctx.restore();
     }
 
@@ -248,7 +248,7 @@ export function CashFlowChart({
         ctx.save();
         ctx.fillStyle = belowThreshold ? "#ef4444" : "#3b82f6";
         ctx.globalAlpha = alpha;
-        ctx.font = "700 10px 'DM Mono', monospace";
+        ctx.font = "600 10px 'DM Mono', monospace";
         ctx.textAlign = "center";
         ctx.fillText(formatCompactCurrency(runBal), cx, barTop - 6);
         ctx.restore();
@@ -388,21 +388,21 @@ export function CashFlowChart({
             <div class="text-[11px] font-bold text-[#6b7280] uppercase tracking-[0.07em] mb-1.5">${d.label}${d.projected ? " · Projected" : " · Actual"}</div>
             <div class="flex justify-between gap-4 mb-0.5">
               <span class="text-[#9ca3af] font-medium">Bank Balance</span>
-              <span class="font-mono font-semibold" style="color:${d.balance < threshold ? "#f87171" : "#93c5fd"}">${fmtFull(d.balance)}</span>
+              <span class="font-mono font-semibold" style="color:${d.balance < threshold ? "#fca5a5" : "#a5c8f7"}">${fmtFull(d.balance)}</span>
             </div>
             <div class="border-t border-[#374151] my-1"></div>
             <div class="flex justify-between gap-4 mb-0.5">
               <span class="text-[#9ca3af] font-medium">Cash In</span>
-              <span class="font-mono font-semibold text-[#86efac]">${fmtFull(d.revenue)}</span>
+              <span class="font-mono font-semibold text-[#a3d9a5]">${fmtFull(d.revenue)}</span>
             </div>
             <div class="flex justify-between gap-4 mb-0.5">
               <span class="text-[#9ca3af] font-medium">Cash Out</span>
-              <span class="font-mono font-semibold text-[#fca5a5]">−${fmtFull(d.expense)}</span>
+              <span class="font-mono font-semibold text-[#f5b4b4]">−${fmtFull(d.expense)}</span>
             </div>
             <div class="border-t border-[#374151] my-1"></div>
             <div class="flex justify-between gap-4">
               <span class="text-[#9ca3af] font-medium">Net</span>
-              <span class="font-mono font-semibold" style="color:${net >= 0 ? "#4ade80" : "#f87171"}">${net >= 0 ? "+" : ""}${fmtFull(net)}</span>
+              <span class="font-mono font-semibold" style="color:${net >= 0 ? "#a3d9a5" : "#fca5a5"}">${net >= 0 ? "+" : ""}${fmtFull(net)}</span>
             </div>
           `;
           tooltip.style.display = "block";
@@ -431,18 +431,17 @@ export function CashFlowChart({
 
   return (
     <>
-      <div className="relative" style={{ paddingLeft: 64 }}>
+      <div className="relative pl-16">
         <div
           ref={yAxisRef}
-          className="pointer-events-none absolute left-0 top-0 w-[60px]"
-          style={{ bottom: 28 }}
+          className="pointer-events-none absolute bottom-7 left-0 top-0 w-[60px]"
         />
         <div ref={wrapRef} className="relative w-full">
           <canvas
             ref={canvasRef}
             onMouseMove={handleMouseMove}
             onMouseLeave={handleMouseLeave}
-            className="block w-full"
+            className="block w-full rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8BC34A]"
             role="img"
             aria-label={`Cash flow bar chart showing ${periods.length} periods. Opening balance: $${openingBalance.toLocaleString()}. Minimum balance threshold: $${threshold.toLocaleString()}.`}
             tabIndex={0}
@@ -454,7 +453,7 @@ export function CashFlowChart({
       {/* Tooltip */}
       <div
         ref={tooltipRef}
-        className="pointer-events-none fixed z-[1000] hidden min-w-[150px] rounded-lg bg-[#1f2937] p-[10px_14px] text-xs text-white shadow-[0_4px_16px_rgba(0,0,0,0.25)]"
+        className="pointer-events-none fixed z-[1000] hidden min-w-[150px] rounded-lg bg-[#1f2937] p-[10px_14px] text-xs text-white shadow-[0_4px_16px_rgba(0,0,0,0.18)]"
       />
     </>
   );

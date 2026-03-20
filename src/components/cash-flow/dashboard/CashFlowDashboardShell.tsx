@@ -30,7 +30,6 @@ function CashFlowDashboardInner({
   userRole,
   assignedFranchises = [],
 }: CashFlowDashboardShellProps) {
-  const isFom = userRole === "fom";
   const { selectedFranchise, setSelectedFranchise, franchises } =
     useFranchisePicker(
       assignedFranchises.length > 0
@@ -121,14 +120,10 @@ function CashFlowDashboardInner({
     return data?.openingBalance ?? 0;
   }, [activeFranchiseId, data?.openingBalance]);
 
-  const { totalRevenue, totalExpense, projectedBalance } = useMemo(() => {
+  const projectedBalance = useMemo(() => {
     const rev = displayPeriods.reduce((s, p) => s + p.revenue, 0);
     const exp = displayPeriods.reduce((s, p) => s + p.expense, 0);
-    return {
-      totalRevenue: rev,
-      totalExpense: exp,
-      projectedBalance: effectiveOpeningBalance + rev - exp,
-    };
+    return effectiveOpeningBalance + rev - exp;
   }, [displayPeriods, effectiveOpeningBalance]);
 
   if (isLoading) {
@@ -152,7 +147,7 @@ function CashFlowDashboardInner({
   return (
     <div className="rounded-xl bg-white p-[32px_40px] shadow-[0_1px_3px_rgba(0,0,0,0.07),0_1px_2px_rgba(0,0,0,0.04)]">
       {/* Card Header */}
-      <div className="mb-5 flex items-center justify-between">
+      <div className="mb-6 flex items-center justify-between border-b border-[#f4f3f1] pb-5">
         <div>
           <h2 className="text-[22px] font-bold tracking-[-0.03em] text-[#1a1a1a]">Cash Flow</h2>
           {franchises.length > 1 ? (
@@ -178,20 +173,20 @@ function CashFlowDashboardInner({
           <div className="flex gap-0.5 rounded-lg bg-[#f3f4f6] p-[3px]">
             <button
               onClick={() => setView("weeks")}
-              className={`rounded-md px-3.5 py-1.5 text-[13px] font-semibold transition-colors ${
+              className={`rounded-md px-3.5 py-1.5 text-[13px] font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8BC34A] ${
                 view === "weeks"
                   ? "bg-white text-[#1a1a1a] shadow-[0_1px_3px_rgba(0,0,0,0.08)]"
-                  : "text-[#6b7280]"
+                  : "text-[#6b7280] hover:text-[#374151]"
               }`}
             >
               12 Weeks
             </button>
             <button
               onClick={() => setView("months")}
-              className={`rounded-md px-3.5 py-1.5 text-[13px] font-semibold transition-colors ${
+              className={`rounded-md px-3.5 py-1.5 text-[13px] font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8BC34A] ${
                 view === "months"
                   ? "bg-white text-[#1a1a1a] shadow-[0_1px_3px_rgba(0,0,0,0.08)]"
-                  : "text-[#6b7280]"
+                  : "text-[#6b7280] hover:text-[#374151]"
               }`}
             >
               3 Months
@@ -201,7 +196,7 @@ function CashFlowDashboardInner({
           {/* Edit This Week */}
           <Link
             href={`${CASH_FLOW_ROUTES.ritual}?franchise=${activeFranchiseId}`}
-            className="rounded-[9px] bg-[#8BC34A] px-[18px] py-2 text-[13px] font-bold text-white shadow-sm transition-colors hover:bg-[#6a9e32]"
+            className="rounded-[9px] bg-[#8BC34A] px-[18px] py-2 text-[13px] font-semibold text-white shadow-sm transition-colors hover:bg-[#6a9e32] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8BC34A] focus-visible:ring-offset-2"
           >
             Edit This Week
           </Link>
@@ -223,7 +218,7 @@ function CashFlowDashboardInner({
         const isOverdue = daysLeft <= 0;
         return (
           <div
-            className={`mb-4 flex items-center justify-between rounded-lg border px-4 py-2.5 text-[13px] font-semibold ${
+            className={`mb-5 flex items-center justify-between rounded-lg border px-4 py-2.5 text-[13px] font-semibold ${
               isOverdue
                 ? "border-red-200 bg-red-50 text-red-700"
                 : "border-[#c5e49a] bg-[#f1f8e9] text-[#3d6b14]"
@@ -236,7 +231,7 @@ function CashFlowDashboardInner({
             </span>
             <Link
               href={`${CASH_FLOW_ROUTES.ritual}?franchise=${activeFranchiseId}`}
-              className={`text-[12px] font-bold underline ${
+              className={`text-[12px] font-semibold underline ${
                 isOverdue ? "text-red-700" : "text-[#3d6b14]"
               }`}
             >
@@ -249,7 +244,7 @@ function CashFlowDashboardInner({
       {displayPeriods.length > 0 ? (
         <>
           {/* Metric + Threshold row */}
-          <div className="mb-6 flex items-end justify-between">
+          <div className="mb-5 flex items-end justify-between">
             <div>
               <div className="text-[12px] font-semibold uppercase tracking-[0.07em] text-[#6b7280]">
                 {view === "weeks" ? "12-Week" : "3-Month"} Projected Balance
@@ -266,15 +261,15 @@ function CashFlowDashboardInner({
               <div className="mt-1.5 text-[12px] font-medium text-[#6b7280]">
                 {projectedBalance >= threshold
                   ? "Above minimum"
-                  : "⚠ Below minimum threshold"}
+                  : "Below minimum"}
               </div>
             </div>
 
             {/* Threshold control */}
             <div className="flex items-center gap-2.5">
               <span className="text-[12px] font-semibold text-[#6b7280]">Min Balance</span>
-              <div className="flex overflow-hidden rounded-lg border border-[#e5e7eb]">
-                <div className="border-r border-[#e5e7eb] bg-[#f9fafb] px-2 py-[5px] font-mono text-[13px] font-semibold text-[#374151]">
+              <div className="flex overflow-hidden rounded-lg border border-[#e5e7eb] focus-within:border-[#8BC34A] focus-within:ring-1 focus-within:ring-[#8BC34A]">
+                <div className="border-r border-[#e5e7eb] bg-[#f9fafb] px-2 py-[5px] font-mono text-[13px] font-medium text-[#6b7280]">
                   $
                 </div>
                 <input
@@ -290,7 +285,7 @@ function CashFlowDashboardInner({
                 <button
                   type="button"
                   onClick={handleSaveThreshold}
-                  className="rounded-lg bg-[#8BC34A] px-2.5 py-[5px] text-[12px] font-semibold text-white transition-colors hover:bg-[#7ab33e]"
+                  className="rounded-lg bg-[#8BC34A] px-2.5 py-[5px] text-[12px] font-semibold text-white transition-colors hover:bg-[#7ab33e] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8BC34A] focus-visible:ring-offset-1"
                 >
                   Set
                 </button>
@@ -308,7 +303,7 @@ function CashFlowDashboardInner({
           </Suspense>
 
           {/* Legend — below chart */}
-          <div className="mt-3 flex items-center justify-center gap-5">
+          <div className="mt-4 flex items-center justify-center gap-5">
             <div className="flex items-center gap-1.5 text-[11px] font-medium text-[#6b7280]">
               <div className="h-2.5 w-2.5 rounded-[2px] bg-[#3b82f6]" />
               Actual
@@ -374,7 +369,7 @@ function CashFlowDashboardInner({
           <div className="text-center">
             <Link
               href={`${CASH_FLOW_ROUTES.ritual}?franchise=${activeFranchiseId}`}
-              className="inline-flex items-center gap-2.5 rounded-[9px] bg-[#8BC34A] px-7 py-3 text-[14px] font-bold text-white shadow-sm transition-colors hover:bg-[#6a9e32]"
+              className="inline-flex items-center gap-2.5 rounded-[9px] bg-[#8BC34A] px-7 py-3 text-[14px] font-semibold text-white shadow-sm transition-colors hover:bg-[#6a9e32] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8BC34A] focus-visible:ring-offset-2"
             >
               Start your first ritual
               <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
