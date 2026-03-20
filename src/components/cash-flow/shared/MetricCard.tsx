@@ -22,7 +22,7 @@ export function MetricCard({
   return (
     <div
       className={cn(
-        "rounded-lg bg-white p-5 shadow-sm transition-all hover:-translate-y-px hover:shadow-md",
+        "rounded-lg bg-white p-5 shadow-sm transition-shadow hover:shadow-md",
         className
       )}
     >

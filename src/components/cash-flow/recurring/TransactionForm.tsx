@@ -174,7 +174,7 @@ export function TransactionForm({
 
         {/* Body */}
         <form onSubmit={handleSubmit}>
-          <div className="space-y-[18px] px-6 py-6">
+          <div className="space-y-4 px-6 py-6">
             {/* Payee */}
             <div>
               <label htmlFor="txn-name" className="mb-1.5 block text-[13px] font-semibold text-neutral-500">

@@ -133,7 +133,7 @@ function CashFlowDashboardInner({
 
   if (isLoading) {
     return (
-      <div className="mx-auto max-w-[1400px]">
+      <div>
         <SkeletonCard lines={12} />
       </div>
     );
@@ -141,7 +141,7 @@ function CashFlowDashboardInner({
 
   if (error && !data) {
     return (
-      <div className="mx-auto max-w-[1400px] rounded-xl border border-danger-100 bg-danger-50 p-6 text-center">
+      <div className="rounded-xl border border-danger-100 bg-danger-50 p-6 text-center">
         <p className="text-sm text-danger-600">
           Unable to load dashboard. Check your connection and try again.
         </p>
@@ -150,11 +150,11 @@ function CashFlowDashboardInner({
   }
 
   return (
-    <div className="mx-auto max-w-[1400px] rounded-xl bg-white p-[32px_40px] shadow-[0_1px_3px_rgba(0,0,0,0.07),0_1px_2px_rgba(0,0,0,0.04)]">
+    <div className="rounded-xl bg-white p-[32px_40px] shadow-[0_1px_3px_rgba(0,0,0,0.07),0_1px_2px_rgba(0,0,0,0.04)]">
       {/* Card Header */}
-      <div className="mb-6 flex items-start justify-between">
+      <div className="mb-5 flex items-start justify-between">
         <div>
-          <h2 className="text-[24px] font-bold text-[#111827]">Cash Flow</h2>
+          <h2 className="text-[22px] font-bold tracking-[-0.03em] text-[#1a1a1a]">Cash Flow</h2>
           {franchises.length > 1 ? (
             <select
               value={activeFranchiseId}
@@ -201,7 +201,7 @@ function CashFlowDashboardInner({
           {/* Manage Recurring */}
           <Link
             href={CASH_FLOW_ROUTES.recurring}
-            className="rounded-lg border-[1.5px] border-[#e5e7eb] bg-white px-[18px] py-[11px] text-sm font-semibold text-[#374151] min-h-[44px]"
+            className="rounded-lg border border-[#e5e7eb] bg-white px-[18px] py-[11px] text-sm font-semibold text-[#374151] min-h-[44px]"
           >
             ≡ Manage Recurring
           </Link>
@@ -209,7 +209,7 @@ function CashFlowDashboardInner({
           {/* Revenue Items */}
           <Link
             href={CASH_FLOW_ROUTES.revenueItems}
-            className="rounded-lg border-[1.5px] border-[#e5e7eb] bg-white px-[18px] py-[11px] text-sm font-semibold text-[#374151] min-h-[44px]"
+            className="rounded-lg border border-[#e5e7eb] bg-white px-[18px] py-[11px] text-sm font-semibold text-[#374151] min-h-[44px]"
           >
             ≡ Revenue Items
           </Link>
@@ -328,7 +328,7 @@ function CashFlowDashboardInner({
             Min Balance
           </div>
           <div className="flex items-center gap-2">
-            <div className="flex overflow-hidden rounded-lg border-[1.5px] border-[#e5e7eb] bg-white">
+            <div className="flex overflow-hidden rounded-lg border border-[#e5e7eb] bg-white">
               <div className="border-r-[1.5px] border-[#e5e7eb] bg-[#f9fafb] px-2.5 py-[7px] font-mono text-[15px] font-semibold text-[#374151]">
                 $
               </div>
@@ -393,7 +393,7 @@ export function CashFlowDashboardShell(props: CashFlowDashboardShellProps) {
   return (
     <Suspense
       fallback={
-        <div className="mx-auto max-w-[1400px]">
+        <div>
           <SkeletonCard lines={12} />
         </div>
       }

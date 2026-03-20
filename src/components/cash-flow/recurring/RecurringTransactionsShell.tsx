@@ -276,10 +276,10 @@ function RecurringTransactionsInner({
   ];
 
   return (
-    <div className="px-7 py-8">
+    <div className="py-8">
       {/* Page Header */}
       <div
-        className="mb-6 flex items-start justify-between"
+        className="mb-5 flex items-start justify-between"
         style={{ animation: "fadeUp 0.4s ease forwards 0.05s", opacity: 0 }}
       >
         <div>
@@ -312,7 +312,7 @@ function RecurringTransactionsInner({
               setEditingTransaction(undefined);
               setFormOpen(true);
             }}
-            className="flex items-center gap-2 rounded-[9px] bg-[#8BC34A] px-[18px] py-2.5 text-[13px] font-bold text-white shadow-[0_2px_8px_rgba(139,195,74,0.3)] transition-all hover:-translate-y-px hover:bg-[#6a9e32] hover:shadow-[0_4px_14px_rgba(139,195,74,0.38)]"
+            className="flex items-center gap-2 rounded-[9px] bg-[#8BC34A] px-[18px] py-2.5 text-[13px] font-bold text-white shadow-sm transition-colors hover:bg-[#6a9e32]"
           >
             <svg
               viewBox="0 0 16 16"
@@ -401,7 +401,7 @@ function RecurringTransactionsInner({
                 style={{ animation: "fadeUp 0.4s ease forwards 0.15s", opacity: 0 }}
               >
                 {/* Toolbar */}
-                <div className="flex flex-wrap items-center justify-between gap-4 border-b border-[#f4f3f1] px-5 py-4">
+                <div className="flex flex-wrap items-center justify-between gap-4 border-b border-[#f4f3f1] px-5 py-3.5">
                   <div className="flex flex-wrap items-center gap-5">
                     {/* Type Filter */}
                     <div className="flex items-center gap-1.5">
@@ -583,7 +583,7 @@ export function RecurringTransactionsShell(props: RecurringTransactionsShellProp
   return (
     <Suspense
       fallback={
-        <div className="space-y-6 px-7 py-8">
+        <div className="space-y-6 py-8">
           <SkeletonCard lines={8} />
         </div>
       }

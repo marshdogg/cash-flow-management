@@ -241,7 +241,7 @@ function RevenueItemsInner({
 
   if (isLoading) {
     return (
-      <div className="mx-auto max-w-[1400px] py-8">
+      <div className="py-8">
         <SkeletonCard lines={12} />
       </div>
     );
@@ -249,7 +249,7 @@ function RevenueItemsInner({
 
   if (error && !items.length) {
     return (
-      <div className="mx-auto max-w-[1400px] py-8">
+      <div className="py-8">
         <div className="rounded-xl border border-danger-100 bg-danger-50 p-6 text-center">
           <p className="text-sm text-danger-600">
             Unable to load revenue items. Check your connection and try again.
@@ -260,7 +260,7 @@ function RevenueItemsInner({
   }
 
   return (
-    <div className="mx-auto max-w-[1400px] py-8">
+    <div className="py-8">
       <style jsx>{`
         @keyframes fadeUp {
           from { opacity: 0; transform: translateY(6px); }
@@ -297,7 +297,7 @@ function RevenueItemsInner({
         <div className="flex items-center gap-2.5">
           <button
             onClick={handleCreate}
-            className="flex items-center gap-2 rounded-[9px] bg-[#8BC34A] px-[18px] py-2.5 text-[13px] font-bold text-white shadow-[0_2px_8px_rgba(139,195,74,0.3)] transition-all hover:-translate-y-px hover:bg-[#6a9e32] hover:shadow-[0_4px_14px_rgba(139,195,74,0.38)]"
+            className="flex items-center gap-2 rounded-[9px] bg-[#8BC34A] px-[18px] py-2.5 text-[13px] font-bold text-white shadow-sm transition-colors hover:bg-[#6a9e32]"
           >
             <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><path d="M8 2v12M2 8h12" /></svg>
             Add Item
@@ -481,7 +481,7 @@ function RevenueItemsInner({
             {items.length === 0 && (
               <button
                 onClick={handleCreate}
-                className="mt-4 inline-flex items-center gap-2 rounded-[9px] bg-[#8BC34A] px-5 py-2.5 text-[13px] font-bold text-white shadow-[0_2px_8px_rgba(139,195,74,0.3)] transition-all hover:-translate-y-px hover:bg-[#6a9e32] hover:shadow-[0_4px_14px_rgba(139,195,74,0.38)]"
+                className="mt-4 inline-flex items-center gap-2 rounded-[9px] bg-[#8BC34A] px-5 py-2.5 text-[13px] font-bold text-white shadow-sm transition-colors hover:bg-[#6a9e32]"
               >
                 <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><path d="M8 2v12M2 8h12" /></svg>
                 Add your first item
@@ -774,7 +774,7 @@ export function RevenueItemsShell(props: RevenueItemsShellProps) {
   return (
     <Suspense
       fallback={
-        <div className="mx-auto max-w-[1400px] py-8">
+        <div className="py-8">
           <SkeletonCard lines={12} />
         </div>
       }
