@@ -262,110 +262,163 @@ function CashFlowDashboardInner({
         );
       })()}
 
-      {/* Hero: Projected Balance */}
-      <div className="mb-5 flex items-center justify-between border-b border-[#f3f4f6] pb-5">
-        <div className="flex flex-col gap-1">
-          <div className="text-[13px] font-semibold uppercase tracking-[0.07em] text-[#6b7280]">
-            {view === "weeks" ? "12-Week" : "3-Month"} Projected Balance
-          </div>
-          <div
-            className={`font-mono tabular-nums text-[36px] font-bold leading-tight tracking-[-0.02em] ${
-              projectedBalance >= threshold
-                ? "text-[#16a34a]"
-                : "text-[#dc2626]"
-            }`}
-          >
-            {formatCurrency(projectedBalance)}
-          </div>
-          <div className="text-[13px] font-medium text-[#6b7280]">
-            {projectedBalance >= threshold
-              ? "Above minimum"
-              : "⚠ Below minimum threshold"}
-          </div>
-        </div>
-
-        <div className="flex flex-col gap-1.5 text-right">
-          <div className="flex items-center justify-end gap-4">
-            <span className="font-mono tabular-nums text-[16px] font-semibold text-[#16a34a]">
-              +{formatCurrency(totalRevenue)} in
-            </span>
-            <span className="font-mono tabular-nums text-[16px] font-semibold text-[#dc2626]">
-              -{formatCurrency(totalExpense)} out
-            </span>
-          </div>
-          <div className="text-[13px] font-medium text-[#6b7280]">
-            {view === "weeks" ? "Next 12 weeks" : "Next 3 months"}
-          </div>
-        </div>
-      </div>
-
-      {/* Chart Controls */}
-      <div className="mb-5 flex items-center justify-between">
-        {/* Legend */}
-        <div className="flex items-center gap-5">
-          <div className="flex items-center gap-2 text-sm font-medium text-[#6b7280]">
-            <div className="h-3 w-3 rounded-[3px] bg-[#3b82f6]" />
-            Bank Balance
-          </div>
-          <div className="flex items-center gap-2 text-sm font-medium text-[#6b7280]">
-            <div className="h-3 w-3 rounded-[3px] bg-[#3b82f6] opacity-35" />
-            Projected
-          </div>
-          <div className="flex items-center gap-2 text-sm font-medium text-[#6b7280]">
-            <div className="h-3 w-3 rounded-[3px] bg-[#ef4444]" />
-            Below Minimum
-          </div>
-        </div>
-
-        {/* Threshold */}
-        <div className="flex items-center gap-3">
-          <div className="flex items-center gap-2 text-sm font-medium text-[#6b7280]">
-            <div className="flex gap-0.5">
-              <div className="h-0.5 w-2 rounded-sm bg-[#f97316]" />
-              <div className="h-0.5 w-2 rounded-sm bg-[#f97316]" />
-              <div className="h-0.5 w-2 rounded-sm bg-[#f97316]" />
-            </div>
-            Min Balance
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="flex overflow-hidden rounded-lg border border-[#e5e7eb] bg-white">
-              <div className="border-r border-[#e5e7eb] bg-[#f9fafb] px-2.5 py-[7px] font-mono text-[15px] font-semibold text-[#374151]">
-                $
-              </div>
-              <input
-                type="text"
-                value={threshold.toLocaleString()}
-                onChange={handleThresholdInput}
-                onKeyDown={(e) => { if (e.key === "Enter") handleSaveThreshold(); }}
-                aria-label="Minimum balance threshold"
-                className="w-[110px] bg-white px-3 py-[7px] font-mono text-[15px] font-semibold text-[#1a1a1a] outline-none"
-              />
-            </div>
-            {isDirty && (
-              <button
-                type="button"
-                onClick={handleSaveThreshold}
-                className="rounded-lg bg-[#8BC34A] px-3 py-[7px] text-[13px] font-semibold text-white transition-all hover:bg-[#7ab33e] active:scale-95"
-              >
-                Set
-              </button>
-            )}
-          </div>
-        </div>
-      </div>
-
-      {/* Chart */}
       {displayPeriods.length > 0 ? (
-        <Suspense fallback={<div className="h-[420px]" />}>
-          <CashFlowChart
-            periods={displayPeriods}
-            openingBalance={effectiveOpeningBalance}
-            threshold={threshold}
-          />
-        </Suspense>
+        <>
+          {/* Hero: Projected Balance */}
+          <div className="mb-5 flex items-center justify-between border-b border-[#f3f4f6] pb-5">
+            <div className="flex flex-col gap-1">
+              <div className="text-[13px] font-semibold uppercase tracking-[0.07em] text-[#6b7280]">
+                {view === "weeks" ? "12-Week" : "3-Month"} Projected Balance
+              </div>
+              <div
+                className={`font-mono tabular-nums text-[36px] font-bold leading-tight tracking-[-0.02em] ${
+                  projectedBalance >= threshold
+                    ? "text-[#16a34a]"
+                    : "text-[#dc2626]"
+                }`}
+              >
+                {formatCurrency(projectedBalance)}
+              </div>
+              <div className="text-[13px] font-medium text-[#6b7280]">
+                {projectedBalance >= threshold
+                  ? "Above minimum"
+                  : "⚠ Below minimum threshold"}
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-1.5 text-right">
+              <div className="flex items-center justify-end gap-4">
+                <span className="font-mono tabular-nums text-[16px] font-semibold text-[#16a34a]">
+                  +{formatCurrency(totalRevenue)} in
+                </span>
+                <span className="font-mono tabular-nums text-[16px] font-semibold text-[#dc2626]">
+                  -{formatCurrency(totalExpense)} out
+                </span>
+              </div>
+              <div className="text-[13px] font-medium text-[#6b7280]">
+                {view === "weeks" ? "Next 12 weeks" : "Next 3 months"}
+              </div>
+            </div>
+          </div>
+
+          {/* Chart Controls */}
+          <div className="mb-5 flex items-center justify-between">
+            {/* Legend */}
+            <div className="flex items-center gap-5">
+              <div className="flex items-center gap-2 text-sm font-medium text-[#6b7280]">
+                <div className="h-3 w-3 rounded-[3px] bg-[#3b82f6]" />
+                Bank Balance
+              </div>
+              <div className="flex items-center gap-2 text-sm font-medium text-[#6b7280]">
+                <div className="h-3 w-3 rounded-[3px] bg-[#3b82f6] opacity-35" />
+                Projected
+              </div>
+              <div className="flex items-center gap-2 text-sm font-medium text-[#6b7280]">
+                <div className="h-3 w-3 rounded-[3px] bg-[#ef4444]" />
+                Below Minimum
+              </div>
+            </div>
+
+            {/* Threshold */}
+            <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2 text-sm font-medium text-[#6b7280]">
+                <div className="flex gap-0.5">
+                  <div className="h-0.5 w-2 rounded-sm bg-[#f97316]" />
+                  <div className="h-0.5 w-2 rounded-sm bg-[#f97316]" />
+                  <div className="h-0.5 w-2 rounded-sm bg-[#f97316]" />
+                </div>
+                Min Balance
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="flex overflow-hidden rounded-lg border border-[#e5e7eb] bg-white">
+                  <div className="border-r border-[#e5e7eb] bg-[#f9fafb] px-2.5 py-[7px] font-mono text-[15px] font-semibold text-[#374151]">
+                    $
+                  </div>
+                  <input
+                    type="text"
+                    value={threshold.toLocaleString()}
+                    onChange={handleThresholdInput}
+                    onKeyDown={(e) => { if (e.key === "Enter") handleSaveThreshold(); }}
+                    aria-label="Minimum balance threshold"
+                    className="w-[110px] bg-white px-3 py-[7px] font-mono text-[15px] font-semibold text-[#1a1a1a] outline-none"
+                  />
+                </div>
+                {isDirty && (
+                  <button
+                    type="button"
+                    onClick={handleSaveThreshold}
+                    className="rounded-lg bg-[#8BC34A] px-3 py-[7px] text-[13px] font-semibold text-white transition-all hover:bg-[#7ab33e] active:scale-95"
+                  >
+                    Set
+                  </button>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Chart */}
+          <Suspense fallback={<div className="h-[420px]" />}>
+            <CashFlowChart
+              periods={displayPeriods}
+              openingBalance={effectiveOpeningBalance}
+              threshold={threshold}
+            />
+          </Suspense>
+        </>
       ) : (
-        <div className="flex h-[420px] items-center justify-center text-base text-[#6b7280]">
-          Complete your first weekly ritual to see chart data.
+        /* First-Use Getting Started */
+        <div className="py-6">
+          <div className="mb-8 text-center">
+            <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-[#f1f8e9] text-3xl">
+              📊
+            </div>
+            <h3 className="text-[18px] font-bold tracking-[-0.02em] text-[#1a1a1a]">
+              Welcome to your Cash Flow Guide
+            </h3>
+            <p className="mx-auto mt-2 max-w-md text-[14px] font-medium leading-relaxed text-[#6b7280]">
+              See where your cash stands today and where it&apos;s headed over the next 12 weeks. Start by completing your first weekly ritual.
+            </p>
+          </div>
+
+          {/* How it works — 3 steps */}
+          <div className="mb-8 grid grid-cols-3 gap-4">
+            <div className="rounded-lg border border-[#e5e7eb] bg-[#fafaf8] px-5 py-5 text-center">
+              <div className="mb-2.5 text-2xl">📋</div>
+              <div className="text-[13px] font-bold text-[#1a1a1a]">1. Complete your ritual</div>
+              <p className="mt-1 text-[12px] font-medium leading-snug text-[#6b7280]">
+                Enter your bank balance, review expenses, and log expected revenue
+              </p>
+            </div>
+            <div className="rounded-lg border border-[#e5e7eb] bg-[#fafaf8] px-5 py-5 text-center">
+              <div className="mb-2.5 text-2xl">📈</div>
+              <div className="text-[13px] font-bold text-[#1a1a1a]">2. See your projection</div>
+              <p className="mt-1 text-[12px] font-medium leading-snug text-[#6b7280]">
+                Your 12-week cash flow chart appears here with projected balances
+              </p>
+            </div>
+            <div className="rounded-lg border border-[#e5e7eb] bg-[#fafaf8] px-5 py-5 text-center">
+              <div className="mb-2.5 text-2xl">🔄</div>
+              <div className="text-[13px] font-bold text-[#1a1a1a]">3. Stay on top of it</div>
+              <p className="mt-1 text-[12px] font-medium leading-snug text-[#6b7280]">
+                Update weekly to keep your projections accurate and avoid surprises
+              </p>
+            </div>
+          </div>
+
+          <div className="text-center">
+            <Link
+              href={`${CASH_FLOW_ROUTES.ritual}?franchise=${activeFranchiseId}`}
+              className="inline-flex items-center gap-2.5 rounded-[9px] bg-[#8BC34A] px-7 py-3 text-[14px] font-bold text-white shadow-sm transition-colors hover:bg-[#6a9e32]"
+            >
+              Start your first ritual
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M3 8h10M9 4l4 4-4 4" />
+              </svg>
+            </Link>
+            <p className="mt-3 text-[12px] font-medium text-[#6b7280]">
+              Takes about 5 minutes
+            </p>
+          </div>
         </div>
       )}
 

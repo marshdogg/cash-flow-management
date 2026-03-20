@@ -16,6 +16,7 @@ import { formatCurrency } from "@/lib/cash-flow/format-utils";
 import {
   CASH_FLOW_ROUTES,
   REVENUE_CATEGORY_COLORS,
+  EMPTY_STATE_MESSAGES,
 } from "@/constants/cash-flow";
 import type {
   CashFlowUserRole,
@@ -485,23 +486,44 @@ function RevenueItemsInner({
           />
         ) : (
           <div className="min-h-[200px] px-8 py-14 text-center">
-            <div className="text-[36px]">📋</div>
-            <h3 className="mt-3 text-[16px] font-bold tracking-[-0.02em] text-[#1a1a1a]">
-              {items.length === 0 ? "No revenue items yet" : "No items match your filters"}
-            </h3>
-            <p className="mt-1.5 text-[13px] font-medium text-[#6b7280]">
-              {items.length === 0
-                ? "Add an item directly or complete a weekly ritual to get started."
-                : "Try adjusting your filters or search query."}
-            </p>
-            {items.length === 0 && (
-              <button
-                onClick={handleCreate}
-                className="mt-4 inline-flex items-center gap-2 rounded-[9px] bg-[#8BC34A] px-5 py-2.5 text-[13px] font-bold text-white shadow-sm transition-colors hover:bg-[#6a9e32]"
-              >
-                <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><path d="M8 2v12M2 8h12" /></svg>
-                Add your first item
-              </button>
+            {items.length === 0 ? (
+              <>
+                <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-[#f1f8e9] text-[28px]">
+                  💵
+                </div>
+                <h3 className="mt-5 text-[17px] font-bold tracking-[-0.02em] text-[#1a1a1a]">
+                  {EMPTY_STATE_MESSAGES.revenueItems.title}
+                </h3>
+                <p className="mx-auto mt-2 max-w-md text-[13.5px] font-medium leading-relaxed text-[#6b7280]">
+                  {EMPTY_STATE_MESSAGES.revenueItems.description}
+                </p>
+                <div className="mt-6 flex items-center justify-center gap-3">
+                  <button
+                    onClick={handleCreate}
+                    className="inline-flex items-center gap-2 rounded-[9px] bg-[#8BC34A] px-5 py-2.5 text-[13.5px] font-bold text-white shadow-sm transition-colors hover:bg-[#6a9e32]"
+                  >
+                    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" className="h-4 w-4"><path d="M8 2v12M2 8h12" /></svg>
+                    Add item manually
+                  </button>
+                  <Link
+                    href={CASH_FLOW_ROUTES.ritual}
+                    className="inline-flex items-center gap-1.5 rounded-[9px] border border-[#e5e7eb] bg-white px-5 py-2.5 text-[13.5px] font-bold text-[#1a1a1a] transition-colors hover:border-[#c5e49a] hover:bg-[#f1f8e9] hover:text-[#3d6b14]"
+                  >
+                    Start a ritual
+                    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-3.5 w-3.5"><path d="M6 3l5 5-5 5" /></svg>
+                  </Link>
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="text-[36px]">🔍</div>
+                <h3 className="mt-3 text-[16px] font-bold tracking-[-0.02em] text-[#1a1a1a]">
+                  No items match your filters
+                </h3>
+                <p className="mt-1.5 text-[13px] font-medium text-[#6b7280]">
+                  Try adjusting your filters or search query.
+                </p>
+              </>
             )}
           </div>
         )}

@@ -280,7 +280,7 @@ export function RevenueItemsTable({
                 </span>
               </th>
             ))}
-            {!isFom && <th className="w-12 px-4 py-2.5" />}
+            {!isFom && <th className="sticky right-0 w-12 bg-[#f4f3f1] px-4 py-2.5" />}
           </tr>
         </thead>
         <tbody>
@@ -298,7 +298,7 @@ export function RevenueItemsTable({
             return (
               <tr
                 key={item.id}
-                className="border-b border-[#f4f3f1] last:border-b-0 hover:bg-[#fafaf8]"
+                className="group border-b border-[#f4f3f1] last:border-b-0 hover:bg-[#fafaf8]"
                 style={isInactive ? { opacity: item.status === "collected" ? 0.7 : 0.6 } : undefined}
               >
                 {!isFom && (
@@ -349,17 +349,13 @@ export function RevenueItemsTable({
                 {/* Category */}
                 <td className="px-4 py-3.5">
                   <span
-                    className="inline-flex items-center gap-[5px] whitespace-nowrap rounded-full border px-2.5 py-[3px] text-[11px] font-semibold"
+                    className="inline-flex items-center whitespace-nowrap rounded-full border px-2.5 py-[3px] text-[11px] font-semibold"
                     style={{
                       background: catColors.bg,
                       borderColor: catColors.border,
                       color: catColors.text,
                     }}
                   >
-                    <span
-                      className="h-[7px] w-[7px] flex-shrink-0 rounded-[2px]"
-                      style={{ background: catColors.dotColor }}
-                    />
                     {REVENUE_CATEGORY_LABELS[item.category]}
                   </span>
                 </td>
@@ -402,23 +398,19 @@ export function RevenueItemsTable({
                 {/* Status */}
                 <td className="px-4 py-3.5">
                   <span
-                    className="inline-flex items-center gap-[5px] whitespace-nowrap rounded-full border px-2.5 py-1 text-[11px] font-semibold"
+                    className="inline-flex items-center whitespace-nowrap rounded-full border px-2.5 py-1 text-[11px] font-semibold"
                     style={{
                       background: statusColors.bg,
                       borderColor: statusColors.border,
                       color: statusColors.text,
                     }}
                   >
-                    <span
-                      className="h-1.5 w-1.5 rounded-full"
-                      style={{ background: statusColors.dot }}
-                    />
                     {REVENUE_STATUS_LABELS[item.status]}
                   </span>
                 </td>
-                {/* Actions */}
+                {/* Actions — pinned right */}
                 {!isFom && (
-                  <td className="px-4 py-3.5">
+                  <td className="sticky right-0 bg-white px-4 py-3.5 shadow-[-4px_0_8px_-4px_rgba(0,0,0,0.06)] group-hover:bg-[#fafaf8]">
                     <div className="flex justify-end">
                       <KebabMenu
                         item={item}

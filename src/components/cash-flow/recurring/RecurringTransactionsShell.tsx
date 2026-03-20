@@ -11,7 +11,6 @@ const TransactionForm = lazy(() =>
 );
 import { ConfirmDialog } from "@/components/cash-flow/shared/ConfirmDialog";
 import { SummaryCard } from "@/components/cash-flow/shared/SummaryCard";
-import { EmptyState } from "@/components/cash-flow/shared/EmptyState";
 import { SkeletonCard } from "@/components/cash-flow/shared/SkeletonCard";
 import { RoleGate } from "@/components/cash-flow/shared/RoleGate";
 import {
@@ -357,19 +356,31 @@ function RecurringTransactionsInner({
       {!isLoading && !error && (
         <>
           {transactions.length === 0 ? (
-            <EmptyState
-              title={EMPTY_STATE_MESSAGES.recurring.title}
-              description={EMPTY_STATE_MESSAGES.recurring.description}
-              actionLabel={isFom ? undefined : "Add Transaction"}
-              onAction={
-                isFom
-                  ? undefined
-                  : () => {
-                      setEditingTransaction(undefined);
-                      setFormOpen(true);
-                    }
-              }
-            />
+            <div className="rounded-[14px] bg-white px-8 py-14 text-center shadow-[0_2px_12px_rgba(0,0,0,0.05),0_1px_4px_rgba(0,0,0,0.03)]">
+              <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-[#f1f8e9] text-[28px]">
+                🔁
+              </div>
+              <h3 className="mt-5 text-[17px] font-bold tracking-[-0.02em] text-[#1a1a1a]">
+                {EMPTY_STATE_MESSAGES.recurring.title}
+              </h3>
+              <p className="mx-auto mt-2 max-w-md text-[13.5px] font-medium leading-relaxed text-[#6b7280]">
+                {EMPTY_STATE_MESSAGES.recurring.description}
+              </p>
+              {!isFom && (
+                <button
+                  onClick={() => {
+                    setEditingTransaction(undefined);
+                    setFormOpen(true);
+                  }}
+                  className="mt-6 inline-flex items-center gap-2 rounded-[9px] bg-[#8BC34A] px-5 py-2.5 text-[13.5px] font-bold text-white shadow-sm transition-colors hover:bg-[#6a9e32]"
+                >
+                  <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" className="h-4 w-4">
+                    <path d="M8 2v12M2 8h12" />
+                  </svg>
+                  Add your first transaction
+                </button>
+              )}
+            </div>
           ) : (
             <>
               {/* Summary Strip */}

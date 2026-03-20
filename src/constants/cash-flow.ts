@@ -318,12 +318,14 @@ export const EMPTY_STATE_MESSAGES = {
       "Complete your first ritual to see your cash position, health status, and projections.",
   },
   recurring: {
-    title: "No recurring transactions yet",
-    description: "Add your first one to get started.",
+    title: "Track your fixed costs and income",
+    description:
+      "Recurring transactions — like rent, royalties, and subscriptions — feed your cash flow projections so you always know what's coming.",
   },
   revenueItems: {
-    title: "No revenue items yet",
-    description: "Complete a weekly ritual to populate revenue items.",
+    title: "Revenue items show up after your ritual",
+    description:
+      "Each weekly ritual captures expected revenue across AR, Sales, and Proposals. Complete your first ritual to see items here.",
   },
   widget: {
     title: "Not Available",

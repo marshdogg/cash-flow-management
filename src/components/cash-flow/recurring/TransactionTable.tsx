@@ -235,8 +235,8 @@ export function TransactionTable({
                 </span>
               </th>
             ))}
-            {/* Actions header */}
-            {!isFom && <th className="w-12 px-4 py-2.5" />}
+            {/* Actions header — pinned right */}
+            {!isFom && <th className="sticky right-0 w-12 bg-[#f4f3f1] px-4 py-2.5" />}
           </tr>
         </thead>
         <tbody>
@@ -250,7 +250,7 @@ export function TransactionTable({
             return (
               <tr
                 key={txn.id}
-                className="border-b border-[#f4f3f1] transition-colors last:border-b-0 hover:bg-[#fafaf8]"
+                className="group border-b border-[#f4f3f1] transition-colors last:border-b-0 hover:bg-[#fafaf8]"
                 style={
                   txn.status === "paused" ? { opacity: 0.55 } : undefined
                 }
@@ -370,9 +370,9 @@ export function TransactionTable({
                     {txn.status === "active" ? "Active" : "Paused"}
                   </span>
                 </td>
-                {/* Actions */}
+                {/* Actions — pinned right */}
                 {!isFom && (
-                  <td className="px-4 py-3.5">
+                  <td className="sticky right-0 bg-white px-4 py-3.5 shadow-[-4px_0_8px_-4px_rgba(0,0,0,0.06)] group-hover:bg-[#fafaf8]">
                     <div className="flex justify-end">
                       <KebabMenu
                         transaction={txn}
