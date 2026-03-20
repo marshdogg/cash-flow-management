@@ -687,7 +687,7 @@ function FilterPill({
       className={cn(
         "flex items-center gap-[5px] rounded-full border px-3 py-1 text-[12px] font-medium transition-colors",
         active
-          ? "border-[#5a8c1f] bg-[#5a8c1f] text-white"
+          ? "border-[#8BC34A] bg-[#8BC34A] text-white"
           : "border-[#e5e7eb] text-[#6b7280] hover:border-[#c5e49a] hover:bg-[#f9fdf5] hover:text-[#3d6b14]"
       )}
     >

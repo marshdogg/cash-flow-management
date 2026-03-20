@@ -76,7 +76,7 @@ function KebabMenu({
     <div className="relative" ref={ref}>
       <button
         onClick={() => setOpen(!open)}
-        className="flex h-7 w-7 items-center justify-center rounded-md text-[#a0aab4] transition-all hover:bg-[#f4f3f1] hover:text-[#1a1a1a]"
+        className="flex h-7 w-7 min-h-[44px] min-w-[44px] items-center justify-center rounded-md text-[#6b7280] transition-colors hover:bg-[#f4f3f1] hover:text-[#1a1a1a]"
         aria-label={`Actions for ${transaction.name}`}
       >
         <svg viewBox="0 0 16 16" fill="currentColor" className="h-3.5 w-3.5">
@@ -86,7 +86,7 @@ function KebabMenu({
         </svg>
       </button>
       {open && (
-        <div className="absolute right-0 z-50 mt-1 min-w-[160px] rounded-[10px] border-[1.5px] border-[#ebebeb] bg-white p-1.5 shadow-[0_4px_16px_rgba(0,0,0,0.07),0_2px_6px_rgba(0,0,0,0.04)]">
+        <div className="absolute right-0 z-50 mt-1 min-w-[160px] rounded-[10px] border border-[#e5e7eb] bg-white p-1.5 shadow-[0_4px_16px_rgba(0,0,0,0.07),0_2px_6px_rgba(0,0,0,0.04)]">
           <button
             onClick={() => {
               onEdit(transaction);
@@ -149,17 +149,17 @@ export function TransactionTable({
     <div className="overflow-x-auto">
       <table className="w-full border-collapse text-left">
         <thead>
-          <tr className="border-b-[1.5px] border-[#ebebeb] bg-[#f4f3f1]">
+          <tr className="border-b border-[#e5e7eb] bg-[#f4f3f1]">
             {/* Checkbox */}
             {!isFom && (
               <th className="w-11 px-4 py-2.5">
                 <div
                   onClick={onSelectAll}
                   className={cn(
-                    "flex h-4 w-4 cursor-pointer items-center justify-center rounded border-[1.5px] text-[9px] transition-all",
+                    "flex h-4 w-4 cursor-pointer items-center justify-center rounded border text-[9px] transition-all",
                     allSelected
                       ? "border-[#8BC34A] bg-[#8BC34A] text-white"
-                      : "border-[#ebebeb] hover:border-[#8BC34A]"
+                      : "border-[#e5e7eb] hover:border-[#8BC34A]"
                   )}
                   role="checkbox"
                   aria-checked={allSelected}
@@ -173,7 +173,7 @@ export function TransactionTable({
               <th
                 key={col.field}
                 className={cn(
-                  "cursor-pointer select-none whitespace-nowrap px-4 py-2.5 text-[11px] font-bold uppercase tracking-[0.07em] text-[#a0aab4] hover:text-[#6b7280]",
+                  "cursor-pointer select-none whitespace-nowrap px-4 py-2.5 text-[11px] font-semibold uppercase tracking-[0.07em] text-[#6b7280]",
                   col.hideOnMobile && "hidden sm:table-cell"
                 )}
                 onClick={() => onSortChange(col.field)}
@@ -229,10 +229,10 @@ export function TransactionTable({
                     <div
                       onClick={() => onToggleSelect(txn.id)}
                       className={cn(
-                        "flex h-4 w-4 cursor-pointer items-center justify-center rounded border-[1.5px] text-[9px] transition-all",
+                        "flex h-4 w-4 cursor-pointer items-center justify-center rounded border text-[9px] transition-all",
                         isSelected
                           ? "border-[#8BC34A] bg-[#8BC34A] text-white"
-                          : "border-[#ebebeb] hover:border-[#8BC34A]"
+                          : "border-[#e5e7eb] hover:border-[#8BC34A]"
                       )}
                       role="checkbox"
                       aria-checked={isSelected}
@@ -256,11 +256,11 @@ export function TransactionTable({
                       {icon}
                     </div>
                     <div>
-                      <div className="text-[13px] font-bold leading-tight text-[#1a1a1a]">
+                      <div className="text-[13px] font-semibold leading-tight text-[#1a1a1a]">
                         {txn.name}
                       </div>
                       {txn.description && (
-                        <div className="mt-0.5 text-[11px] font-medium text-[#a0aab4]">
+                        <div className="mt-0.5 text-[11px] font-medium text-[#6b7280]">
                           {txn.description}
                         </div>
                       )}
@@ -295,7 +295,7 @@ export function TransactionTable({
                 </td>
                 {/* Frequency */}
                 <td className="hidden px-4 py-3.5 sm:table-cell">
-                  <span className="inline-flex items-center gap-1 rounded-full border border-[#ebebeb] bg-[#f4f3f1] px-2.5 py-1 text-[11px] font-semibold text-[#6b7280]">
+                  <span className="inline-flex items-center gap-1 rounded-full border border-[#e5e7eb] bg-[#f4f3f1] px-2.5 py-1 text-[11px] font-semibold text-[#6b7280]">
                     {FREQUENCY_EMOJI_LABELS[txn.frequency]}
                   </span>
                 </td>

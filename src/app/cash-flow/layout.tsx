@@ -19,7 +19,7 @@ export default async function CashFlowLayout({
     session.role === "fom" ? "fom" : "franchise_partner";
 
   return (
-    <div className="flex min-h-screen bg-[#f4f6f9]">
+    <div className="flex min-h-screen bg-[#f7f6f3]">
       <CashFlowNav userRole={cashFlowRole} />
 
       <main

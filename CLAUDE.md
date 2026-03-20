@@ -45,3 +45,26 @@ Output templates are in `/templates/`. Load on demand per the Loading Guide.
 - Dual sign-off: Paul AND Eddie approve designs
 - Never auto-merge — human approval required
 - Technical escalations route to Ian before humans
+
+## Design Context
+
+### Users
+- **Franchise Partners**: Individual WOW 1 DAY PAINTING franchise owners checking their own cash position, typically during their weekly ritual at a desk.
+- **Franchise Operations Managers (FOMs)**: Overseeing multiple franchises, reviewing and comparing cash health across locations.
+- Both are primary audiences with equal importance.
+
+### Brand Personality
+**Calm, trustworthy, composed** — like a reliable financial advisor. No drama, no flash. Confidence through clarity.
+Three words: **Steady. Clear. Capable.**
+
+### Aesthetic Direction
+- Warm neutrals, natural greens (brand: #8BC34A), light backgrounds
+- Light mode. Tan (#f7f6f3) and blue-gray (#f4f6f9) backgrounds
+- Anti-reference: Generic SaaS dashboards — cookie-cutter card grids, interchangeable B2B tool aesthetic
+
+### Design Principles
+1. **Clarity over cleverness**: Every element communicates, not decorates
+2. **Hierarchy through restraint**: Size, weight, and spacing guide the eye — not color splashes
+3. **Consistency breeds trust**: Identical patterns for identical actions
+4. **Calm density**: Useful information without overwhelm
+5. **Earned color**: Color reserved for meaning — health status, categories, primary actions

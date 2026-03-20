@@ -278,17 +278,17 @@ function RecurringTransactionsInner({
   ];
 
   return (
-    <div className="min-h-screen bg-[#f7f6f3] px-7 py-8">
+    <div className="px-7 py-8">
       {/* Page Header */}
       <div
         className="mb-6 flex items-start justify-between"
         style={{ animation: "fadeUp 0.4s ease forwards 0.05s", opacity: 0 }}
       >
         <div>
-          <h1 className="text-[22px] font-extrabold tracking-[-0.03em] text-[#1a1a1a]">
+          <h1 className="text-[22px] font-bold tracking-[-0.03em] text-[#1a1a1a]">
             Recurring Transactions
           </h1>
-          <p className="mt-0.5 text-[13px] font-medium text-[#a0aab4]">
+          <p className="mt-0.5 text-[13px] font-medium text-[#6b7280]">
             {isFom && franchises.length > 0 ? (
               <select
                 value={activeFranchiseId}
@@ -399,7 +399,7 @@ function RecurringTransactionsInner({
 
               {/* Table Card */}
               <div
-                className="overflow-hidden rounded-[14px] bg-white shadow-[0_4px_16px_rgba(0,0,0,0.07),0_2px_6px_rgba(0,0,0,0.04)]"
+                className="overflow-hidden rounded-[14px] bg-white shadow-[0_2px_12px_rgba(0,0,0,0.05),0_1px_4px_rgba(0,0,0,0.03)]"
                 style={{ animation: "fadeUp 0.4s ease forwards 0.15s", opacity: 0 }}
               >
                 {/* Toolbar */}
@@ -407,16 +407,16 @@ function RecurringTransactionsInner({
                   <div className="flex flex-wrap items-center gap-5">
                     {/* Type Filter */}
                     <div className="flex items-center gap-1.5">
-                      <span className="mr-0.5 text-xs font-semibold text-[#a0aab4]">Type:</span>
+                      <span className="mr-0.5 text-xs font-semibold text-[#6b7280]">Type:</span>
                       {typeFilterOptions.map((opt) => (
                         <button
                           key={opt.value}
                           onClick={() => setTypeFilter(opt.value)}
                           className={cn(
-                            "rounded-full border-[1.5px] px-3 py-1 text-xs font-semibold transition-all",
+                            "rounded-full border px-3 py-1 text-xs font-semibold transition-all",
                             typeFilter === opt.value
-                              ? "border-[#8BC34A] bg-[#8BC34A] text-white shadow-[0_1px_4px_rgba(139,195,74,0.3)]"
-                              : "border-[#ebebeb] text-[#6b7280] hover:border-[#c5e49a] hover:bg-[#f1f8e9] hover:text-[#3d6b14]"
+                              ? "border-[#8BC34A] bg-[#8BC34A] text-white"
+                              : "border-[#e5e7eb] text-[#6b7280] hover:border-[#c5e49a] hover:bg-[#f1f8e9] hover:text-[#3d6b14]"
                           )}
                         >
                           {opt.label}
@@ -428,16 +428,16 @@ function RecurringTransactionsInner({
                     </div>
                     {/* Status Filter */}
                     <div className="flex items-center gap-1.5">
-                      <span className="mr-0.5 text-xs font-semibold text-[#a0aab4]">Status:</span>
+                      <span className="mr-0.5 text-xs font-semibold text-[#6b7280]">Status:</span>
                       {statusFilterOptions.map((opt) => (
                         <button
                           key={opt.value}
                           onClick={() => setStatusFilter(opt.value)}
                           className={cn(
-                            "rounded-full border-[1.5px] px-3 py-1 text-xs font-semibold transition-all",
+                            "rounded-full border px-3 py-1 text-xs font-semibold transition-all",
                             statusFilter === opt.value
-                              ? "border-[#8BC34A] bg-[#8BC34A] text-white shadow-[0_1px_4px_rgba(139,195,74,0.3)]"
-                              : "border-[#ebebeb] text-[#6b7280] hover:border-[#c5e49a] hover:bg-[#f1f8e9] hover:text-[#3d6b14]"
+                              ? "border-[#8BC34A] bg-[#8BC34A] text-white"
+                              : "border-[#e5e7eb] text-[#6b7280] hover:border-[#c5e49a] hover:bg-[#f1f8e9] hover:text-[#3d6b14]"
                           )}
                         >
                           {opt.label}
@@ -446,14 +446,14 @@ function RecurringTransactionsInner({
                     </div>
                   </div>
                   {/* Search */}
-                  <div className="flex items-center gap-2 rounded-[9px] border-[1.5px] border-[#ebebeb] bg-[#f4f3f1] px-3 py-[7px] transition-all focus-within:border-[#8BC34A] focus-within:bg-white focus-within:shadow-[0_0_0_3px_rgba(139,195,74,0.1)]">
+                  <div className="flex items-center gap-2 rounded-[9px] border border-[#e5e7eb] bg-[#f4f3f1] px-3 py-[7px] transition-all focus-within:border-[#8BC34A] focus-within:bg-white focus-within:shadow-[0_0_0_3px_rgba(139,195,74,0.1)]">
                     <svg
                       viewBox="0 0 16 16"
                       fill="none"
                       stroke="currentColor"
                       strokeWidth="2"
                       strokeLinecap="round"
-                      className="h-3.5 w-3.5 flex-shrink-0 text-[#a0aab4]"
+                      className="h-3.5 w-3.5 flex-shrink-0 text-[#6b7280]"
                     >
                       <circle cx="6.5" cy="6.5" r="4" />
                       <path d="M10.5 10.5l3 3" />
@@ -463,7 +463,7 @@ function RecurringTransactionsInner({
                       placeholder="Search transactions…"
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
-                      className="w-40 border-none bg-transparent text-xs font-medium text-[#1a1a1a] outline-none placeholder:text-[#a0aab4]"
+                      className="w-40 border-none bg-transparent text-xs font-medium text-[#1a1a1a] outline-none placeholder:text-[#6b7280]"
                     />
                   </div>
                 </div>
@@ -487,9 +487,9 @@ function RecurringTransactionsInner({
 
                 {/* Footer */}
                 <div className="flex items-center justify-between border-t border-[#f4f3f1] bg-[#f4f3f1] px-5 py-3">
-                  <div className="text-xs font-medium text-[#a0aab4]">
-                    Showing <strong className="text-[#6b7280]">{sortedTransactions.length}</strong>{" "}
-                    of <strong className="text-[#6b7280]">{meta.total}</strong> transactions
+                  <div className="text-xs font-medium text-[#6b7280]">
+                    Showing <strong className="text-[#1a1a1a]">{sortedTransactions.length}</strong>{" "}
+                    of <strong className="text-[#1a1a1a]">{meta.total}</strong> transactions
                   </div>
                   {selectedIds.size > 0 && (
                     <div className="flex items-center gap-2">
@@ -498,13 +498,13 @@ function RecurringTransactionsInner({
                       </span>
                       <button
                         onClick={() => handleBulkAction("pause")}
-                        className="flex items-center gap-1 rounded-[7px] border-[1.5px] border-[#ebebeb] bg-white px-3 py-1.5 text-xs font-semibold text-[#6b7280] transition-all hover:border-[#c5e49a] hover:text-[#3d6b14]"
+                        className="flex items-center gap-1 rounded-[7px] border border-[#e5e7eb] bg-white px-3 py-1.5 text-xs font-semibold text-[#6b7280] transition-all hover:border-[#c5e49a] hover:text-[#3d6b14]"
                       >
                         ⏸ Pause selected
                       </button>
                       <button
                         onClick={() => handleBulkAction("delete")}
-                        className="flex items-center gap-1 rounded-[7px] border-[1.5px] border-[#fecaca] bg-white px-3 py-1.5 text-xs font-semibold text-[#ef4444] transition-all hover:bg-[#fef2f2]"
+                        className="flex items-center gap-1 rounded-[7px] border border-[#fecaca] bg-white px-3 py-1.5 text-xs font-semibold text-[#ef4444] transition-all hover:bg-[#fef2f2]"
                       >
                         🗑 Delete selected
                       </button>
@@ -549,6 +549,9 @@ function RecurringTransactionsInner({
           from { opacity: 0; transform: translateY(6px); }
           to { opacity: 1; transform: translateY(0); }
         }
+        @media (prefers-reduced-motion: reduce) {
+          * { animation: none !important; opacity: 1 !important; }
+        }
       `}</style>
     </div>
   );
@@ -566,14 +569,14 @@ function SummaryCard({
   sub: string;
 }) {
   return (
-    <div className="flex flex-col gap-1 rounded-[9px] border-[1.5px] border-[#ebebeb] bg-white px-[18px] py-4 shadow-[0_1px_3px_rgba(0,0,0,0.06)] transition-colors hover:border-[#c5e49a]">
-      <div className="text-[10px] font-bold uppercase tracking-[0.09em] text-[#a0aab4]">
+    <div className="flex flex-col gap-1 rounded-[9px] border border-[#e5e7eb] bg-white px-[18px] py-4 shadow-[0_1px_3px_rgba(0,0,0,0.06)] transition-colors hover:border-[#c5e49a]">
+      <div className="text-[10px] font-bold uppercase tracking-[0.09em] text-[#6b7280]">
         {label}
       </div>
       <div className={cn("font-mono text-xl font-medium leading-none tracking-[-0.02em]", valueColor)}>
         {value}
       </div>
-      <div className="mt-0.5 text-[11px] font-medium text-[#a0aab4]">{sub}</div>
+      <div className="mt-0.5 text-[11px] font-medium text-[#6b7280]">{sub}</div>
     </div>
   );
 }

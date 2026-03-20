@@ -232,10 +232,10 @@ export function RevenueItemsTable({
                   onKeyDown={(e) => { if (e.key === " " || e.key === "Enter") { e.preventDefault(); onSelectAll(); } }}
                   tabIndex={0}
                   className={cn(
-                    "flex h-4 w-4 cursor-pointer items-center justify-center rounded border-[1.5px] text-[9px] transition-all",
+                    "flex h-4 w-4 cursor-pointer items-center justify-center rounded border text-[9px] transition-all",
                     allSelected
                       ? "border-[#8BC34A] bg-[#8BC34A] text-white"
-                      : "border-[#ebebeb] hover:border-[#8BC34A]"
+                      : "border-[#e5e7eb] hover:border-[#8BC34A]"
                   )}
                   role="checkbox"
                   aria-checked={allSelected}
@@ -249,7 +249,7 @@ export function RevenueItemsTable({
               <th
                 key={col.field}
                 className={cn(
-                  "cursor-pointer select-none whitespace-nowrap px-4 py-2.5 text-[10px] font-semibold uppercase tracking-[0.07em] text-[#6b7280] hover:text-[#6b7280]",
+                  "cursor-pointer select-none whitespace-nowrap px-4 py-2.5 text-[11px] font-semibold uppercase tracking-[0.07em] text-[#6b7280]",
                   col.hideOnMobile && "hidden sm:table-cell"
                 )}
                 onClick={() => onSortChange(col.field)}
@@ -310,10 +310,10 @@ export function RevenueItemsTable({
                       onKeyDown={(e) => { if (e.key === " " || e.key === "Enter") { e.preventDefault(); onToggleSelect(item.id); } }}
                       tabIndex={0}
                       className={cn(
-                        "flex h-4 w-4 cursor-pointer items-center justify-center rounded border-[1.5px] text-[9px] transition-all",
+                        "flex h-4 w-4 cursor-pointer items-center justify-center rounded border text-[9px] transition-all",
                         isSelected
                           ? "border-[#8BC34A] bg-[#8BC34A] text-white"
-                          : "border-[#ebebeb] hover:border-[#8BC34A]"
+                          : "border-[#e5e7eb] hover:border-[#8BC34A]"
                       )}
                       role="checkbox"
                       aria-checked={isSelected}
@@ -327,7 +327,7 @@ export function RevenueItemsTable({
                 <td className="px-4 py-3.5">
                   <div className="flex items-center gap-2.5">
                     <div
-                      className="flex h-[34px] w-[34px] flex-shrink-0 items-center justify-center rounded-lg text-[15px]"
+                      className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg text-[15px]"
                       style={{
                         background: catColors.iconBg,
                         opacity: isInactive ? 0.6 : 1,
