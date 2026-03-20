@@ -27,29 +27,25 @@ export function WelcomeBanner({ userName, welcomeData }: WelcomeBannerProps) {
   const firstName = userName.split(" ")[0] || "there";
 
   return (
-    <div className="relative overflow-hidden bg-gradient-to-br from-[#3d6b14] via-[#5e9422] to-[#8BC34A] px-8 py-9">
-      <div className="absolute -right-6 -top-6 h-[240px] w-[240px] rounded-full bg-white/[0.07]" />
-      <div className="absolute -left-20 bottom-0 h-[160px] w-[160px] rounded-full bg-white/[0.04]" />
-
-      <div className="relative z-[1] flex items-center justify-between gap-5">
+    <div className="bg-[#f1f8e9] px-8 py-6">
+      <div className="flex items-center justify-between gap-5">
         <div>
-          <div className="text-[28px] font-extrabold tracking-[-0.03em] text-white">
-            Good morning, {firstName} 👋
+          <div className="text-xl font-bold tracking-[-0.02em] text-[#1a1a1a]">
+            Good morning, {firstName}
           </div>
-          <div className="mt-1.5 text-[14px] font-medium text-white/75">
+          <div className="mt-1 text-[13px] font-medium text-[#6b7280]">
             Let&apos;s get a clear picture of where your cash stands this week.
           </div>
         </div>
 
         {/* Last ritual badge */}
         {welcomeData?.lastRitualDate && (
-          <div className="flex flex-shrink-0 items-center gap-2 whitespace-nowrap rounded-3xl border border-white/25 bg-white/15 px-3.5 py-2 backdrop-blur-sm">
-            <span>🗓</span>
+          <div className="flex flex-shrink-0 items-center gap-2 whitespace-nowrap rounded-full border border-[#c5e49a] bg-white px-3 py-1.5">
             <div>
-              <div className="text-[10px] font-semibold uppercase tracking-[0.06em] text-white/65">
+              <div className="text-[10px] font-semibold uppercase tracking-[0.06em] text-[#a0aab4]">
                 Last ritual
               </div>
-              <div className="text-xs font-bold text-white">
+              <div className="text-xs font-bold text-[#3d6b14]">
                 {relativeDate(welcomeData.lastRitualDate)} &middot; {shortDate(welcomeData.lastRitualDate)}
               </div>
             </div>

@@ -12,10 +12,10 @@ export function WeekSelector({ weekStart, onWeekChange }: WeekSelectorProps) {
   const options = generateWeekOptions(WEEK_SELECTOR_PAST_WEEKS);
 
   return (
-    <div className="flex items-center gap-3 border-b border-[#e8f5e0] bg-[#fafff5] px-6 py-3">
+    <div className="flex items-center gap-3 border-b border-[#e5e7eb] bg-[#f4f3f1] px-6 py-3">
       <label
         htmlFor="week-selector"
-        className="text-[13px] font-semibold text-[#3d6b14]"
+        className="text-[13px] font-semibold text-[#6b7280]"
       >
         Ritual week:
       </label>
@@ -26,7 +26,7 @@ export function WeekSelector({ weekStart, onWeekChange }: WeekSelectorProps) {
           const selected = options.find((o) => o.weekStart === e.target.value);
           if (selected) onWeekChange(selected.weekStart, selected.weekEnd);
         }}
-        className="rounded-[8px] border border-[#c5e49a] bg-white px-3 py-1.5 text-[13px] font-medium text-[#3d6b14] focus:border-[#8BC34A] focus:outline-none focus:ring-1 focus:ring-[#8BC34A]"
+        className="rounded-[8px] border border-[#e5e7eb] bg-white px-3 py-1.5 text-[13px] font-medium text-[#1a1a1a] focus-visible:border-[#8BC34A] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8BC34A]/30"
       >
         {options.map((opt) => (
           <option key={opt.weekStart} value={opt.weekStart}>

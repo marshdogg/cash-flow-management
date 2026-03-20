@@ -2,7 +2,6 @@
 
 import { Suspense, useState, useCallback, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 import { useRitualWizard } from "@/hooks/useRitualWizard";
 import { useRecurringTransactions } from "@/hooks/useRecurringTransactions";
 import { useToast } from "@/hooks/useToast";
@@ -63,8 +62,8 @@ function AccordionSection({
   return (
     <div
       className={cn(
-        "border-l-4 transition-colors duration-300",
-        isOpen ? "border-l-[#8BC34A]" : "border-l-[#c5e49a]"
+        "border-l-2 transition-colors duration-300",
+        isOpen ? "border-l-[#8BC34A]" : "border-l-[#e5e7eb]"
       )}
     >
       {/* Header */}
@@ -74,7 +73,7 @@ function AccordionSection({
         aria-expanded={isOpen}
         aria-controls={panelId}
         onClick={() => onToggle(id)}
-        className="scroll-mt-[68px] flex w-full items-start gap-3 px-6 py-4 text-left transition-colors hover:bg-[#fafff5]"
+        className="scroll-mt-[68px] flex w-full items-start gap-3 px-6 py-4 text-left transition-colors hover:bg-[#fafaf8] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#8BC34A]"
       >
         {/* Chevron */}
         <svg
@@ -95,7 +94,7 @@ function AccordionSection({
         {isOpen ? (
           /* Expanded: full title + subtitle */
           <div className="min-w-0 flex-1">
-            <h2 className="text-[22px] font-extrabold leading-tight tracking-[-0.02em] text-[#1a1a1a]">
+            <h2 className="text-[22px] font-bold leading-tight tracking-[-0.02em] text-[#1a1a1a]">
               {title}
             </h2>
             <p className="mt-1 text-[14px] font-medium text-[#a0aab4]">
@@ -151,7 +150,7 @@ function AccordionSection({
                   e.stopPropagation();
                   onContinue(id);
                 }}
-                className="flex items-center gap-2 rounded-[9px] border border-[#c5e49a] bg-[#f1f8e9] px-6 py-2.5 text-[14px] font-bold text-[#3d6b14] transition-all hover:bg-[#e8f5d6] active:scale-[0.98]"
+                className="flex items-center gap-2 rounded-[9px] border border-[#c5e49a] bg-[#f1f8e9] px-6 py-2.5 text-[14px] font-semibold text-[#3d6b14] transition-colors hover:bg-[#e8f5d6] active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8BC34A]"
               >
                 Continue
                 <svg
@@ -319,34 +318,6 @@ function RitualWizardInner({ franchiseId, userName }: RitualWizardProps) {
 
   return (
     <div className="flex flex-col bg-[#f7f6f3]">
-      {/* Topbar */}
-      <div className="sticky top-0 z-[100] flex h-[60px] items-center justify-between border-b border-[#e8e8e5] bg-white px-8 shadow-[0_1px_3px_rgba(0,0,0,0.06)]">
-        <div className="flex items-center gap-4">
-          <Link
-            href={CASH_FLOW_ROUTES.dashboard}
-            className="flex items-center gap-1.5 rounded-[9px] px-2.5 py-1.5 text-[13px] font-semibold text-[#6b7280] transition-all hover:bg-[#f2f1ef] hover:text-[#1a1a1a]"
-          >
-            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" className="h-4 w-4">
-              <path d="M10 3L5 8l5 5" />
-            </svg>
-            Dashboard
-          </Link>
-          <div className="h-6 w-px bg-[#e8e8e5]" />
-          <div>
-            <h1 className="text-[15px] font-extrabold tracking-[-0.02em] text-[#1a1a1a]">
-              Weekly Ritual
-            </h1>
-            <span className="text-[11px] font-medium text-[#a0aab4]">
-              Cash flow check-in
-            </span>
-          </div>
-        </div>
-        <div className="flex items-center gap-2 text-xs font-medium text-[#a0aab4]">
-          <div className="h-1.5 w-1.5 animate-pulse rounded-full bg-[#8BC34A]" />
-          Auto-saved
-        </div>
-      </div>
-
       {/* Main content */}
       <div className="mx-auto w-full max-w-[920px] flex-1 p-8 pb-24">
         <div className="overflow-hidden rounded-[16px] bg-white shadow-[0_8px_30px_rgba(0,0,0,0.08),0_2px_8px_rgba(0,0,0,0.04)]">
@@ -357,119 +328,123 @@ function RitualWizardInner({ franchiseId, userName }: RitualWizardProps) {
           />
 
           {/* Week Selector */}
-          <WeekSelector
-            weekStart={wizard.state.weekStart}
-            onWeekChange={wizard.setWeek}
-          />
+          <div className="border-b border-[#f4f3f1] pb-0 mb-0">
+            <WeekSelector
+              weekStart={wizard.state.weekStart}
+              onWeekChange={wizard.setWeek}
+            />
+          </div>
 
           {/* Accordion sections */}
-          {sections.map((section) => (
-            <AccordionSection
-              key={section.id}
-              id={section.id}
-              title={section.title}
-              compactTitle={section.compactTitle}
-              subtitle={section.subtitle}
-              summaryValue={section.summaryValue}
-              isOpen={activeSection === section.id}
-              isLast={section.id === 5}
-              onToggle={handleToggleSection}
-              onContinue={handleContinue}
-            >
-              {section.id === 1 && (
-                <BankBalanceStep
-                  bankBalance={wizard.state.bankBalance}
-                  accountsPayable={wizard.state.accountsPayable}
-                  onSetBankBalance={wizard.setBankBalance}
-                  onSetAccountsPayable={wizard.setAccountsPayable}
-                />
-              )}
-              {section.id === 2 && (
-                <RecurringExpensesStep
-                  expenses={wizard.state.recurringExpenses}
-                  onToggle={wizard.toggleRecurringExpense}
-                />
-              )}
-              {section.id === 3 && (
-                <OneOffExpensesStep
-                  expenses={wizard.state.oneOffExpenses}
-                  onToggleChecked={wizard.toggleOneOffChecked}
-                  onToggleMakeRecurring={wizard.toggleMakeRecurring}
-                  onAdd={wizard.addOneOffExpense}
-                  onRemove={wizard.removeOneOffExpense}
-                />
-              )}
-              {section.id === 4 && (
-                <RevenueStep
-                  bankBalance={wizard.state.bankBalance}
-                  arItems={wizard.state.arItems}
-                  arCollectionRate={wizard.state.arCollectionRate}
-                  arGross={wizard.arGross}
-                  arRealized={wizard.arRealized}
-                  onAddArItem={wizard.addArItem}
-                  onUpdateArItem={wizard.updateArItem}
-                  onRemoveArItem={wizard.removeArItem}
-                  onSetArRate={wizard.setArCollectionRate}
-                  salesItems={wizard.state.salesItems}
-                  salesCancellationRate={wizard.state.salesCancellationRate}
-                  salesGross={wizard.salesGross}
-                  salesLikely={wizard.salesLikely}
-                  onAddSalesItem={wizard.addSalesItem}
-                  onUpdateSalesItem={wizard.updateSalesItem}
-                  onRemoveSalesItem={wizard.removeSalesItem}
-                  onSetSalesRate={wizard.setSalesCancellationRate}
-                  proposalItems={wizard.state.proposalItems}
-                  proposalsCloseRate={wizard.state.proposalsCloseRate}
-                  proposalsGross={wizard.proposalsGross}
-                  proposalsExpected={wizard.proposalsExpected}
-                  onAddProposalItem={wizard.addProposalItem}
-                  onUpdateProposalItem={wizard.updateProposalItem}
-                  onRemoveProposalItem={wizard.removeProposalItem}
-                  onSetProposalsRate={wizard.setProposalsCloseRate}
-                  totalProjectedRevenue={wizard.totalProjectedRevenue}
-                />
-              )}
-              {section.id === 5 && (
-                <SummaryStep
-                  bankBalance={wizard.state.bankBalance ?? 0}
-                  accountsPayable={wizard.state.accountsPayable ?? 0}
-                  netCashPosition={wizard.netCashPosition}
-                  arItems={wizard.state.arItems}
-                  arCollectionRate={wizard.state.arCollectionRate}
-                  arRealized={wizard.arRealized}
-                  salesItems={wizard.state.salesItems}
-                  salesCancellationRate={wizard.state.salesCancellationRate}
-                  salesLikely={wizard.salesLikely}
-                  proposalItems={wizard.state.proposalItems}
-                  proposalsCloseRate={wizard.state.proposalsCloseRate}
-                  proposalsExpected={wizard.proposalsExpected}
-                  recurringExpenses={wizard.state.recurringExpenses}
-                  totalRecurringExpenses={wizard.totalRecurringExpenses}
-                  oneOffExpenses={wizard.state.oneOffExpenses}
-                  totalOneOffExpenses={wizard.totalOneOffExpenses}
-                  projectedWeekEndBalance={wizard.projectedWeekEndBalance}
-                  threshold={(() => {
-                    // Prefer API value, then localStorage (set on dashboard), then default
-                    if (wizard.welcomeData?.minBalanceThreshold != null
-                        && wizard.welcomeData.minBalanceThreshold !== DEFAULT_BUFFER) {
-                      return wizard.welcomeData.minBalanceThreshold;
-                    }
-                    try {
-                      const stored = localStorage.getItem(`minBalance_${franchiseId}`);
-                      if (stored) return parseInt(stored) || DEFAULT_BUFFER;
-                    } catch {}
-                    return wizard.welcomeData?.minBalanceThreshold ?? DEFAULT_BUFFER;
-                  })()}
-                />
-              )}
-            </AccordionSection>
-          ))}
+          <div className="space-y-0">
+            {sections.map((section) => (
+              <AccordionSection
+                key={section.id}
+                id={section.id}
+                title={section.title}
+                compactTitle={section.compactTitle}
+                subtitle={section.subtitle}
+                summaryValue={section.summaryValue}
+                isOpen={activeSection === section.id}
+                isLast={section.id === 5}
+                onToggle={handleToggleSection}
+                onContinue={handleContinue}
+              >
+                {section.id === 1 && (
+                  <BankBalanceStep
+                    bankBalance={wizard.state.bankBalance}
+                    accountsPayable={wizard.state.accountsPayable}
+                    onSetBankBalance={wizard.setBankBalance}
+                    onSetAccountsPayable={wizard.setAccountsPayable}
+                  />
+                )}
+                {section.id === 2 && (
+                  <RecurringExpensesStep
+                    expenses={wizard.state.recurringExpenses}
+                    onToggle={wizard.toggleRecurringExpense}
+                  />
+                )}
+                {section.id === 3 && (
+                  <OneOffExpensesStep
+                    expenses={wizard.state.oneOffExpenses}
+                    onToggleChecked={wizard.toggleOneOffChecked}
+                    onToggleMakeRecurring={wizard.toggleMakeRecurring}
+                    onAdd={wizard.addOneOffExpense}
+                    onRemove={wizard.removeOneOffExpense}
+                  />
+                )}
+                {section.id === 4 && (
+                  <RevenueStep
+                    bankBalance={wizard.state.bankBalance}
+                    arItems={wizard.state.arItems}
+                    arCollectionRate={wizard.state.arCollectionRate}
+                    arGross={wizard.arGross}
+                    arRealized={wizard.arRealized}
+                    onAddArItem={wizard.addArItem}
+                    onUpdateArItem={wizard.updateArItem}
+                    onRemoveArItem={wizard.removeArItem}
+                    onSetArRate={wizard.setArCollectionRate}
+                    salesItems={wizard.state.salesItems}
+                    salesCancellationRate={wizard.state.salesCancellationRate}
+                    salesGross={wizard.salesGross}
+                    salesLikely={wizard.salesLikely}
+                    onAddSalesItem={wizard.addSalesItem}
+                    onUpdateSalesItem={wizard.updateSalesItem}
+                    onRemoveSalesItem={wizard.removeSalesItem}
+                    onSetSalesRate={wizard.setSalesCancellationRate}
+                    proposalItems={wizard.state.proposalItems}
+                    proposalsCloseRate={wizard.state.proposalsCloseRate}
+                    proposalsGross={wizard.proposalsGross}
+                    proposalsExpected={wizard.proposalsExpected}
+                    onAddProposalItem={wizard.addProposalItem}
+                    onUpdateProposalItem={wizard.updateProposalItem}
+                    onRemoveProposalItem={wizard.removeProposalItem}
+                    onSetProposalsRate={wizard.setProposalsCloseRate}
+                    totalProjectedRevenue={wizard.totalProjectedRevenue}
+                  />
+                )}
+                {section.id === 5 && (
+                  <SummaryStep
+                    bankBalance={wizard.state.bankBalance ?? 0}
+                    accountsPayable={wizard.state.accountsPayable ?? 0}
+                    netCashPosition={wizard.netCashPosition}
+                    arItems={wizard.state.arItems}
+                    arCollectionRate={wizard.state.arCollectionRate}
+                    arRealized={wizard.arRealized}
+                    salesItems={wizard.state.salesItems}
+                    salesCancellationRate={wizard.state.salesCancellationRate}
+                    salesLikely={wizard.salesLikely}
+                    proposalItems={wizard.state.proposalItems}
+                    proposalsCloseRate={wizard.state.proposalsCloseRate}
+                    proposalsExpected={wizard.proposalsExpected}
+                    recurringExpenses={wizard.state.recurringExpenses}
+                    totalRecurringExpenses={wizard.totalRecurringExpenses}
+                    oneOffExpenses={wizard.state.oneOffExpenses}
+                    totalOneOffExpenses={wizard.totalOneOffExpenses}
+                    projectedWeekEndBalance={wizard.projectedWeekEndBalance}
+                    threshold={(() => {
+                      // Prefer API value, then localStorage (set on dashboard), then default
+                      if (wizard.welcomeData?.minBalanceThreshold != null
+                          && wizard.welcomeData.minBalanceThreshold !== DEFAULT_BUFFER) {
+                        return wizard.welcomeData.minBalanceThreshold;
+                      }
+                      try {
+                        const stored = localStorage.getItem(`minBalance_${franchiseId}`);
+                        if (stored) return parseInt(stored) || DEFAULT_BUFFER;
+                      } catch {}
+                      return wizard.welcomeData?.minBalanceThreshold ?? DEFAULT_BUFFER;
+                    })()}
+                  />
+                )}
+              </AccordionSection>
+            ))}
+          </div>
         </div>
       </div>
 
       {/* Sticky submit footer — only visible once user reaches Summary */}
       {activeSection === 5 && (
-      <div className="sticky bottom-0 z-50 border-t-[2px] border-[#c5e49a] bg-[#fafff5] px-8 py-5 shadow-[0_-4px_16px_rgba(0,0,0,0.08)]">
+      <div className="sticky bottom-0 z-50 border-t border-[#e5e7eb] bg-[#fafaf8] px-8 py-5 shadow-[0_-4px_16px_rgba(0,0,0,0.06)]">
         <div className="mx-auto flex max-w-[920px] items-center justify-between">
           <div className="flex items-center gap-2 text-[13px] font-semibold text-[#6a9e32]">
             <div className="h-2 w-2 animate-pulse rounded-full bg-[#8BC34A]" />
@@ -478,7 +453,7 @@ function RitualWizardInner({ franchiseId, userName }: RitualWizardProps) {
           <button
             type="button"
             onClick={handleCompleteRitual}
-            className="flex items-center gap-2.5 rounded-[11px] bg-gradient-to-b from-[#5e9422] to-[#3d6b14] px-8 py-4 text-base font-extrabold text-white shadow-[0_4px_14px_rgba(61,107,20,0.4),0_1px_3px_rgba(0,0,0,0.1)] transition-all hover:-translate-y-0.5 hover:shadow-[0_6px_20px_rgba(61,107,20,0.5),0_2px_6px_rgba(0,0,0,0.12)] active:translate-y-0 active:shadow-[0_2px_8px_rgba(61,107,20,0.3)]"
+            className="flex items-center gap-2.5 rounded-[11px] bg-[#5e9422] px-8 py-4 text-base font-semibold text-white shadow-[0_2px_8px_rgba(61,107,20,0.25)] transition-colors hover:bg-[#3d6b14] active:bg-[#2d5010] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8BC34A] focus-visible:ring-offset-2"
           >
             Save &amp; Update Dashboard
             <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="h-5 w-5">

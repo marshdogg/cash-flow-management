@@ -47,7 +47,7 @@ export function SummaryStep(props: SummaryStepProps) {
     <>
       {/* Soft band */}
       <div className="border-b border-[#f2f1ef] border-l-[3px] border-l-[#3d6b14] bg-[#f7f6f3] px-8 py-6">
-        <div className="text-[22px] font-extrabold tracking-[-0.03em] text-[#1a1a1a]">
+        <div className="text-[22px] font-bold tracking-[-0.03em] text-[#1a1a1a]">
           Weekly Summary
         </div>
         <div className="mt-1 text-[13px] text-[#6b7280]">
@@ -97,23 +97,23 @@ export function SummaryStep(props: SummaryStepProps) {
 
         {/* Expenses */}
         <SectionLabel>Expenses</SectionLabel>
-        <SumRow label="🔄 Recurring Expenses" value={`−${fmt(props.totalRecurringExpenses)}`} negative />
-        <SumRow label="📋 One-Off Expenses" value={`−${fmt(props.totalOneOffExpenses)}`} negative />
+        <SumRow label="Recurring Expenses" value={`−${fmt(props.totalRecurringExpenses)}`} negative />
+        <SumRow label="One-Off Expenses" value={`−${fmt(props.totalOneOffExpenses)}`} negative />
 
         {/* Cash Position */}
         <SectionLabel>Cash Position</SectionLabel>
         <SumRow label="Bank Balance" value={fmt(props.bankBalance)} />
         <SumRow label="Net Position (after AP)" value={fmt(props.netCashPosition)} />
 
-        {/* Projected balance — hero callout */}
-        <div className="mt-4 overflow-hidden rounded-[14px] bg-gradient-to-br from-[#3d6b14] via-[#5e9422] to-[#8BC34A] px-6 py-6">
-          <div className="text-[11px] font-bold uppercase tracking-[0.08em] text-white/60">
+        {/* Projected balance — quiet callout */}
+        <div className="mt-4 rounded-[14px] bg-[#f1f8e9] px-6 py-6">
+          <div className="text-[11px] font-bold uppercase tracking-[0.08em] text-[#6a9e32]">
             Projected Week-End Balance
           </div>
-          <div className="mt-1 font-mono text-[36px] font-bold tracking-[-0.03em] text-white">
+          <div className="mt-1 font-mono text-[36px] font-bold tracking-[-0.03em] text-[#3d6b14]">
             {fmt(props.projectedWeekEndBalance)}
           </div>
-          <div className="mt-1 text-[12px] font-medium text-white/50">
+          <div className="mt-1 text-[12px] font-medium text-[#a0aab4]">
             Bank + AR − All Expenses
           </div>
         </div>
@@ -126,7 +126,6 @@ export function SummaryStep(props: SummaryStepProps) {
             borderColor: isHealthy ? "#c5e49a" : "#fecaca",
           }}
         >
-          <span className="text-xl">{isHealthy ? "✅" : "⚠️"}</span>
           <p
             className="text-[13px] font-semibold leading-[1.5]"
             style={{ color: isHealthy ? "#3d6b14" : "#ef4444" }}

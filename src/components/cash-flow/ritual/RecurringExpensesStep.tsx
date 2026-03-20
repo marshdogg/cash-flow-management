@@ -18,7 +18,7 @@ export function RecurringExpensesStep({ expenses, onToggle }: RecurringExpensesS
     <>
       {/* Soft band */}
       <div className="border-b border-[#f2f1ef] border-l-[3px] border-l-[#8BC34A] bg-[#f7f6f3] px-8 py-6">
-        <div className="text-[22px] font-extrabold tracking-[-0.03em] text-[#1a1a1a]">
+        <div className="text-[22px] font-bold tracking-[-0.03em] text-[#1a1a1a]">
           Review recurring expenses
         </div>
         <div className="mt-1 text-[13px] text-[#6b7280]">
@@ -33,16 +33,16 @@ export function RecurringExpensesStep({ expenses, onToggle }: RecurringExpensesS
           {expenses.map((exp) => (
             <div
               key={exp.transactionId}
-              className="flex items-center gap-3 rounded-[10px] border-[1.5px] border-[#e8e8e5] bg-white px-4 py-3 transition-colors hover:border-[#c5e49a]"
+              className="flex items-center gap-3 rounded-[10px] border border-[#e8e8e5] bg-white px-4 py-3 transition-colors hover:border-[#c5e49a]"
             >
               {/* Toggle */}
               <button
                 type="button"
                 onClick={() => onToggle(exp.transactionId)}
-                className={`flex h-5 w-5 flex-shrink-0 items-center justify-center rounded text-[11px] transition-all ${
+                className={`flex h-5 w-5 flex-shrink-0 items-center justify-center rounded text-[11px] transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#8BC34A] ${
                   exp.checked
-                    ? "border-[1.5px] border-[#8BC34A] bg-[#8BC34A] text-white"
-                    : "border-[1.5px] border-[#e8e8e5] bg-white"
+                    ? "border border-[#8BC34A] bg-[#8BC34A] text-white"
+                    : "border border-[#e8e8e5] bg-white"
                 }`}
                 aria-label={`${exp.checked ? "Uncheck" : "Check"} ${exp.name}`}
               >
@@ -70,7 +70,7 @@ export function RecurringExpensesStep({ expenses, onToggle }: RecurringExpensesS
 
         {/* Subtotal */}
         <div className="flex items-center justify-between rounded-[12px] border-[2px] border-[#fecaca] bg-[#fef2f2] px-5 py-4">
-          <div className="text-[13px] font-extrabold text-[#1a1a1a]">Total Recurring This Week</div>
+          <div className="text-[13px] font-bold text-[#1a1a1a]">Total Recurring This Week</div>
           <div className="font-mono text-xl font-bold text-[#ef4444]">
             −{fmt(total)}
           </div>
