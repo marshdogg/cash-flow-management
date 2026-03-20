@@ -89,7 +89,7 @@ export function CashFlowChart({
 
   const [canvasWidth, setCanvasWidth] = useState(0);
   const rafRef = useRef(0);
-  const H_CSS = 420;
+  const H_CSS = 320;
 
   // Pre-compute balances and scale values (reused in render + tooltip)
   const chartData = useMemo(() => {
@@ -334,18 +334,35 @@ export function CashFlowChart({
       const xa = xAxisRef.current;
       if (!xa) return;
       xa.replaceChildren();
+
+      // Compute week-start dates: find current week's Monday, offset from there
+      const now = new Date();
+      const dayOfWeek = now.getDay();
+      const monday = new Date(now);
+      monday.setDate(now.getDate() - ((dayOfWeek + 6) % 7));
+      monday.setHours(0, 0, 0, 0);
+
+      const currentIdx = data.findIndex((d) => d.current);
+      const baseOffset = currentIdx >= 0 ? currentIdx : 0;
+
       data.forEach((d, i) => {
         const el = document.createElement("div");
         const isCurrent = !!d.current;
         const isProjected = !d.current && i > 0;
+
+        // Calculate this period's Monday
+        const weekDate = new Date(monday);
+        weekDate.setDate(monday.getDate() + (i - baseOffset) * 7);
+        const dateLabel = weekDate.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+
         el.className =
-          "flex-1 text-center text-[12px] font-semibold uppercase tracking-[0.04em] " +
+          "flex-1 text-center text-[11px] font-semibold tracking-[0.02em] " +
           (isCurrent
             ? "text-[#5a8c1f] font-bold"
             : isProjected
               ? "text-[#93a3b8]"
               : "text-[#6b7280]");
-        el.textContent = d.label;
+        el.textContent = dateLabel;
         xa.appendChild(el);
       });
     },

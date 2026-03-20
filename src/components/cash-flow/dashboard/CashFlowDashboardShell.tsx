@@ -357,7 +357,7 @@ function CashFlowDashboardInner({
           </div>
 
           {/* Chart */}
-          <Suspense fallback={<div className="h-[420px]" />}>
+          <Suspense fallback={<div className="h-[320px]" />}>
             <CashFlowChart
               periods={displayPeriods}
               openingBalance={effectiveOpeningBalance}
