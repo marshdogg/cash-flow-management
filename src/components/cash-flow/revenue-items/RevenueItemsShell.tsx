@@ -8,6 +8,7 @@ import { useRevenueItems } from "@/hooks/useRevenueItems";
 import { useFranchisePicker } from "@/hooks/useFranchisePicker";
 import { RevenueItemsTable } from "./RevenueItemsTable";
 import { SkeletonCard } from "@/components/cash-flow/shared/SkeletonCard";
+import { formatCurrency } from "@/lib/cash-flow/format-utils";
 import {
   CASH_FLOW_ROUTES,
   REVENUE_CATEGORY_COLORS,
@@ -228,6 +229,16 @@ function RevenueItemsInner({
     [createItem]
   );
 
+  // Summary stats (computed from all items, not filtered)
+  const openItems = items.filter((i) => i.status === "open");
+  const collectedItems = items.filter((i) => i.status === "collected");
+  const totalOpen = openItems.reduce((s, i) => s + i.grossAmount, 0);
+  const totalCollected = collectedItems.reduce((s, i) => s + i.grossAmount, 0);
+  const collectionRate =
+    meta.total > 0
+      ? Math.round((collectedItems.length / meta.total) * 100)
+      : 0;
+
   if (isLoading) {
     return (
       <div className="mx-auto max-w-[1400px] py-8">
@@ -300,6 +311,39 @@ function RevenueItemsInner({
           </Link>
         </div>
       </div>
+
+      {/* Summary Strip */}
+      {items.length > 0 && (
+        <div
+          className="fade-up mb-5 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4"
+          style={{ animationDelay: "0.1s" }}
+        >
+          <SummaryCard
+            label="Total Gross Revenue"
+            value={formatCurrency(meta.totalGross)}
+            valueColor="text-[#1a1a1a]"
+            sub={`${meta.total} item${meta.total !== 1 ? "s" : ""} across all categories`}
+          />
+          <SummaryCard
+            label="Open Pipeline"
+            value={formatCurrency(totalOpen)}
+            valueColor="text-[#f59e0b]"
+            sub={`${openItems.length} open item${openItems.length !== 1 ? "s" : ""}`}
+          />
+          <SummaryCard
+            label="Collected"
+            value={formatCurrency(totalCollected)}
+            valueColor="text-[#6a9e32]"
+            sub={`${collectedItems.length} collected item${collectedItems.length !== 1 ? "s" : ""}`}
+          />
+          <SummaryCard
+            label="Collection Rate"
+            value={`${collectionRate}%`}
+            valueColor={collectionRate >= 50 ? "text-[#6a9e32]" : "text-[#f59e0b]"}
+            sub="Collected vs total items"
+          />
+        </div>
+      )}
 
       {/* Table Card */}
       <div
@@ -699,6 +743,30 @@ function FilterPill({
       )}
       {children}
     </button>
+  );
+}
+
+function SummaryCard({
+  label,
+  value,
+  valueColor,
+  sub,
+}: {
+  label: string;
+  value: string;
+  valueColor: string;
+  sub: string;
+}) {
+  return (
+    <div className="flex flex-col gap-1 rounded-[9px] border border-[#e5e7eb] bg-white px-[18px] py-4 shadow-[0_1px_3px_rgba(0,0,0,0.06)] transition-colors hover:border-[#c5e49a]">
+      <div className="text-[10px] font-bold uppercase tracking-[0.09em] text-[#6b7280]">
+        {label}
+      </div>
+      <div className={cn("font-mono text-xl font-medium leading-none tracking-[-0.02em]", valueColor)}>
+        {value}
+      </div>
+      <div className="mt-0.5 text-[11px] font-medium text-[#6b7280]">{sub}</div>
+    </div>
   );
 }
 
