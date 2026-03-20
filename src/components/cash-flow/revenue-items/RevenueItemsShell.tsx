@@ -3,6 +3,7 @@
 import { Suspense, useState, useMemo, useCallback, useEffect } from "react";
 import Link from "next/link";
 import { cn } from "@/lib/cn";
+import { SummaryCard } from "@/components/cash-flow/shared/SummaryCard";
 import { useFocusTrap } from "@/hooks/useFocusTrap";
 import { useRevenueItems } from "@/hooks/useRevenueItems";
 import { useFranchisePicker } from "@/hooks/useFranchisePicker";
@@ -364,21 +365,21 @@ function RevenueItemsInner({
                 onClick={() => setCategoryFilter("ar")}
                 dotColor={REVENUE_CATEGORY_COLORS.ar.dotColor}
               >
-                AR <span className="text-[10px] opacity-80">({meta.arCount})</span>
+                AR <span className="text-[11px] opacity-80">({meta.arCount})</span>
               </FilterPill>
               <FilterPill
                 active={categoryFilter === "sales"}
                 onClick={() => setCategoryFilter("sales")}
                 dotColor={REVENUE_CATEGORY_COLORS.sales.dotColor}
               >
-                Sales <span className="text-[10px] opacity-80">({meta.salesCount})</span>
+                Sales <span className="text-[11px] opacity-80">({meta.salesCount})</span>
               </FilterPill>
               <FilterPill
                 active={categoryFilter === "proposal"}
                 onClick={() => setCategoryFilter("proposal")}
                 dotColor={REVENUE_CATEGORY_COLORS.proposal.dotColor}
               >
-                Proposals <span className="text-[10px] opacity-80">({meta.proposalCount})</span>
+                Proposals <span className="text-[11px] opacity-80">({meta.proposalCount})</span>
               </FilterPill>
             </div>
 
@@ -743,30 +744,6 @@ function FilterPill({
       )}
       {children}
     </button>
-  );
-}
-
-function SummaryCard({
-  label,
-  value,
-  valueColor,
-  sub,
-}: {
-  label: string;
-  value: string;
-  valueColor: string;
-  sub: string;
-}) {
-  return (
-    <div className="flex flex-col gap-1 rounded-[9px] border border-[#e5e7eb] bg-white px-[18px] py-4 shadow-[0_1px_3px_rgba(0,0,0,0.06)] transition-colors hover:border-[#c5e49a]">
-      <div className="text-[11px] font-bold uppercase tracking-[0.07em] text-[#6b7280]">
-        {label}
-      </div>
-      <div className={cn("font-mono tabular-nums text-xl font-medium leading-none tracking-[-0.02em]", valueColor)}>
-        {value}
-      </div>
-      <div className="mt-0.5 text-[11px] font-medium text-[#6b7280]">{sub}</div>
-    </div>
   );
 }
 

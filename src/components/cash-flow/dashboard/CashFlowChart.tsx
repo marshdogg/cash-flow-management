@@ -383,7 +383,7 @@ export function CashFlowChart({
           const d = hit.data;
           const net = d.revenue - d.expense;
           tooltip.innerHTML = `
-            <div class="text-[10px] font-bold text-[#6b7280] uppercase tracking-[0.07em] mb-1.5">${d.label}${d.projected ? " · Projected" : " · Actual"}</div>
+            <div class="text-[11px] font-bold text-[#6b7280] uppercase tracking-[0.07em] mb-1.5">${d.label}${d.projected ? " · Projected" : " · Actual"}</div>
             <div class="flex justify-between gap-4 mb-0.5">
               <span class="text-[#9ca3af] font-medium">Bank Balance</span>
               <span class="font-mono font-semibold" style="color:${d.balance < threshold ? "#f87171" : "#93c5fd"}">${fmtFull(d.balance)}</span>

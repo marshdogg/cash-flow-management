@@ -10,6 +10,7 @@ const TransactionForm = lazy(() =>
   import("./TransactionForm").then((m) => ({ default: m.TransactionForm }))
 );
 import { ConfirmDialog } from "@/components/cash-flow/shared/ConfirmDialog";
+import { SummaryCard } from "@/components/cash-flow/shared/SummaryCard";
 import { EmptyState } from "@/components/cash-flow/shared/EmptyState";
 import { SkeletonCard } from "@/components/cash-flow/shared/SkeletonCard";
 import { RoleGate } from "@/components/cash-flow/shared/RoleGate";
@@ -419,7 +420,7 @@ function RecurringTransactionsInner({
                         >
                           {opt.label}
                           {opt.count !== undefined && (
-                            <span className="ml-0.5 text-[10px] opacity-80">({opt.count})</span>
+                            <span className="ml-0.5 text-[11px] opacity-80">({opt.count})</span>
                           )}
                         </button>
                       ))}
@@ -551,30 +552,6 @@ function RecurringTransactionsInner({
           * { animation: none !important; opacity: 1 !important; }
         }
       `}</style>
-    </div>
-  );
-}
-
-function SummaryCard({
-  label,
-  value,
-  valueColor,
-  sub,
-}: {
-  label: string;
-  value: string;
-  valueColor: string;
-  sub: string;
-}) {
-  return (
-    <div className="flex flex-col gap-1 rounded-[9px] border border-[#e5e7eb] bg-white px-[18px] py-4 shadow-[0_1px_3px_rgba(0,0,0,0.06)] transition-colors hover:border-[#c5e49a]">
-      <div className="text-[11px] font-bold uppercase tracking-[0.07em] text-[#6b7280]">
-        {label}
-      </div>
-      <div className={cn("font-mono tabular-nums text-xl font-medium leading-none tracking-[-0.02em]", valueColor)}>
-        {value}
-      </div>
-      <div className="mt-0.5 text-[11px] font-medium text-[#6b7280]">{sub}</div>
     </div>
   );
 }

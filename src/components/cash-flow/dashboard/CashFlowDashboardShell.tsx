@@ -180,7 +180,7 @@ function CashFlowDashboardInner({
               onClick={() => setView("weeks")}
               className={`rounded-md px-4 py-[10px] text-sm font-semibold transition-all ${
                 view === "weeks"
-                  ? "bg-white text-[#111827] shadow-[0_1px_3px_rgba(0,0,0,0.1)]"
+                  ? "bg-white text-[#1a1a1a] shadow-[0_1px_3px_rgba(0,0,0,0.1)]"
                   : "text-[#6b7280]"
               }`}
             >
@@ -190,7 +190,7 @@ function CashFlowDashboardInner({
               onClick={() => setView("months")}
               className={`rounded-md px-4 py-[10px] text-sm font-semibold transition-all ${
                 view === "months"
-                  ? "bg-white text-[#111827] shadow-[0_1px_3px_rgba(0,0,0,0.1)]"
+                  ? "bg-white text-[#1a1a1a] shadow-[0_1px_3px_rgba(0,0,0,0.1)]"
                   : "text-[#6b7280]"
               }`}
             >
@@ -329,7 +329,7 @@ function CashFlowDashboardInner({
           </div>
           <div className="flex items-center gap-2">
             <div className="flex overflow-hidden rounded-lg border border-[#e5e7eb] bg-white">
-              <div className="border-r-[1.5px] border-[#e5e7eb] bg-[#f9fafb] px-2.5 py-[7px] font-mono text-[15px] font-semibold text-[#374151]">
+              <div className="border-r border-[#e5e7eb] bg-[#f9fafb] px-2.5 py-[7px] font-mono text-[15px] font-semibold text-[#374151]">
                 $
               </div>
               <input
@@ -338,7 +338,7 @@ function CashFlowDashboardInner({
                 onChange={handleThresholdInput}
                 onKeyDown={(e) => { if (e.key === "Enter") handleSaveThreshold(); }}
                 aria-label="Minimum balance threshold"
-                className="w-[110px] bg-white px-3 py-[7px] font-mono text-[15px] font-semibold text-[#111827] outline-none"
+                className="w-[110px] bg-white px-3 py-[7px] font-mono text-[15px] font-semibold text-[#1a1a1a] outline-none"
               />
             </div>
             {isDirty && (

@@ -310,7 +310,7 @@ export function TransactionTable({
                     {formatDate(txn.nextOccurrence)}
                   </span>
                   {isSoon && days >= 0 && (
-                    <span className="ml-1.5 inline-flex items-center gap-0.5 rounded border border-[#fde68a] bg-[#fffbeb] px-1.5 py-0.5 text-[10px] font-bold text-[#92400e]">
+                    <span className="ml-1.5 inline-flex items-center gap-0.5 rounded border border-[#fde68a] bg-[#fffbeb] px-1.5 py-0.5 text-[11px] font-bold text-[#92400e]">
                       ⚡ {days} day{days !== 1 ? "s" : ""}
                     </span>
                   )}

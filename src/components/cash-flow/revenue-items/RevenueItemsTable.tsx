@@ -374,7 +374,7 @@ export function RevenueItemsTable({
                   <div className="font-mono tabular-nums text-[13px] font-semibold text-[#4a7a18]">
                     {item.adjustedAmount > 0 ? formatCurrency(item.adjustedAmount) : "—"}
                   </div>
-                  <div className="mt-0.5 text-[10px] font-semibold text-[#6b7280]">
+                  <div className="mt-0.5 text-[11px] font-semibold text-[#6b7280]">
                     {item.status === "collected" ? "Fully collected" :
                      item.status === "cancelled" ? "Cancelled" :
                      item.status === "lost" ? "Lost" :
@@ -394,7 +394,7 @@ export function RevenueItemsTable({
                     {WEEK_EMOJI[weekInfo.type]} {weekInfo.label}
                   </span>
                   {overdue && (
-                    <span className="ml-1.5 inline-flex items-center gap-0.5 rounded border border-[#fde68a] bg-[#fffbeb] px-1.5 py-0.5 text-[10px] font-semibold text-[#92400e]">
+                    <span className="ml-1.5 inline-flex items-center gap-0.5 rounded border border-[#fde68a] bg-[#fffbeb] px-1.5 py-0.5 text-[11px] font-semibold text-[#92400e]">
                       ⚠ Overdue
                     </span>
                   )}
