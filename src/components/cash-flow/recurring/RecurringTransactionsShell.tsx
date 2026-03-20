@@ -22,6 +22,7 @@ import {
 } from "@/constants/cash-flow";
 import { track } from "@/lib/analytics";
 import { cn } from "@/lib/cn";
+import { formatCurrency } from "@/lib/cash-flow/format-utils";
 import type {
   RecurringTransaction,
   CashFlowUserRole,
@@ -47,9 +48,6 @@ function normalizeToMonthly(amount: number, frequency: string): number {
   return amount / (divisor / 4.33);
 }
 
-function fmt(n: number): string {
-  return "$" + Math.abs(Math.round(n)).toLocaleString();
-}
 
 function RecurringTransactionsInner({
   franchiseId: defaultFranchiseId,
@@ -369,13 +367,13 @@ function RecurringTransactionsInner({
               >
                 <SummaryCard
                   label="Total Monthly Outflow"
-                  value={`−${fmt(totalMonthlyOutflow)}`}
+                  value={`−${formatCurrency(totalMonthlyOutflow)}`}
                   valueColor="text-[#ef4444]"
                   sub={`${activeExpenses.length} active expense${activeExpenses.length !== 1 ? "s" : ""}`}
                 />
                 <SummaryCard
                   label="Total Monthly Income"
-                  value={`+${fmt(totalMonthlyIncome)}`}
+                  value={`+${formatCurrency(totalMonthlyIncome)}`}
                   valueColor="text-[#6a9e32]"
                   sub={`${activeIncomes.length} active income`}
                 />
@@ -383,8 +381,8 @@ function RecurringTransactionsInner({
                   label="Net Monthly Recurring"
                   value={
                     netMonthlyRecurring >= 0
-                      ? `+${fmt(netMonthlyRecurring)}`
-                      : `−${fmt(Math.abs(netMonthlyRecurring))}`
+                      ? `+${formatCurrency(netMonthlyRecurring)}`
+                      : `−${formatCurrency(Math.abs(netMonthlyRecurring))}`
                   }
                   valueColor={netMonthlyRecurring >= 0 ? "text-[#6a9e32]" : "text-[#ef4444]"}
                   sub="Expenses minus income"

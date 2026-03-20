@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { cn } from "@/lib/cn";
+import { formatCurrency } from "@/lib/cash-flow/format-utils";
 import {
   REVENUE_CATEGORY_LABELS,
   REVENUE_CATEGORY_ICONS,
@@ -39,9 +40,6 @@ const COLUMNS: { field: RevenueItemSortField; label: string; hideOnMobile?: bool
   { field: "status", label: "Status" },
 ];
 
-function formatCurrency(n: number): string {
-  return "$" + n.toLocaleString("en-US");
-}
 
 function formatDate(dateStr: string): string {
   const d = new Date(dateStr + "T00:00:00");

@@ -2,34 +2,28 @@ import type { HealthStatus } from "@/types/cash-flow";
 import { HEALTH_LABELS } from "@/constants/cash-flow";
 
 /**
- * Format a numeric value as currency.
- * PRD §6.1: Prefix $, 2 decimal places. Negative: −$X,XXX.XX
+ * Format a numeric value as currency (whole dollars, no decimals).
+ * Negative: −$X,XXX
  */
 export function formatCurrency(value: number | null): string {
   if (value === null) return "—";
 
-  const absValue = Math.abs(value);
-  const formatted = absValue.toLocaleString("en-US", {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  });
+  const absValue = Math.abs(Math.round(value));
+  const formatted = absValue.toLocaleString("en-US");
 
   if (value < 0) return `−$${formatted}`;
   return `$${formatted}`;
 }
 
 /**
- * Format currency with explicit +/- prefix.
- * PRD §6.2: Positive: +$X,XXX.XX, Negative: −$X,XXX.XX, Zero: $0.00
+ * Format currency with explicit +/- prefix (whole dollars, no decimals).
+ * Positive: +$X,XXX, Negative: −$X,XXX, Zero: $0
  */
 export function formatSignedCurrency(value: number): string {
-  if (value === 0) return "$0.00";
+  if (value === 0) return "$0";
 
-  const absValue = Math.abs(value);
-  const formatted = absValue.toLocaleString("en-US", {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  });
+  const absValue = Math.abs(Math.round(value));
+  const formatted = absValue.toLocaleString("en-US");
 
   if (value > 0) return `+$${formatted}`;
   return `−$${formatted}`;
