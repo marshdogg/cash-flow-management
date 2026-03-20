@@ -20,7 +20,8 @@ import { NextResponse } from "next/server";
  * Controlled by NEXT_PUBLIC_MOCK_MODE env variable.
  */
 export function isMockMode(): boolean {
-  return process.env.NEXT_PUBLIC_MOCK_MODE !== "false";
+  const v = process.env.NEXT_PUBLIC_MOCK_MODE;
+  return v === "true" || v === "1";
 }
 
 interface ApiResponseBody<T> {
