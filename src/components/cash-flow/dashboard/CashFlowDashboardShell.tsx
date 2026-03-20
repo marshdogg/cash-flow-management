@@ -265,11 +265,11 @@ function CashFlowDashboardInner({
       {/* Hero: Projected Balance */}
       <div className="mb-5 flex items-center justify-between border-b border-[#f3f4f6] pb-5">
         <div className="flex flex-col gap-1">
-          <div className="text-[13px] font-semibold uppercase tracking-[0.06em] text-[#6b7280]">
+          <div className="text-[13px] font-semibold uppercase tracking-[0.07em] text-[#6b7280]">
             {view === "weeks" ? "12-Week" : "3-Month"} Projected Balance
           </div>
           <div
-            className={`font-mono text-[36px] font-bold leading-tight tracking-[-0.02em] ${
+            className={`font-mono tabular-nums text-[36px] font-bold leading-tight tracking-[-0.02em] ${
               projectedBalance >= threshold
                 ? "text-[#16a34a]"
                 : "text-[#dc2626]"
@@ -286,10 +286,10 @@ function CashFlowDashboardInner({
 
         <div className="flex flex-col gap-1.5 text-right">
           <div className="flex items-center justify-end gap-4">
-            <span className="font-mono text-[16px] font-semibold text-[#16a34a]">
+            <span className="font-mono tabular-nums text-[16px] font-semibold text-[#16a34a]">
               +{formatCurrency(totalRevenue)} in
             </span>
-            <span className="font-mono text-[16px] font-semibold text-[#dc2626]">
+            <span className="font-mono tabular-nums text-[16px] font-semibold text-[#dc2626]">
               -{formatCurrency(totalExpense)} out
             </span>
           </div>

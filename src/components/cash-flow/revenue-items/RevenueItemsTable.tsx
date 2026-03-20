@@ -365,13 +365,13 @@ export function RevenueItemsTable({
                 </td>
                 {/* Gross Amount */}
                 <td className="whitespace-nowrap px-4 py-3.5">
-                  <div className="font-mono text-[13px] font-semibold text-[#1a1a1a]">
+                  <div className="font-mono tabular-nums text-[13px] font-semibold text-[#1a1a1a]">
                     {formatCurrency(item.grossAmount)}
                   </div>
                 </td>
                 {/* Adjusted Amount */}
                 <td className="hidden whitespace-nowrap px-4 py-3.5 sm:table-cell">
-                  <div className="font-mono text-[13px] font-semibold text-[#4a7a18]">
+                  <div className="font-mono tabular-nums text-[13px] font-semibold text-[#4a7a18]">
                     {item.adjustedAmount > 0 ? formatCurrency(item.adjustedAmount) : "—"}
                   </div>
                   <div className="mt-0.5 text-[10px] font-semibold text-[#6b7280]">

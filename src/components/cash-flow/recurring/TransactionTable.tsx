@@ -281,7 +281,7 @@ export function TransactionTable({
                   </span>
                 </td>
                 {/* Amount */}
-                <td className="whitespace-nowrap px-4 py-3.5 font-mono text-sm font-semibold">
+                <td className="whitespace-nowrap px-4 py-3.5 font-mono tabular-nums text-sm font-semibold">
                   <span
                     className={
                       txn.type === "expense"
