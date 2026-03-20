@@ -59,6 +59,7 @@ function KebabMenu({
 }) {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
@@ -68,9 +69,30 @@ function KebabMenu({
     }
     if (open) {
       document.addEventListener("mousedown", handleClickOutside);
+      requestAnimationFrame(() => {
+        const firstBtn = menuRef.current?.querySelector<HTMLButtonElement>("button[role='menuitem']");
+        firstBtn?.focus();
+      });
       return () => document.removeEventListener("mousedown", handleClickOutside);
     }
   }, [open]);
+
+  const handleMenuKeyDown = (e: React.KeyboardEvent) => {
+    const items = menuRef.current?.querySelectorAll<HTMLButtonElement>("button[role='menuitem']");
+    if (!items || items.length === 0) return;
+    const current = Array.from(items).indexOf(document.activeElement as HTMLButtonElement);
+
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      items[(current + 1) % items.length].focus();
+    } else if (e.key === "ArrowUp") {
+      e.preventDefault();
+      items[(current - 1 + items.length) % items.length].focus();
+    } else if (e.key === "Escape") {
+      e.preventDefault();
+      setOpen(false);
+    }
+  };
 
   return (
     <div className="relative" ref={ref}>
@@ -78,6 +100,8 @@ function KebabMenu({
         onClick={() => setOpen(!open)}
         className="flex h-7 w-7 min-h-[44px] min-w-[44px] items-center justify-center rounded-md text-[#6b7280] transition-colors hover:bg-[#f4f3f1] hover:text-[#1a1a1a]"
         aria-label={`Actions for ${transaction.name}`}
+        aria-haspopup="menu"
+        aria-expanded={open}
       >
         <svg viewBox="0 0 16 16" fill="currentColor" className="h-3.5 w-3.5">
           <circle cx="8" cy="3" r="1.2" />
@@ -86,18 +110,20 @@ function KebabMenu({
         </svg>
       </button>
       {open && (
-        <div className="absolute right-0 z-50 mt-1 min-w-[160px] rounded-[10px] border border-[#e5e7eb] bg-white p-1.5 shadow-[0_4px_16px_rgba(0,0,0,0.07),0_2px_6px_rgba(0,0,0,0.04)]">
+        <div ref={menuRef} role="menu" onKeyDown={handleMenuKeyDown} className="absolute right-0 z-50 mt-1 min-w-[160px] rounded-[10px] border border-[#e5e7eb] bg-white p-1.5 shadow-[0_4px_16px_rgba(0,0,0,0.07),0_2px_6px_rgba(0,0,0,0.04)]">
           <button
+            role="menuitem"
             onClick={() => {
               onEdit(transaction);
               setOpen(false);
             }}
             aria-label={`Edit ${transaction.name}`}
-            className="flex w-full items-center gap-2 rounded-[7px] px-2.5 py-2 text-[13px] font-semibold text-[#6b7280] transition-all hover:bg-[#f4f3f1] hover:text-[#1a1a1a]"
+            className="flex w-full items-center gap-2 rounded-[7px] px-2.5 py-2 text-[13px] font-semibold text-[#6b7280] transition-colors hover:bg-[#f4f3f1] hover:text-[#1a1a1a]"
           >
             ✏️ Edit
           </button>
           <button
+            role="menuitem"
             onClick={() => {
               onTogglePause(transaction);
               setOpen(false);
@@ -107,18 +133,19 @@ function KebabMenu({
                 ? `Pause ${transaction.name}`
                 : `Resume ${transaction.name}`
             }
-            className="flex w-full items-center gap-2 rounded-[7px] px-2.5 py-2 text-[13px] font-semibold text-[#6b7280] transition-all hover:bg-[#f4f3f1] hover:text-[#1a1a1a]"
+            className="flex w-full items-center gap-2 rounded-[7px] px-2.5 py-2 text-[13px] font-semibold text-[#6b7280] transition-colors hover:bg-[#f4f3f1] hover:text-[#1a1a1a]"
           >
             {transaction.status === "active" ? "⏸ Pause" : "▶️ Resume"}
           </button>
           <div className="my-1 h-px bg-[#f4f3f1]" />
           <button
+            role="menuitem"
             onClick={() => {
               onDelete(transaction);
               setOpen(false);
             }}
             aria-label={`Delete ${transaction.name}`}
-            className="flex w-full items-center gap-2 rounded-[7px] px-2.5 py-2 text-[13px] font-semibold text-[#6b7280] transition-all hover:bg-[#fef2f2] hover:text-[#ef4444]"
+            className="flex w-full items-center gap-2 rounded-[7px] px-2.5 py-2 text-[13px] font-semibold text-[#6b7280] transition-colors hover:bg-[#fef2f2] hover:text-[#ef4444]"
           >
             🗑 Delete
           </button>
@@ -155,8 +182,10 @@ export function TransactionTable({
               <th className="w-11 px-4 py-2.5">
                 <div
                   onClick={onSelectAll}
+                  onKeyDown={(e) => { if (e.key === " " || e.key === "Enter") { e.preventDefault(); onSelectAll(); } }}
+                  tabIndex={0}
                   className={cn(
-                    "flex h-4 w-4 cursor-pointer items-center justify-center rounded border text-[9px] transition-all",
+                    "flex h-4 w-4 cursor-pointer items-center justify-center rounded border text-[9px] transition-colors",
                     allSelected
                       ? "border-[#8BC34A] bg-[#8BC34A] text-white"
                       : "border-[#e5e7eb] hover:border-[#8BC34A]"
@@ -177,6 +206,9 @@ export function TransactionTable({
                   col.hideOnMobile && "hidden sm:table-cell"
                 )}
                 onClick={() => onSortChange(col.field)}
+                onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onSortChange(col.field); } }}
+                tabIndex={0}
+                aria-sort={sort.field === col.field ? (sort.direction === "asc" ? "ascending" : "descending") : undefined}
               >
                 <span className="inline-flex items-center gap-1">
                   {col.label}
@@ -228,8 +260,10 @@ export function TransactionTable({
                   <td className="w-11 px-4 py-3.5">
                     <div
                       onClick={() => onToggleSelect(txn.id)}
+                      onKeyDown={(e) => { if (e.key === " " || e.key === "Enter") { e.preventDefault(); onToggleSelect(txn.id); } }}
+                      tabIndex={0}
                       className={cn(
-                        "flex h-4 w-4 cursor-pointer items-center justify-center rounded border text-[9px] transition-all",
+                        "flex h-4 w-4 cursor-pointer items-center justify-center rounded border text-[9px] transition-colors",
                         isSelected
                           ? "border-[#8BC34A] bg-[#8BC34A] text-white"
                           : "border-[#e5e7eb] hover:border-[#8BC34A]"
@@ -243,7 +277,7 @@ export function TransactionTable({
                   </td>
                 )}
                 {/* Name */}
-                <td className="px-4 py-3.5">
+                <td className="max-w-[260px] px-4 py-3.5">
                   <div className="flex items-center gap-2.5">
                     <div
                       className={cn(
@@ -255,12 +289,12 @@ export function TransactionTable({
                     >
                       {icon}
                     </div>
-                    <div>
-                      <div className="text-[13px] font-semibold leading-tight text-[#1a1a1a]">
+                    <div className="min-w-0">
+                      <div className="truncate text-[13px] font-semibold leading-tight text-[#1a1a1a]" title={txn.name}>
                         {txn.name}
                       </div>
                       {txn.description && (
-                        <div className="mt-0.5 text-[11px] font-medium text-[#6b7280]">
+                        <div className="mt-0.5 truncate text-[11px] font-medium text-[#6b7280]" title={txn.description}>
                           {txn.description}
                         </div>
                       )}

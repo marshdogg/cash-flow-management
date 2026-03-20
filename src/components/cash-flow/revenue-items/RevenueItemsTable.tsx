@@ -191,7 +191,7 @@ function KebabMenu({
             <button
               role="menuitem"
               onClick={() => { onDelete(item); setOpen(false); }}
-              className="flex w-full items-center gap-2 rounded-[7px] px-2.5 py-2 text-[13px] font-semibold text-[#6b7280] transition-all hover:bg-[#fef2f2] hover:text-[#ef4444]"
+              className="flex w-full items-center gap-2 rounded-[7px] px-2.5 py-2 text-[13px] font-semibold text-[#6b7280] transition-colors hover:bg-[#fef2f2] hover:text-[#ef4444]"
             >
               🗑 Delete
             </button>
@@ -230,7 +230,7 @@ export function RevenueItemsTable({
                   onKeyDown={(e) => { if (e.key === " " || e.key === "Enter") { e.preventDefault(); onSelectAll(); } }}
                   tabIndex={0}
                   className={cn(
-                    "flex h-4 w-4 cursor-pointer items-center justify-center rounded border text-[9px] transition-all",
+                    "flex h-4 w-4 cursor-pointer items-center justify-center rounded border text-[9px] transition-colors",
                     allSelected
                       ? "border-[#8BC34A] bg-[#8BC34A] text-white"
                       : "border-[#e5e7eb] hover:border-[#8BC34A]"
@@ -308,7 +308,7 @@ export function RevenueItemsTable({
                       onKeyDown={(e) => { if (e.key === " " || e.key === "Enter") { e.preventDefault(); onToggleSelect(item.id); } }}
                       tabIndex={0}
                       className={cn(
-                        "flex h-4 w-4 cursor-pointer items-center justify-center rounded border text-[9px] transition-all",
+                        "flex h-4 w-4 cursor-pointer items-center justify-center rounded border text-[9px] transition-colors",
                         isSelected
                           ? "border-[#8BC34A] bg-[#8BC34A] text-white"
                           : "border-[#e5e7eb] hover:border-[#8BC34A]"
@@ -322,7 +322,7 @@ export function RevenueItemsTable({
                   </td>
                 )}
                 {/* Name */}
-                <td className="px-4 py-3.5">
+                <td className="max-w-[280px] px-4 py-3.5">
                   <div className="flex items-center gap-2.5">
                     <div
                       className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg text-[15px]"
@@ -333,11 +333,11 @@ export function RevenueItemsTable({
                     >
                       {icon}
                     </div>
-                    <div>
-                      <div className="text-[13px] font-semibold leading-tight text-[#1a1a1a]">
+                    <div className="min-w-0">
+                      <div className="truncate text-[13px] font-semibold leading-tight text-[#1a1a1a]" title={item.note}>
                         {item.note}
                       </div>
-                      <div className="mt-0.5 text-[11px] font-medium text-[#6b7280]">
+                      <div className="mt-0.5 truncate text-[11px] font-medium text-[#6b7280]">
                         Ritual: {formatDate(item.ritualDate)} · {REVENUE_CATEGORY_LABELS[item.category].split(" ")[0]}
                         {item.status === "collected" && item.collectedDate && ` · Collected ${formatDate(item.collectedDate)}`}
                         {item.status === "cancelled" && " · Cancelled"}

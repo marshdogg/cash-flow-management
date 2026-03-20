@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useState, useCallback, useMemo, lazy } from "react";
+import { Suspense, useState, useCallback, useMemo, useEffect, lazy } from "react";
 import { useRecurringTransactions } from "@/hooks/useRecurringTransactions";
 import { useFranchisePicker } from "@/hooks/useFranchisePicker";
 import { useToast } from "@/hooks/useToast";
@@ -84,10 +84,17 @@ function RecurringTransactionsInner({
   const [typeFilter, setTypeFilter] = useState<TypeFilter>("all");
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
   const [searchQuery, setSearchQuery] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
+
+  useEffect(() => {
+    const id = setTimeout(() => setDebouncedSearch(searchQuery), 200);
+    return () => clearTimeout(id);
+  }, [searchQuery]);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [formOpen, setFormOpen] = useState(false);
   const [editingTransaction, setEditingTransaction] = useState<RecurringTransaction | undefined>();
   const [deleteTarget, setDeleteTarget] = useState<RecurringTransaction | null>(null);
+  const [bulkLoading, setBulkLoading] = useState(false);
 
   // Summary computations (always on ALL transactions)
   const activeExpenses = useMemo(
@@ -119,8 +126,8 @@ function RecurringTransactionsInner({
     let result = [...transactions];
     if (typeFilter !== "all") result = result.filter((t) => t.type === typeFilter);
     if (statusFilter !== "all") result = result.filter((t) => t.status === statusFilter);
-    if (searchQuery.trim()) {
-      const q = searchQuery.toLowerCase();
+    if (debouncedSearch.trim()) {
+      const q = debouncedSearch.toLowerCase();
       result = result.filter(
         (t) =>
           t.name.toLowerCase().includes(q) ||
@@ -128,7 +135,7 @@ function RecurringTransactionsInner({
       );
     }
     return result;
-  }, [transactions, typeFilter, statusFilter, searchQuery]);
+  }, [transactions, typeFilter, statusFilter, debouncedSearch]);
 
   const sortedTransactions = useMemo(() => {
     const result = [...filteredTransactions];
@@ -164,7 +171,9 @@ function RecurringTransactionsInner({
 
   const handleBulkAction = useCallback(
     async (action: BulkAction) => {
+      if (bulkLoading) return;
       const ids = Array.from(selectedIds);
+      setBulkLoading(true);
       try {
         await bulkAction(ids, action);
         const msg =
@@ -177,9 +186,11 @@ function RecurringTransactionsInner({
         setSelectedIds(new Set());
       } catch {
         showToast("error", "Bulk action failed. Please try again.");
+      } finally {
+        setBulkLoading(false);
       }
     },
-    [selectedIds, bulkAction, showToast]
+    [bulkLoading, selectedIds, bulkAction, showToast]
   );
 
   // Sort handler
@@ -412,7 +423,7 @@ function RecurringTransactionsInner({
                           key={opt.value}
                           onClick={() => setTypeFilter(opt.value)}
                           className={cn(
-                            "rounded-full border px-3 py-1 text-xs font-semibold transition-all",
+                            "rounded-full border px-3 py-1 text-xs font-semibold transition-colors",
                             typeFilter === opt.value
                               ? "border-[#8BC34A] bg-[#8BC34A] text-white"
                               : "border-[#e5e7eb] text-[#6b7280] hover:border-[#c5e49a] hover:bg-[#f1f8e9] hover:text-[#3d6b14]"
@@ -433,7 +444,7 @@ function RecurringTransactionsInner({
                           key={opt.value}
                           onClick={() => setStatusFilter(opt.value)}
                           className={cn(
-                            "rounded-full border px-3 py-1 text-xs font-semibold transition-all",
+                            "rounded-full border px-3 py-1 text-xs font-semibold transition-colors",
                             statusFilter === opt.value
                               ? "border-[#8BC34A] bg-[#8BC34A] text-white"
                               : "border-[#e5e7eb] text-[#6b7280] hover:border-[#c5e49a] hover:bg-[#f1f8e9] hover:text-[#3d6b14]"
@@ -468,21 +479,33 @@ function RecurringTransactionsInner({
                 </div>
 
                 {/* Table */}
-                <TransactionTable
-                  transactions={sortedTransactions}
-                  sort={sort}
-                  onSortChange={handleSortChange}
-                  onEdit={(txn) => {
-                    setEditingTransaction(txn);
-                    setFormOpen(true);
-                  }}
-                  onDelete={setDeleteTarget}
-                  onTogglePause={handleTogglePause}
-                  userRole={userRole}
-                  selectedIds={selectedIds}
-                  onToggleSelect={handleToggleSelect}
-                  onSelectAll={handleSelectAll}
-                />
+                {sortedTransactions.length > 0 ? (
+                  <TransactionTable
+                    transactions={sortedTransactions}
+                    sort={sort}
+                    onSortChange={handleSortChange}
+                    onEdit={(txn) => {
+                      setEditingTransaction(txn);
+                      setFormOpen(true);
+                    }}
+                    onDelete={setDeleteTarget}
+                    onTogglePause={handleTogglePause}
+                    userRole={userRole}
+                    selectedIds={selectedIds}
+                    onToggleSelect={handleToggleSelect}
+                    onSelectAll={handleSelectAll}
+                  />
+                ) : (
+                  <div className="px-8 py-14 text-center">
+                    <div className="text-[36px]">🔍</div>
+                    <h3 className="mt-3 text-[16px] font-bold tracking-[-0.02em] text-[#1a1a1a]">
+                      No transactions match your filters
+                    </h3>
+                    <p className="mt-1.5 text-[13px] font-medium text-[#6b7280]">
+                      Try adjusting your filters or search query.
+                    </p>
+                  </div>
+                )}
 
                 {/* Footer */}
                 <div className="flex items-center justify-between border-t border-[#f4f3f1] bg-[#f4f3f1] px-5 py-3">
@@ -497,13 +520,15 @@ function RecurringTransactionsInner({
                       </span>
                       <button
                         onClick={() => handleBulkAction("pause")}
-                        className="flex items-center gap-1 rounded-[7px] border border-[#e5e7eb] bg-white px-3 py-1.5 text-xs font-semibold text-[#6b7280] transition-all hover:border-[#c5e49a] hover:text-[#3d6b14]"
+                        disabled={bulkLoading}
+                        className="flex items-center gap-1 rounded-[7px] border border-[#e5e7eb] bg-white px-3 py-1.5 text-xs font-semibold text-[#6b7280] transition-colors hover:border-[#c5e49a] hover:text-[#3d6b14] disabled:opacity-50"
                       >
                         ⏸ Pause selected
                       </button>
                       <button
                         onClick={() => handleBulkAction("delete")}
-                        className="flex items-center gap-1 rounded-[7px] border border-[#fecaca] bg-white px-3 py-1.5 text-xs font-semibold text-[#ef4444] transition-all hover:bg-[#fef2f2]"
+                        disabled={bulkLoading}
+                        className="flex items-center gap-1 rounded-[7px] border border-[#fecaca] bg-white px-3 py-1.5 text-xs font-semibold text-[#ef4444] transition-colors hover:bg-[#fef2f2] disabled:opacity-50"
                       >
                         🗑 Delete selected
                       </button>

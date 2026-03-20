@@ -49,6 +49,7 @@ export function TransactionForm({
   const [endDate, setEndDate] = useState("");
   const [notes, setNotes] = useState("");
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
     if (open && transaction) {
@@ -106,9 +107,9 @@ export function TransactionForm({
   }, [name, amount, startDate]);
 
   const handleSubmit = useCallback(
-    (e: React.FormEvent) => {
+    async (e: React.FormEvent) => {
       e.preventDefault();
-      if (!validate()) return;
+      if (submitting || !validate()) return;
 
       const data: CreateTransactionRequest = {
         name: name.trim(),
@@ -124,9 +125,14 @@ export function TransactionForm({
         notes: notes.trim() || undefined,
       };
 
-      onSubmit(data);
+      setSubmitting(true);
+      try {
+        await onSubmit(data);
+      } finally {
+        setSubmitting(false);
+      }
     },
-    [name, type, description, amount, frequency, dayOfMonth, secondDayOfMonth, category, startDate, endDate, notes, validate, onSubmit]
+    [submitting, name, type, description, amount, frequency, dayOfMonth, secondDayOfMonth, category, startDate, endDate, notes, validate, onSubmit]
   );
 
   const handleKeyDown = useCallback(
@@ -412,9 +418,10 @@ export function TransactionForm({
             </button>
             <button
               type="submit"
-              className="rounded-md bg-primary-500 px-[18px] py-2.5 text-[13.5px] font-semibold text-white hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
+              disabled={submitting}
+              className="rounded-md bg-primary-500 px-[18px] py-2.5 text-[13.5px] font-semibold text-white hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 disabled:opacity-50"
             >
-              Save
+              {submitting ? "Saving…" : "Save"}
             </button>
           </div>
         </form>
