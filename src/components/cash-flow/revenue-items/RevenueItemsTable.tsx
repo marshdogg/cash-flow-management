@@ -384,16 +384,13 @@ export function RevenueItemsTable({
                   <span
                     className={cn(
                       "inline-flex items-center gap-1 rounded-md border px-2 py-1 text-[11px] font-semibold",
-                      WEEK_CHIP_STYLES[weekInfo.type]
+                      overdue
+                        ? "border-[#ef4444] bg-[#fef2f2] text-[#b91c1c]"
+                        : WEEK_CHIP_STYLES[weekInfo.type]
                     )}
                   >
                     {WEEK_EMOJI[weekInfo.type]} {weekInfo.label}
                   </span>
-                  {overdue && (
-                    <span className="ml-1.5 inline-flex items-center gap-0.5 rounded border border-[#fde68a] bg-[#fffbeb] px-1.5 py-0.5 text-[11px] font-semibold text-[#92400e]">
-                      ⚠ Overdue
-                    </span>
-                  )}
                 </td>
                 {/* Status */}
                 <td className="px-4 py-3.5">
