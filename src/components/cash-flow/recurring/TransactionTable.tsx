@@ -353,20 +353,12 @@ export function TransactionTable({
                 <td className="px-4 py-3.5">
                   <span
                     className={cn(
-                      "inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs font-semibold",
+                      "inline-flex items-center rounded-full border px-2.5 py-1 text-xs font-semibold",
                       txn.status === "active"
                         ? "border-[#c5e49a] bg-[#f1f8e9] text-[#6a9e32]"
                         : "border-[#e5e7eb] bg-[#f3f4f6] text-[#6b7280]"
                     )}
                   >
-                    <span
-                      className={cn(
-                        "h-1.5 w-1.5 rounded-full",
-                        txn.status === "active"
-                          ? "bg-[#8BC34A]"
-                          : "bg-[#d1d5db]"
-                      )}
-                    />
                     {txn.status === "active" ? "Active" : "Paused"}
                   </span>
                 </td>
