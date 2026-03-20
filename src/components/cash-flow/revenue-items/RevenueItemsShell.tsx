@@ -15,7 +15,6 @@ import { SkeletonCard } from "@/components/cash-flow/shared/SkeletonCard";
 import { formatCurrency } from "@/lib/cash-flow/format-utils";
 import {
   CASH_FLOW_ROUTES,
-  REVENUE_CATEGORY_COLORS,
   EMPTY_STATE_MESSAGES,
 } from "@/constants/cash-flow";
 import type {
@@ -379,21 +378,21 @@ function RevenueItemsInner({
               <FilterPill
                 active={categoryFilter === "ar"}
                 onClick={() => setCategoryFilter("ar")}
-                dotColor={REVENUE_CATEGORY_COLORS.ar.dotColor}
+
               >
                 AR <span className="text-[11px] opacity-80">({meta.arCount})</span>
               </FilterPill>
               <FilterPill
                 active={categoryFilter === "sales"}
                 onClick={() => setCategoryFilter("sales")}
-                dotColor={REVENUE_CATEGORY_COLORS.sales.dotColor}
+
               >
                 Sales <span className="text-[11px] opacity-80">({meta.salesCount})</span>
               </FilterPill>
               <FilterPill
                 active={categoryFilter === "proposal"}
                 onClick={() => setCategoryFilter("proposal")}
-                dotColor={REVENUE_CATEGORY_COLORS.proposal.dotColor}
+
               >
                 Proposals <span className="text-[11px] opacity-80">({meta.proposalCount})</span>
               </FilterPill>
@@ -588,12 +587,10 @@ function RevenueItemsInner({
 function FilterPill({
   active,
   onClick,
-  dotColor,
   children,
 }: {
   active: boolean;
   onClick: () => void;
-  dotColor?: string;
   children: React.ReactNode;
 }) {
   return (
@@ -606,12 +603,6 @@ function FilterPill({
           : "border-[#e5e7eb] text-[#6b7280] hover:border-[#c5e49a] hover:bg-[#f9fdf5] hover:text-[#3d6b14]"
       )}
     >
-      {dotColor && !active && (
-        <span
-          className="h-[7px] w-[7px] flex-shrink-0 rounded-[2px]"
-          style={{ background: dotColor }}
-        />
-      )}
       {children}
     </button>
   );
