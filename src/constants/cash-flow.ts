@@ -431,7 +431,7 @@ export const CASH_FLOW_API_ROUTES = {
 // ============================================
 
 export const REVENUE_CATEGORY_LABELS: Record<RevenueCategory, string> = {
-  ar: "Accounts Receivable",
+  ar: "Accts Receivable",
   sales: "Sales / Estimate",
   proposal: "Proposal",
 };
