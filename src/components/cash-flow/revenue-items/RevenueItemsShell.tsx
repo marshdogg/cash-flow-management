@@ -230,7 +230,7 @@ function RevenueItemsInner({
 
   if (isLoading) {
     return (
-      <div className="mx-auto max-w-[1400px]">
+      <div className="mx-auto max-w-[1400px] py-8">
         <SkeletonCard lines={12} />
       </div>
     );
@@ -238,16 +238,18 @@ function RevenueItemsInner({
 
   if (error && !items.length) {
     return (
-      <div className="mx-auto max-w-[1400px] rounded-xl border border-danger-100 bg-danger-50 p-6 text-center">
-        <p className="text-sm text-danger-600">
-          Unable to load revenue items. Check your connection and try again.
-        </p>
+      <div className="mx-auto max-w-[1400px] py-8">
+        <div className="rounded-xl border border-danger-100 bg-danger-50 p-6 text-center">
+          <p className="text-sm text-danger-600">
+            Unable to load revenue items. Check your connection and try again.
+          </p>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="mx-auto max-w-[1400px]">
+    <div className="mx-auto max-w-[1400px] py-8">
       <style jsx>{`
         @keyframes fadeUp {
           from { opacity: 0; transform: translateY(6px); }
@@ -704,7 +706,7 @@ export function RevenueItemsShell(props: RevenueItemsShellProps) {
   return (
     <Suspense
       fallback={
-        <div className="mx-auto max-w-[1400px]">
+        <div className="mx-auto max-w-[1400px] py-8">
           <SkeletonCard lines={12} />
         </div>
       }
